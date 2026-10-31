@@ -436,6 +436,60 @@
   .scale-btn{border-width:1px;}
   .foot-date, .tagline{letter-spacing:0;}
 </style>
+<style id="nx2">
+  /* ===== Шаг 2: системный шрифт, ещё ближе к Notion ===== */
+  :root{--nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  body{line-height:1.45;}
+  /* жирное — названия; тонкое — составы и описания */
+  .card-name, .it-name, .group-title, .bq-it .nm, .bq-res .mn b, .bq-ev-h .d, .cat-head h2, .rest-name, .ix-head{font-weight:600;}
+  .prep-note, .ing-name, .ing-table td, .group td, .decor-name, .decor-list li, .it-sub, .bq-it .sb, .bq-ev-h .tt, .cat-note, .group-title .note{font-weight:400;}
+  .ing-amt, .decor-val{font-weight:500;}
+  .it-sup, .bq-grp, .bq-qty{font-weight:600;}
+  .bq-qty{font-weight:700;}
+  .badge, .it-note, .bq-when{font-weight:600;}
+
+  /* строки без цветных полос слева — как в базе Notion; цвет остаётся в заголовках и тегах */
+  details.card, .item, .group{border-left:0; border-radius:0; padding-left:0;}
+  details.card > summary.card-head{padding-left:4px;}
+  .item{padding-left:4px;}
+  .group-title{padding-left:4px;}
+  .badges{padding-left:4px;}
+  .cat-head .dot{width:10px; height:10px; border-radius:3px;}
+  .bq-res{border-left:0; padding-left:4px;}
+  .bq-ev{border-left:1px solid var(--row-line);}
+
+  /* стрелка раскрытия: ▸ → ▾ */
+  .chev{font-size:0 !important; width:18px; text-align:center;}
+  .chev::before{content:'▸'; font-size:.8rem; display:inline-block; color:var(--muted); transition:transform .15s ease;}
+  details.card[open] .chev{transform:none !important;}
+  details.card[open] .chev::before{transform:rotate(90deg);}
+
+  /* подсказки — «выноска» */
+  .cat-note{background:var(--row); border-radius:6px; padding:9px 12px; margin:0 0 10px; color:var(--muted);}
+
+  /* таблицы составов: полная сетка линий, как в таблице Notion */
+  .ing-table, .group table{border:1px solid var(--row-line); border-radius:4px; border-collapse:separate; border-spacing:0; overflow:hidden;}
+  .ing-table td, .ing-table th, .group td, .group th{border-top:0 !important; border-bottom:1px solid var(--row-line);}
+  .ing-table tr:last-child td, .group tr:last-child td{border-bottom:0;}
+  .ing-table td + td, .ing-table th + th, .group td + td, .group th + th{border-left:1px solid var(--row-line);}
+  .ing-table td:first-child{padding-left:10px;}
+  .ing-table th, .group th{font-weight:600; color:var(--muted);}
+  .ing-table tr.total td{font-weight:700;}
+  .card-content-inner{padding:0 10px 10px;}
+  .decor-box{margin:10px 0 0;}
+  .badges{padding:0 0 10px;}
+  .card-note{margin:8px 0 0;}
+
+  /* поля и кнопки: плоские, тонкая рамка */
+  .pill, button.pill{box-shadow:none;}
+  .bq-btn, .scale-btn, .seg-btn, .size-btn, .step-btn, .chip, .add-open, .calc-reset, .inv-send, .inv-sheet button{box-shadow:none;}
+  .bq-top, header.topbar{backdrop-filter:none;}
+
+  /* банкеты */
+  .bq-grp{background:transparent; padding-left:14px; color:var(--muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;}
+  .bq-it .nm{font-size:.96rem;}
+  .bq-qty{background:color-mix(in srgb, var(--accent) 22%, transparent); border-radius:4px;}
+</style>
 </head>
 <body>
 <script>
