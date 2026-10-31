@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+<meta content="#241611" name="theme-color"/>
+<title>Инвента чай</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&amp;family=Manrope:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#241611; --surface:#241811; --surface-2:#2C2015; --ink:#F4ECDF; --muted:#B49C89;
+    --line:rgba(200,138,78,0.28); --accent:#C88A4E; --accent-ink:#E8B57E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background-color:var(--bg);
+    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg");
+    background-size:420px auto, 420px auto;
+    background-position:top center, top center;
+    background-repeat:repeat, repeat;
+    color:var(--ink);
+    font-family:'Manrope',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:48px;
+    min-height:100vh;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif;}
+
+  /* Скрытые радио, управляющие вкладками-фильтрами — работают даже без JS. */
+  .tab-radio{
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip:rect(0 0 0 0); overflow:hidden; white-space:nowrap;
+  }
+
+  header.topbar{
+    border-bottom:1px solid var(--line);
+    padding:20px 16px 16px;
+  }
+  .brand{display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:10px; text-align:center;}
+  .brand h1{margin:0;}
+  .brand-logo{height:28px; width:auto; display:block;}
+  .brand .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.09em;
+    color:var(--accent); text-transform:uppercase;
+  }
+  .tagline{
+    display:block; text-align:center; font-family:'Manrope',sans-serif; font-size:.76rem;
+    color:var(--muted); line-height:1.5; margin:0 auto 16px; max-width:340px;
+  }
+
+  /* ---------- Вход по анимированному переходу с главной ---------- */
+  /* Логотип уже "долетел" на своё место и виден сразу — остальное содержимое
+     мягко проявляется вокруг него, без тёмного экрана поверх страницы. */
+  .tagline, .pills, main, footer{
+    transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);
+  }
+  .pills{ transition-delay:.06s; }
+  main{ transition-delay:.12s; }
+  footer{ transition-delay:.18s; }
+  html.entry-veil .tagline,
+  html.entry-veil .pills,
+  html.entry-veil main,
+  html.entry-veil footer{
+    opacity:0; transform:translateY(10px);
+  }
+
+  .pills{display:flex; flex-wrap:wrap; justify-content:center; gap:8px;}
+  .pill{
+    flex:0 0 auto; font-family:'Manrope',sans-serif; font-size:.76rem; font-weight:700;
+    padding:9px 14px; border-radius:9px; border:1.5px solid var(--line);
+    background:var(--surface); color:var(--ink); white-space:nowrap; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    transition:border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  @media (hover:hover){
+    .pill:hover{border-color:var(--accent);}
+  }
+
+  main{padding:26px 16px 8px; max-width:560px; margin:0 auto;}
+
+  .demo-box{
+    border:1.5px dashed var(--line); border-radius:18px;
+    padding:56px 22px 50px; text-align:center;
+    background:rgba(244,236,223,0.025);
+  }
+  .demo-eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 14px;
+  }
+  .demo-title{
+    font-family:'Fraunces',serif; font-weight:500; font-size:1.34rem;
+    color:var(--ink); margin:0 0 12px; letter-spacing:-.01em;
+  }
+  .demo-text{
+    font-family:'Manrope',sans-serif; font-size:.85rem; color:var(--muted);
+    line-height:1.6; max-width:300px; margin:0 auto;
+  }
+
+  /* ---------- Вкладки-фильтры на чистом CSS ---------- */
+  #tab-sets:checked ~ main .demo-panel:not([data-cat="sets"]){display:none;}
+  #tab-sets:checked ~ header label[for="tab-sets"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  #tab-cocktail:checked ~ main .demo-panel:not([data-cat="cocktail"]){display:none;}
+  #tab-cocktail:checked ~ header label[for="tab-cocktail"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  #tab-calc:checked ~ main .demo-panel:not([data-cat="calc"]){display:none;}
+  #tab-calc:checked ~ header label[for="tab-calc"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+
+  /* ---------- Подпись: тап "d.b wish" — контакты проявляются под ней ---------- */
+  .sig{border:none; padding:0; margin-top:8px; text-align:center;}
+  .sig-input{
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+    clip:rect(0 0 0 0); overflow:hidden; white-space:nowrap;
+  }
+  .sig-name{
+    display:inline-block; cursor:pointer; padding:4px 3px;
+    -webkit-tap-highlight-color:transparent;
+    transition:opacity .2s ease;
+  }
+  .sig-logo{height:24px; width:auto; display:block;}
+  @media (hover:hover){
+    .sig-name:hover{ opacity:.75; }
+  }
+  .sig-reveal{
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    max-height:0; opacity:0; filter:blur(6px); transform:translateY(-4px) scale(.96);
+    overflow:hidden; pointer-events:none;
+    transition:max-height 1.15s cubic-bezier(.16,1,.3,1),
+               opacity 1.05s ease .12s,
+               filter 1.05s ease .12s,
+               transform 1.1s cubic-bezier(.16,1,.3,1) .08s;
+  }
+  .sig-input:checked ~ .sig-reveal{
+    max-height:70px; opacity:1; filter:blur(0); transform:translateY(0) scale(1);
+    pointer-events:auto; margin-top:6px;
+  }
+  .sig-tg{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:600; font-size:.8rem;
+    letter-spacing:.03em; color:var(--accent-ink); text-decoration:none;
+    border-bottom:1px dotted var(--line);
+  }
+  .sig-caption{
+    font-family:'Manrope',sans-serif; font-size:.66rem; color:var(--muted);
+    max-width:260px; line-height:1.45;
+  }
+  footer{
+    max-width:560px; margin:34px auto 0; padding:0 18px; color:var(--muted);
+    font-size:.74rem; line-height:1.5; text-align:center;
+  }
+
+  /* ---------- Премиксы Б/А: плашки как в чайной карте, в тёмной палитре ---------- */
+  #tab-premix:checked ~ main .demo-panel:not([data-cat="premix"]){display:none;}
+  #tab-premix:checked ~ header label[for="tab-premix"]{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  .cat-head{display:flex; align-items:center; gap:8px; margin:0 0 6px 2px;}
+  .cat-head .dot{width:10px; height:10px; border-radius:50%; background:var(--accent);}
+  .cat-head h2{font-size:1.08rem; font-weight:600; margin:0; letter-spacing:-.01em; color:var(--ink);}
+  .cat-head .n{font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted);}
+  .cat-note{font-size:.76rem; color:var(--muted); line-height:1.5; margin:0 2px 14px;}
+  details.card{
+    display:block; background:var(--surface); border:1px solid var(--line);
+    border-left:4px solid var(--dot); border-radius:8px; margin-bottom:9px; overflow:hidden;
+    transition:box-shadow .18s ease, transform .18s ease;
+  }
+  @media (hover:hover){ details.card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.35); transform:translateY(-1px);} }
+  summary.card-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    cursor:pointer; padding:12px 12px 10px; list-style:none; -webkit-tap-highlight-color:transparent;
+  }
+  summary.card-head::-webkit-details-marker{display:none;}
+  summary.card-head::marker{content:'';}
+  .card-name{font-family:'Fraunces',serif; font-size:1.02rem; font-weight:500; line-height:1.25;}
+  .prep-note{font-family:'Manrope',sans-serif; font-size:.76rem; font-weight:400; color:var(--muted); font-style:italic;}
+  .chev{font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:.85rem; transition:transform .15s ease; flex:0 0 auto;}
+  details.card[open] .chev{transform:rotate(180deg);}
+  .card-content{height:0; overflow:hidden; transition:height .32s cubic-bezier(.4,0,.2,1);}
+  details.card[open] .card-content{height:auto;}
+  .card-content-inner{overflow:hidden; contain:content;}
+  .badges{display:flex; flex-wrap:wrap; gap:5px; padding:0 12px 11px;}
+  .badge{
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; font-weight:600;
+    color:var(--dot); border:1px solid var(--dot); border-radius:4px; padding:2px 7px;
+    background:color-mix(in srgb, var(--dot) 10%, transparent);
+  }
+  .ing-table{width:100%; border-collapse:collapse; font-size:.86rem;}
+  .ing-table th{
+    text-align:right; font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:.62rem;
+    color:var(--muted); padding:6px 8px; border-top:1px solid var(--line);
+    background:var(--surface-2); white-space:nowrap;
+  }
+  .ing-table th:first-child{text-align:left; padding-left:10px;}
+  .ing-table td{padding:8px; border-top:1px solid var(--line); vertical-align:top;}
+  .ing-table td:first-child{padding-left:10px;}
+  .ing-table tr:nth-child(odd) td{background:rgba(255,255,255,0.02);}
+  .ing-table tr.total td{font-weight:700; background:color-mix(in srgb, var(--dot) 9%, transparent);}
+  .ing-amt{font-family:'IBM Plex Mono',monospace; font-size:.82rem; text-align:right; white-space:nowrap; font-weight:500;}
+  .decor-box{margin:12px 12px 12px; padding:9px 11px; background:var(--surface-2); border-radius:6px; border:1px solid var(--line);}
+  .decor-title{font-family:'IBM Plex Mono',monospace; font-size:.64rem; font-weight:600; color:var(--dot); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;}
+  .decor-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px;}
+  .decor-list li{display:flex; justify-content:space-between; gap:10px; font-size:.83rem; line-height:1.4;}
+  .decor-val{font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--muted); white-space:nowrap; text-align:right; flex:0 0 auto;}
+  .card-note{margin:0 12px 12px; font-size:.76rem; color:var(--muted); font-style:italic; line-height:1.45;}
+
+  /* аккуратные таблицы на узких экранах */
+  .ing-table{table-layout:fixed;}
+  .ing-table th, .ing-table td{overflow-wrap:anywhere;}
+  .ing-table th{white-space:normal; line-height:1.25; vertical-align:bottom;}
+  .ing-table th:first-child, .ing-table td:first-child{width:42%;}
+  .ing-table td:not(:first-child), .ing-table th:not(:first-child){padding-right:10px;}
+
+  /* ---------- Назад и переход между картами ---------- */
+  .brand{position:relative; --logo-h:28px;}
+  .back-btn{
+    position:absolute; left:-10px; top:calc((var(--logo-h) - 44px) / 2);
+    width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+    color:var(--accent-ink); text-decoration:none; -webkit-tap-highlight-color:transparent;
+    transition:transform .15s ease;
+  }
+  .back-btn svg{width:11px; height:19px; display:block; transition:opacity .55s cubic-bezier(.22,1,.36,1);}
+  .back-btn:active{transform:translateX(-2px);}
+  .nav-row{display:flex; justify-content:center; align-items:center; margin-top:2px;}
+  .nav-link{
+    display:inline-flex; align-items:center; gap:8px; padding:9px 12px;
+    color:var(--accent-ink); text-decoration:none; -webkit-tap-highlight-color:transparent;
+    transition:opacity .15s ease;
+  }
+  .nav-link:active{opacity:.5;}
+  .nav-logo{
+    display:block; height:14px; aspect-ratio:900/113; background-color:currentColor;
+    -webkit-mask:url("logo-chai-wide.png") center/contain no-repeat; mask:url("logo-chai-wide.png") center/contain no-repeat;
+  }
+  .nav-arr{font-family:'IBM Plex Mono',monospace; font-size:1rem; line-height:1;}
+  .foot-date{
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:8px;
+  }
+  .nav-row{transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);}
+  html.entry-veil .nav-row{opacity:0; transform:translateY(10px);}
+  html.entry-veil .back-btn svg{opacity:0;}
+
+  /* ---------- Банкетный алкоголь ---------- */
+  .brand{--logo-h:24px;}
+  .brand-logo{height:24px;}
+  .brand-title{margin:0; font-family:'Fraunces',serif; font-weight:500; font-size:1.15rem; line-height:30px; letter-spacing:-.01em; color:var(--ink);}
+  .search{padding:0 0 12px;}
+  .search input{
+    width:100%; font:500 .95rem 'Manrope',sans-serif; color:var(--ink); background:var(--surface);
+    border:1.5px solid var(--line); border-radius:10px; padding:11px 14px; -webkit-appearance:none; appearance:none;
+  }
+  .search input::placeholder{color:var(--muted);}
+  .search input:focus{outline:none; border-color:var(--accent);}
+  .pills.scroll{flex-wrap:nowrap; justify-content:flex-start; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;}
+  .pills.scroll::-webkit-scrollbar{display:none;}
+  button.pill{font-family:'Manrope',sans-serif;}
+  .pill.on{background:var(--accent); border-color:var(--accent); color:var(--bg);}
+  .search, .pills{transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);}
+  html.entry-veil .search{opacity:0; transform:translateY(10px);}
+  .demo-panel{margin-bottom:22px;}
+  .item{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--dot); border-radius:8px;
+    padding:11px 12px; margin-bottom:8px;
+  }
+  .it-main{display:flex; flex-direction:column; gap:3px; min-width:0;}
+  .it-name{font-family:'Fraunces',serif; font-size:1rem; font-weight:500; line-height:1.25;}
+  .it-sub{font-size:.68rem; color:var(--muted); line-height:1.35; opacity:.9;}
+  .it-sup{font-family:'Manrope',sans-serif; font-size:.86rem; font-weight:700; color:var(--accent-ink); line-height:1.25;}
+  .it-note{align-self:flex-start; margin-top:2px; font-family:'IBM Plex Mono',monospace; font-size:.64rem; font-weight:600; color:var(--accent-ink); border:1px solid var(--accent); border-radius:4px; padding:2px 6px;}
+  .it-price{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.92rem; color:var(--accent-ink); white-space:nowrap; flex:0 0 auto;}
+  .empty{text-align:center; color:var(--muted); font-size:.85rem; padding:30px 0;}
+  .empty[hidden]{display:none;}
+  .item[hidden]{display:none !important;}
+
+  /* ---------- Инвента ---------- */
+  .brand{--logo-h:30px;}
+  .inv-meta{display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 0 10px;}
+  .inv-meta input{font:500 .9rem 'Manrope',sans-serif; color:var(--ink); background:var(--surface); border:1.5px solid var(--line); border-radius:10px; padding:10px 12px; width:100%; min-width:0; -webkit-appearance:none; appearance:none;}
+  .inv-meta input:focus{outline:none; border-color:var(--accent-ink);}
+  .inv-mode{display:flex; align-items:center; gap:10px; margin:0 0 16px; font-size:.8rem; color:var(--muted); line-height:1.35;}
+  .inv-mode input{width:20px; height:20px; accent-color:var(--accent-ink); flex:0 0 auto;}
+  .item{flex-wrap:wrap; align-items:center;}
+  .it-main{flex:1 1 120px; min-width:0;}
+  .inv-fields{display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; flex:0 0 auto; align-items:flex-start;}
+  .inv-fld{display:flex; flex-direction:column; gap:3px; align-items:flex-end;}
+  .inv-fld label{font-family:'IBM Plex Mono',monospace; font-size:.56rem; letter-spacing:.04em; color:var(--muted);}
+  .inv-in{width:88px; font:600 1rem 'IBM Plex Mono',monospace; text-align:right; color:var(--ink); background:var(--bg); border:1.5px solid var(--line); border-radius:8px; padding:9px 10px; -webkit-appearance:none; appearance:none;}
+  .inv-in:focus{outline:none; border-color:var(--accent-ink); background:var(--surface);}
+  .inv-in.has{border-color:var(--accent-ink); background:var(--surface);}
+  .inv-row{display:flex; gap:6px; align-items:center;}
+  .inv-plus{width:36px; height:42px; font:700 1.2rem 'Manrope',sans-serif; line-height:1; color:var(--accent-ink); background:var(--surface); border:1.5px solid var(--line); border-radius:8px; padding:0; -webkit-tap-highlight-color:transparent;}
+  .inv-plus:active{background:var(--surface-2);}
+  .v-sum{min-height:.9rem; font-family:'IBM Plex Mono',monospace; font-size:.78rem; font-weight:600; color:var(--accent-ink);}
+  .inv-bd{display:none;} body.monthly .inv-bd{display:flex;}
+  .inv-tare-btn{align-self:flex-start; margin-top:4px; font:600 .7rem 'Manrope',sans-serif; color:var(--accent-ink); background:none; border:1px solid var(--accent); border-radius:6px; padding:3px 8px;}
+  .inv-tare{flex:1 0 100%; display:flex; gap:10px; align-items:flex-end; padding-top:10px; margin-top:10px; border-top:1px dashed var(--line);}
+  .inv-tare[hidden]{display:none;}
+  .inv-res{margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:.8rem; color:var(--accent-ink); padding-bottom:10px;}
+  .inv-reset{display:block; margin:8px auto 0; background:none; border:none; color:var(--muted); font:600 .78rem 'Manrope',sans-serif; text-decoration:underline; padding:10px;}
+  main{padding-bottom:130px;}
+  .inv-dock{position:fixed; left:0; right:0; bottom:0; z-index:50; display:flex; gap:12px; align-items:center; justify-content:space-between; padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px)); background:linear-gradient(to bottom, rgba(36,22,17,0), var(--bg) 38%);}
+  .inv-prog{font-family:'IBM Plex Mono',monospace; font-size:.74rem; color:var(--muted);}
+  .inv-send{font:700 .95rem 'Manrope',sans-serif; color:var(--bg); background:var(--accent-ink); border:none; border-radius:12px; padding:13px 20px; box-shadow:0 8px 18px -8px rgba(50,35,35,.55);}
+  .inv-modal{position:fixed; inset:0; z-index:100; background:rgba(40,28,28,.45); display:flex; align-items:flex-end; justify-content:center;}
+  .inv-modal[hidden]{display:none;}
+  .inv-sheet{width:100%; max-width:520px; background:var(--bg); border-radius:18px 18px 0 0; padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:10px;}
+  .inv-sheet h3{margin:0; font-family:'Fraunces',serif; font-weight:500; font-size:1.2rem;}
+  .inv-sheet p{margin:0 0 4px; font-size:.84rem; color:var(--muted); line-height:1.4; word-break:break-word;}
+  .inv-sheet button{font:700 .95rem 'Manrope',sans-serif; border-radius:12px; padding:13px; border:1.5px solid var(--accent-ink); background:var(--surface); color:var(--accent-ink);}
+  .inv-sheet button.main{background:var(--accent-ink); color:var(--bg);}
+  .inv-kp{position:fixed; left:0; right:0; bottom:0; z-index:90; background:var(--bg); border-top:1px solid var(--line); padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px)); box-shadow:0 -10px 24px -14px rgba(50,35,35,.5); user-select:none; -webkit-user-select:none;}
+  .inv-kp[hidden]{display:none;}
+  .kp-top{display:flex; align-items:center; gap:10px; padding:2px 4px 8px;}
+  .kp-name{flex:1; min-width:0; font-family:'Fraunces',serif; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .kp-sum{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.85rem; color:var(--accent-ink);}
+  .kp-done{font:700 .85rem 'Manrope',sans-serif; color:var(--accent-ink); background:none; border:none; padding:6px 8px;}
+  .kp-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:7px;}
+  .kp-grid button{font:600 1.35rem 'IBM Plex Mono',monospace; height:50px; border-radius:11px; border:1px solid var(--line); background:var(--surface); color:var(--ink); touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
+  .kp-grid button:active{background:var(--surface-2);}
+  .kp-grid .op{color:var(--accent-ink); background:var(--surface-2);}
+  .kp-grid .next{grid-column:span 2; background:var(--accent-ink); color:var(--bg); border-color:var(--accent-ink); font:700 1rem 'Manrope',sans-serif;}
+  body.kp-open .inv-dock{display:none;}
+  body.kp-open main{padding-bottom:360px;}
+  .inv-in.act{border-color:var(--accent-ink); background:var(--surface); box-shadow:0 0 0 3px rgba(107,88,88,.2);}
+  /* ---------- Как в чайной карте: компактные позиции ---------- */
+  main{padding:14px 14px 130px;}
+  body.kp-open main{padding-bottom:300px;}
+  .search input{padding:9px 12px; font-size:.9rem; border-radius:9px;}
+  .pills.scroll{flex-wrap:wrap; overflow:visible; gap:7px;}
+  .pill{font-size:.68rem; padding:5px 9px; border-radius:7px; border:1.5px solid var(--line);}
+  .pill.on{border-color:var(--accent-ink);}
+  .cat-head{margin:0 0 10px 2px;}
+  .cat-head h2{font-size:1.08rem; font-weight:700; letter-spacing:-.01em;}
+  .cat-head .n{font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted);}
+  .demo-panel{margin-bottom:18px;}
+  .item{padding:8px 10px 8px 12px; margin-bottom:9px; border-radius:8px; align-items:center; gap:10px;}
+  .it-name{font-size:1.02rem; line-height:1.25;}
+  .inv-fields{gap:6px; align-items:center;}
+  .inv-fld{align-items:flex-end; gap:2px;}
+  .inv-in{width:76px; font-size:.92rem; padding:6px 9px; border-radius:7px;}
+  .inv-in::placeholder{color:var(--muted); opacity:.55; font-weight:500;}
+  .v-sum{min-height:0; font-size:.7rem;}
+  .inv-mode{font-size:.76rem; margin:0 0 14px;}
+  .inv-send{padding:11px 18px; font-size:.9rem;}
+  .kp-grid{gap:6px;} .kp-grid button{height:44px; font-size:1.2rem;}
+  .kp-top{padding:0 4px 6px;}
+  .it-expr{display:block; margin-top:3px; font-family:'IBM Plex Mono',monospace; font-size:.74rem; font-weight:600; color:var(--accent-ink); line-height:1.35; word-break:break-word;}
+  .it-expr:empty{display:none;}
+  .kp-line{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding:2px 6px 10px; min-height:32px;}
+  .kp-expr{flex:1; min-width:0; max-height:3.9em; overflow-y:auto; font:600 1.15rem/1.3 'IBM Plex Mono',monospace; word-break:break-all; color:var(--ink);}
+  .kp-expr:empty::before{content:'введите число'; font-family:'Manrope',sans-serif; font-size:.85rem; font-weight:500; color:var(--muted); opacity:.7;}
+  .kp-sum{font-size:1.15rem; font-weight:700; white-space:nowrap;}
+  body.kp-open main{padding-bottom:340px;}
+  .inv-sheet .hint{font-size:.76rem; color:var(--muted); margin:0;}
+  .brand-title{font-family:'Manrope',sans-serif; font-weight:800; font-size:20px; line-height:30px; letter-spacing:.02em; text-transform:uppercase; color:#F4ECDF;}
+
+  /* ================= ДИЗАЙН-СИСТЕМА: общая для всех страниц ================= */
+  :root{--sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:28px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:20px; --h-ctl:46px; --h-pill:30px; --pad-x:16px;}
+  header.topbar{padding:var(--sp-5) var(--pad-x) var(--sp-3);}
+  .brand{gap:var(--sp-2); margin-bottom:var(--sp-3);}
+  .brand h1{margin:0; height:32px; display:flex; align-items:center; justify-content:center;}
+  .brand-logo{height:var(--logo-h); width:auto; display:block;}
+  .brand-title{line-height:32px;}
+  .back-btn{top:-6px;}
+  .nav-row{margin:0;}
+  .search-row, .search{position:relative; margin:0 0 var(--sp-3); padding:0;}
+  .search::before{content:'⌕'; position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1.2rem; font-weight:700; color:var(--accent-ink); pointer-events:none;}
+  #search, #ingSearch, .search input{width:100%; height:var(--h-ctl); padding:0 14px 0 42px; border-radius:var(--r-md); border:1.5px solid var(--accent); background:var(--surface); color:var(--ink); font:600 1rem 'Manrope',sans-serif; box-sizing:border-box; outline:none; -webkit-appearance:none; appearance:none;}
+  #search:focus, #ingSearch:focus, .search input:focus{border-color:var(--accent-ink); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);}
+  .pills, .pills.scroll{display:flex; flex-wrap:wrap; justify-content:flex-start; gap:var(--sp-2); overflow:visible; padding:0;}
+  .pill, button.pill{display:inline-flex; align-items:center; gap:6px; height:var(--h-pill); padding:0 12px; border-radius:var(--r-sm); font:700 .72rem 'Manrope',sans-serif; box-sizing:border-box; border:1.5px solid var(--dot,var(--line)); background:var(--surface); color:var(--ink);}
+  main{padding:var(--sp-4) var(--pad-x) var(--sp-6); max-width:560px; margin:0 auto;}
+  .cat-head{display:flex; align-items:center; gap:var(--sp-2); margin:0 2px var(--sp-3);}
+  .cat-head h2{margin:0; font-size:1.08rem; font-weight:700; letter-spacing:-.01em;}
+  .cat-note{font-size:.78rem; line-height:1.45; margin:0 2px var(--sp-3);}
+  section.category, .demo-panel{margin-bottom:var(--sp-5);}
+  details.card, .group, .item, .ing-hit{border-radius:var(--r-md); margin-bottom:10px; border-left-width:4px;}
+  summary.card-head{padding:var(--sp-3) 14px;}
+  .item{padding:var(--sp-3) 14px;}
+  .group-title{padding:var(--sp-3) 14px 4px;}
+  .badges{padding:0 14px var(--sp-3);}
+  .decor-box{margin:14px 14px 14px;}
+  .ing-table th:first-child, .ing-table td:first-child, .group th:first-child, .group td:first-child{padding-left:14px;}
+  .ing-table th:last-child, .ing-table td:last-child, .group th:last-child, .group td:last-child{padding-right:14px;}
+  .inv-send, .sc-go{height:var(--h-ctl); padding:0 20px; border-radius:var(--r-md); font:700 .9rem 'Manrope',sans-serif;}
+  .scale-btn{height:40px; padding:0 16px; border-radius:var(--r-md);}
+  .sc-chip{height:42px; padding:0 14px; border-radius:var(--r-md);}
+  .inv-sheet button, .sc-x{border-radius:var(--r-md);}
+  .inv-sheet button{height:var(--h-ctl); padding:0 14px;}
+  .inv-sheet, .sc-sheet{border-radius:var(--r-xl) var(--r-xl) 0 0;}
+  .brand-title{font-size:20px;}
+  main{padding-bottom:130px;}
+  .item{padding:10px 14px;}
+</style>
+<style id="nx">
+  /* ===== Вид «как в Notion»: плоские строки, чёткие разделители, маленькие скругления. Цвета и фоны — прежние. ===== */
+  :root{
+    --nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:10px; --h-ctl:40px; --h-pill:28px;
+    --row:rgba(244,236,223,.05); --row-line:rgba(232,181,126,.26); --field:rgba(244,236,223,.07);
+  }
+  *{font-family:var(--nf) !important; letter-spacing:normal;}
+  body{font-variant-numeric:tabular-nums;}
+  header.topbar{border-bottom:1px solid var(--row-line);}
+
+  /* поиск */
+  #search, #ingSearch, .search input{height:40px; padding-top:0; padding-bottom:0; border:0; border-radius:6px; background:var(--field); box-shadow:inset 0 0 0 1px var(--row-line); font-weight:400; font-size:.95rem; color:var(--ink);}
+  #search:focus, #ingSearch:focus, .search input:focus{border:0; box-shadow:0 0 0 2px var(--accent);}
+  #search::placeholder, #ingSearch::placeholder, .search input::placeholder{font-weight:400;}
+  .search::before, .search-row::before{color:var(--muted); font-weight:400;}
+
+  /* фильтры — «теги» */
+  .pill, button.pill{height:28px; padding:0 11px; border:0; border-radius:4px; background:var(--field); color:var(--ink); font-weight:500; font-size:.8rem; display:inline-flex; align-items:center;}
+  .pill.on{background:var(--accent); color:var(--bg);}
+  #tab-sets:checked ~ header label[for="tab-sets"], #tab-cocktail:checked ~ header label[for="tab-cocktail"], #tab-calc:checked ~ header label[for="tab-calc"], #tab-premix:checked ~ header label[for="tab-premix"]{border:0;}
+
+  /* разделы */
+  .cat-head{margin:6px 2px 8px;}
+  .cat-head h2{font-size:1.2rem; font-weight:700; letter-spacing:-.01em;}
+  .cat-head .dot{width:8px; height:8px;}
+  .cat-head .n{font-size:.8rem;}
+  .cat-note{margin:0 2px 10px;}
+
+  /* строки списка: сплошные, с отчётливой линией между ними и цветной меткой слева */
+  details.card, .item{background:var(--row); border:0; border-bottom:1px solid var(--row-line); border-left:3px solid var(--dot,var(--accent)); border-radius:0; margin:0; box-shadow:none; transform:none;}
+  details.card:hover{box-shadow:none; transform:none;}
+  .demo-panel{margin-bottom:22px;}
+  .demo-panel > :is(details.card,.item):first-of-type{border-top:1px solid var(--row-line); border-top-left-radius:6px;}
+  .cat-head ~ :is(details.card,.item):last-of-type{border-bottom-left-radius:6px;}
+  summary.card-head{padding:11px 12px;}
+  .card-name{font-weight:600; font-size:.98rem;}
+  .prep-note{font-style:normal; font-weight:400;}
+  .chev{color:var(--muted);}
+  .badges{padding:0 12px 10px;}
+  .badge{border:0; border-radius:3px; padding:1px 7px; font-weight:500; font-size:.7rem; background:color-mix(in srgb, var(--dot) 20%, transparent);}
+  .ing-table th{font-weight:500; text-transform:none; letter-spacing:0; background:rgba(244,236,223,.06); border-top:1px solid var(--row-line);}
+  .ing-table td{border-top:1px solid var(--row-line);}
+  .ing-table tr:nth-child(odd) td{background:rgba(244,236,223,.035);}
+  .decor-box{border-radius:6px; background:rgba(244,236,223,.05); border:1px solid var(--row-line);}
+  .decor-title{text-transform:none; letter-spacing:0; font-weight:600; font-size:.72rem;}
+
+  /* позиции банкетного меню */
+  .item{padding:10px 12px; gap:14px; align-items:center;}
+  .it-name{font-weight:600; font-size:.98rem; color:var(--ink);}
+  .it-sup{display:inline-block; align-self:flex-start; margin-top:2px; padding:0 6px; border-radius:3px; background:rgba(244,236,223,.1); color:var(--ink); font-weight:500; font-size:.72rem; line-height:1.5;}
+  .it-sub{font-size:.72rem; color:var(--muted); opacity:1;}
+  .it-note{margin-top:3px; padding:0 6px; border:0; border-radius:3px; background:color-mix(in srgb, var(--accent) 24%, transparent); color:var(--accent-ink); font-weight:500; font-size:.68rem; line-height:1.55;}
+  .it-price{font-weight:600; font-size:.9rem; color:var(--accent-ink);}
+
+  /* калькулятор и пересчёт */
+  .seg{border-radius:8px; background:var(--row); border-color:var(--row-line);}
+  .seg-btn{border-radius:6px; font-weight:500;}
+  .calc-box{border-radius:8px; background:var(--row); border-color:var(--row-line);}
+  .calc-label, .calc-info{text-transform:none; letter-spacing:0;}
+  .step-btn, .num-in, .size-btn, .rm-open, .add-open, .calc-reset, .scale-btn, .scale-banner, .chip{border-radius:6px; border-color:var(--row-line);}
+  .size-btn, .step-btn, .chip{background:var(--field);}
+  .result{border-radius:6px; border-color:var(--row-line);}
+  .res-num{font-weight:700;}
+  .sc-sheet{border-radius:12px 12px 0 0; border-color:var(--row-line);}
+  .sc-chip, .sc-custom input, .sc-go{border-radius:6px;}
+  .sc-chip{border-width:1px; border-color:var(--row-line); background:var(--field);}
+  .sc-chip.on{background:var(--accent); border-color:var(--accent);}
+  .sc-sheet h3{font-weight:700;}
+  .scale-btn{border-width:1px;}
+  .foot-date, .tagline{letter-spacing:0;}
+</style>
+<style id="nx-inv">
+  .inv-meta input{border:1px solid var(--row-line); border-radius:6px; background:var(--field); font-weight:400;}
+  .inv-meta input:focus{border-color:var(--accent);}
+  .inv-in{border:1px solid var(--row-line); border-radius:6px; background:var(--field); font-weight:600;}
+  .inv-in.has, .inv-in:focus, .inv-in.act{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, transparent); box-shadow:none;}
+  .inv-plus{border:1px solid var(--row-line); border-radius:6px; background:var(--field);}
+  .inv-fld label{text-transform:none; letter-spacing:0;}
+  .inv-tare{border-top:1px solid var(--row-line);}
+  .inv-tare-btn{border-width:1px; border-color:var(--row-line); border-radius:4px;}
+  .inv-dock, .inv-kp{border-top:1px solid var(--row-line);}
+  .inv-send{border-radius:6px; background:var(--accent); font-weight:600;}
+  .inv-sheet{border-radius:12px 12px 0 0; border-top:1px solid var(--row-line);}
+  .inv-sheet button{border-radius:6px; border-width:1px; border-color:var(--row-line); font-weight:500;}
+  .inv-sheet button.main{background:var(--accent); border-color:transparent; color:var(--bg); font-weight:600;}
+  .inv-sheet h3{font-weight:700;}
+  .inv-kp button{border-radius:6px;}
+  .clear-all{border-radius:6px;}
+  .it-expr{color:var(--accent-ink);}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  // Если пришли по анимированному переходу с главной — логотип уже на месте,
+  // его не прячем вообще. Прячем только остальное содержимое (класс на <html>,
+  // задаётся синхронно до первой отрисовки) и мягко проявляем его чуть позже —
+  // без единого тёмного кадра поверх страницы.
+  var entering = false;
+  try{ entering = sessionStorage.getItem('fly:inventory.html') === '1'; sessionStorage.removeItem('fly:inventory.html'); }catch(e){}
+  if(entering){
+    document.documentElement.classList.add('entry-veil');
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function reveal(){ document.documentElement.classList.remove('entry-veil'); }
+    if(reduceMotion){ reveal(); }
+    else{
+      window.addEventListener('load', function(){
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ setTimeout(reveal, 90); }); });
+      });
+    }
+  }
+})();
+</script>
+<header class="topbar">
+<div class="brand">
+<a class="back-btn" id="backBtn" href="index.html" data-nav="home" aria-label="В меню"><svg viewBox="0 0 11 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5 2 9.5l7.5 8"/></svg></a>
+<h1 class="brand-title">Инвента чай</h1>
+</div>
+<div class="search"><input id="q" type="search" placeholder="Поиск позиции" autocomplete="off" enterkeyhint="search"/></div>
+<nav class="pills scroll" id="pills">
+<button class="pill on" type="button" data-cat="all">Все</button>
+<button class="pill" type="button" data-cat="tea">Чай</button>
+<button class="pill" type="button" data-cat="gro">Бакалея</button>
+<button class="pill" type="button" data-cat="syr">Сиропы</button>
+<button class="pill" type="button" data-cat="spi">Специи</button>
+<button class="pill" type="button" data-cat="ware">Посуда</button>
+</nav>
+</header>
+<main id="app">
+<div id="list"></div>
+<p class="empty" id="empty" hidden>Ничего не найдено</p>
+</main>
+<div class="inv-dock"><span class="inv-prog" id="prog"></span><button class="inv-send" id="send" type="button">Собрать бланк</button></div>
+<div class="inv-modal" id="modal" hidden><div class="inv-sheet" id="sheet"></div></div>
+<footer class="sig">
+  <input type="checkbox" id="sig-toggle" class="sig-input"/>
+  <label for="sig-toggle" class="sig-name"><img alt="d.b wish" class="sig-logo" src="sig-wish-dark.png"/></label>
+  <div class="sig-reveal">
+    <a class="sig-tg" href="https://t.me/wish_adc" target="_blank" rel="noopener">@wish_adc</a>
+  </div>
+</footer>
+<script>
+(function(){
+  var POS=[{"id":"tea07","g":"tea","s":0,"n":"Асамуши сенча","u":"гр.","c":"B7"},{"id":"tea08","g":"tea","s":0,"n":"Ассам","u":"гр.","c":"B8"},{"id":"tea09","g":"tea","s":0,"n":"Брусничный лист с ромашкой","u":"гр.","c":"B9"},{"id":"tea010","g":"tea","s":0,"n":"Витаминный","u":"гр.","c":"B10"},{"id":"tea011","g":"tea","s":0,"n":"Голубая маття","u":"гр.","c":"B11"},{"id":"tea012","g":"tea","s":0,"n":"Да Хун Пао","u":"гр.","c":"B12"},{"id":"tea013","g":"tea","s":0,"n":"Для умников ( для настр.и конц.)","u":"гр.","c":"B13"},{"id":"tea014","g":"tea","s":0,"n":"Дянь хун","u":"гр.","c":"B14"},{"id":"tea015","g":"tea","s":0,"n":"Иван чай","u":"гр.","c":"B15"},{"id":"tea016","g":"tea","s":0,"n":"Инь ло (Серебряные Спирали)","u":"гр.","c":"B16"},{"id":"tea017","g":"tea","s":0,"n":"Китайская роза","u":"гр.","c":"B17"},{"id":"tea018","g":"tea","s":0,"n":"Гречишный (гранулы)","u":"гр.","c":"B18"},{"id":"tea019","g":"tea","s":0,"n":"Ли Чжи Хун Ча","u":"гр.","c":"B19"},{"id":"tea020","g":"tea","s":0,"n":"Липа с мятой","u":"гр.","c":"B20"},{"id":"tea021","g":"tea","s":0,"n":"Масала","u":"гр.","c":"B21"},{"id":"tea022","g":"tea","s":0,"n":"Лесной","u":"гр.","c":"B22"},{"id":"tea023","g":"tea","s":0,"n":"Травяной, Сказка","u":"гр.","c":"B23"},{"id":"tea024","g":"tea","s":0,"n":"Моли Хуа Ча (с цветами Жасмина)","u":"гр.","c":"B24"},{"id":"tea025","g":"tea","s":0,"n":"Молочный улун","u":"гр.","c":"B25"},{"id":"tea026","g":"tea","s":0,"n":"Ройбос","u":"гр.","c":"B26"},{"id":"tea027","g":"tea","s":0,"n":"Ромашка","u":"гр.","c":"B27"},{"id":"tea028","g":"tea","s":0,"n":"Саган Дайля","u":"гр.","c":"B28"},{"id":"tea029","g":"tea","s":0,"n":"Тайский синий","u":"гр.","c":"B29"},{"id":"tea030","g":"tea","s":0,"n":"Те Гуан Инь","u":"гр.","c":"B30"},{"id":"tea031","g":"tea","s":0,"n":"Травяной сбор","u":"гр.","c":"B31"},{"id":"tea032","g":"tea","s":0,"n":"Улун Медовая Дыня","u":"гр.","c":"B32"},{"id":"tea033","g":"tea","s":0,"n":"Хризантема","u":"гр.","c":"B33"},{"id":"tea034","g":"tea","s":0,"n":"Цейлон (плантационный)","u":"гр.","c":"B34"},{"id":"tea035","g":"tea","s":0,"n":"Чень Нянь Пуэр (10 лет)","u":"гр.","c":"B35"},{"id":"tea036","g":"tea","s":0,"n":"Эрл грей","u":"гр.","c":"B36"},{"id":"tea037","g":"tea","s":0,"n":"Ягодный (для настр. на складе)","u":"гр.","c":"B37"},{"id":"tea038","g":"tea","s":0,"n":"Красная Маття (свекла)","u":"гр.","c":"B38"},{"id":"tea039","g":"tea","s":0,"n":"Релакс","u":"гр.","c":"B39"},{"id":"tea040","g":"tea","s":0,"n":"Дикий Пуэр","u":"гр.","c":"B40"},{"id":"tea041","g":"tea","s":0,"n":"Тай Му Дзин Хоу (Золотая обезьяна)","u":"гр.","c":"B41"},{"id":"tea042","g":"tea","s":0,"n":"Таежный","u":"гр.","c":"B42"},{"id":"gro07","g":"gro","s":0,"n":"Пюре Дыня","u":"гр.","c":"E7"},{"id":"gro08","g":"gro","s":0,"n":"Пюре Ревень","u":"гр.","c":"E8"},{"id":"gro09","g":"gro","s":0,"n":"Пюре Клубника-Фейхоа","u":"гр.","c":"E9"},{"id":"gro010","g":"gro","s":0,"n":"Пюре Манго-Маракуйа","u":"гр.","c":"E10"},{"id":"gro011","g":"gro","s":0,"n":"Гель Алое","u":"гр.","c":"E11"},{"id":"gro012","g":"gro","s":0,"n":"Шафран","u":"гр.","c":"E12"},{"id":"gro013","g":"gro","s":0,"n":"Свечи","u":"гр.","c":"E13"},{"id":"syr015","g":"syr","s":0,"n":"Сироп Карамель","u":"гр.","c":"E15"},{"id":"syr016","g":"syr","s":0,"n":"Сироп Кокосовый","u":"гр.","c":"E16"},{"id":"syr017","g":"syr","s":0,"n":"Сироп Маракуйа","u":"гр.","c":"E17"},{"id":"syr018","g":"syr","s":0,"n":"Варенье с шишками и кедр.орехом","u":"гр.","c":"E18"},{"id":"syr019","g":"syr","s":0,"n":"Пюре Черника-Лаванда","u":"гр.","c":"E19"},{"id":"syr020","g":"syr","s":0,"n":"Сироп Шиповника","u":"гр.","c":"E20"},{"id":"syr021","g":"syr","s":0,"n":"Джус-боллы «Йогурт»","u":"гр.","c":"E21"},{"id":"syr022","g":"syr","s":0,"n":"Джус-боллы «Клубника»","u":"гр.","c":"E22"},{"id":"spi024","g":"spi","s":0,"n":"Анис/Бадьян","u":"гр.","c":"E24"},{"id":"spi025","g":"spi","s":0,"n":"Гвоздика","u":"гр.","c":"E25"},{"id":"spi026","g":"spi","s":0,"n":"Кардамон","u":"гр.","c":"E26"},{"id":"spi027","g":"spi","s":0,"n":"Корица палочки","u":"гр.","c":"E27"},{"id":"spi028","g":"spi","s":0,"n":"Мускатный орех","u":"гр.","c":"E28"},{"id":"spi029","g":"spi","s":0,"n":"Елевая хвоя","u":"гр.","c":"E29"},{"id":"spi030","g":"spi","s":0,"n":"Лаванда","u":"гр.","c":"E30"},{"id":"spi031","g":"spi","s":0,"n":"Мята сухая","u":"гр.","c":"E31"},{"id":"spi032","g":"spi","s":0,"n":"Чабрец сухой","u":"гр.","c":"E32"},{"id":"ware035","g":"ware","s":0,"n":"Чайник 1200 мл (Бамбуковый)","u":"шт.","c":"E35"},{"id":"ware036","g":"ware","s":0,"n":"Чайник 800 мл Пружинка (Бамбук)","u":"шт.","c":"E36"},{"id":"ware037","g":"ware","s":0,"n":"Чайник 800 мл Сито","u":"шт.","c":"E37"},{"id":"ware038","g":"ware","s":0,"n":"Подсвечник (обыч сердечки)","u":"шт.","c":"E38"},{"id":"ware039","g":"ware","s":0,"n":"Подсвечник (сердечки + металл)","u":"шт.","c":"E39"},{"id":"ware040","g":"ware","s":0,"n":"Пиала на 100/150 мл","u":"шт.","c":"E40"},{"id":"ware041","g":"ware","s":0,"n":"Гранен стакан для авторских 250 мл","u":"шт.","c":"E41"},{"id":"ware042","g":"ware","s":0,"n":"Бокал для ХЛ 470 мл","u":"шт.","c":"E42"},{"id":"ware043","g":"ware","s":0,"n":"Графин ХЛ 1000 мл","u":"шт.","c":"E43"},{"id":"ware044","g":"ware","s":0,"n":"Гайвань","u":"шт.","c":"E44"}], GROUPS=[{"k":"tea","t":"Чай","dot":"#7FB08A"},{"k":"gro","t":"Бакалея со склада","dot":"#C88A4E"},{"k":"syr","t":"Сиропы и спец","dot":"#B889B8"},{"k":"spi","t":"Специи со склада","dot":"#C27C4A"},{"k":"ware","t":"Посуда и инвентарь","dot":"#8FB7D4"}];
+  var KEY='inv:v1', MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', TPL='inventa-template.xlsx';
+  var S={v:{},bd:{},tare:{},gross:{},who:'',point:'',monthly:false};
+  try{ var raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
+  if(S.ts&&Date.now()-S.ts>86400000){ S.v={}; S.bd={}; S.gross={}; } // новая инвента: старые остатки стираются сами
+  function save(){ S.ts=Date.now(); try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+  function $(id){ return document.getElementById(id); }
+  function norm(s){ return (s||'').toLowerCase().replace(/ё/g,'е'); }
+  function num(x){ // число или сумма: «200+300», «450-50». Хвостовой знак при наборе игнорируется
+    if(x===undefined||x===null) return null;
+    var t=String(x).replace(/\s+/g,'').replace(/,/g,'.').replace(/[+\-]+$/,''); if(!t) return null;
+    if(!/^[+-]?(?:\d+\.?\d*|\.\d+)(?:[+-](?:\d+\.?\d*|\.\d+))*$/.test(t)) return null;
+    var parts=t.match(/[+-]?(?:\d+\.?\d*|\.\d+)/g), sum=0; parts.forEach(function(p){ sum+=parseFloat(p); });
+    return Math.round(sum*1000)/1000; }
+  var OPT={ware:1}; // группы, которые считают реже (посуда — раз в месяц): не считаются пропущенными
+  function req(p){ return !OPT[p.g]; }
+  function has(id){ return num(S.v[id])!==null; }
+  var list=$('list'), rows=[], secs=[], cat='all';
+  GROUPS.forEach(function(g){
+    var sec=document.createElement('section'); sec.className='demo-panel'; sec.setAttribute('data-g',g.k); sec.style.setProperty('--dot',g.dot);
+    sec.innerHTML='<div class="cat-head"><span class="dot" style="background:'+g.dot+'"></span><h2>'+g.t+'</h2><span class="n"></span></div>';
+    POS.filter(function(p){return p.g===g.k;}).forEach(function(p){
+      var tea=p.g==='tea', row=document.createElement('div'); row.className='item'; row.setAttribute('data-id',p.id); row.setAttribute('data-s',norm(p.n+' '+g.t));
+      row.innerHTML='<div class="it-main"><span class="it-name"></span><span class="it-expr"></span></div>'+
+        '<div class="inv-fields"><div class="inv-fld"><input class="inv-in v-in" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="'+p.u+'" autocomplete="off"/></div>'+
+        (p.d?'<div class="inv-fld inv-bd"><input class="inv-in bd-in" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="бой" autocomplete="off"/></div>':'')+'</div>';
+      row.querySelector('.it-name').textContent=p.n;
+      var vi=row.querySelector('.v-in'), sm=row.querySelector('.it-expr'); vi.value=S.v[p.id]||''; vi.classList.toggle('has',has(p.id));
+      function showSum(){ var raw=(vi.value||'').replace(/\s+/g,''), t=num(raw); sm.textContent=(/.[+\-]/.test(raw)&&t!==null)?raw.replace(/([+\-])/g,' $1 ')+' = '+t:''; }
+      showSum();
+      vi.addEventListener('input',function(){ S.v[p.id]=vi.value; vi.classList.toggle('has',has(p.id)); showSum(); save(); refresh(); });
+      var bi=row.querySelector('.bd-in'); if(bi){ bi.value=S.bd[p.id]||''; bi.classList.toggle('has',num(bi.value)!==null); bi.addEventListener('input',function(){ S.bd[p.id]=bi.value; bi.classList.toggle('has',num(bi.value)!==null); save(); }); }
+      sec.appendChild(row); rows.push({p:p,row:row,sec:sec});
+    });
+    list.appendChild(sec); secs.push(sec);
+  });
+  function refresh(){
+    var need=POS.filter(req), f=need.filter(function(p){return has(p.id);}).length; $('prog').textContent='Заполнено '+f+' из '+need.length;
+    secs.forEach(function(sec){ var g=sec.getAttribute('data-g'), items=POS.filter(function(p){return p.g===g;}), d=items.filter(function(p){return has(p.id);}).length;
+      sec.querySelector('.n').textContent=OPT[g]?(d?d+'/'+items.length+' · ':'')+'раз в месяц':d+'/'+items.length; });
+  }
+  function apply(){
+    var t=norm($('q').value).split(/\s+/).filter(Boolean), any=false;
+    secs.forEach(function(sec){ var vis=0, g=sec.getAttribute('data-g');
+      rows.forEach(function(r){ if(r.sec!==sec) return;
+        var s=r.row.getAttribute('data-s'), ok=(cat==='all'||cat==='empty'||cat===g)&&t.every(function(x){return s.indexOf(x)>-1;})&&(cat!=='empty'||!has(r.p.id));
+        r.row.hidden=!ok; if(ok) vis++; });
+      sec.hidden=!vis; if(vis) any=true; });
+    $('empty').hidden=any;
+  }
+  $('q').addEventListener('input',function(){
+    if(this.value.trim()!=='' && cat!=='all'){ cat='all'; pills.forEach(function(x){ x.classList.toggle('on',x.getAttribute('data-cat')==='all'); }); }
+    apply();
+  });
+  $('q').addEventListener('focus',function(){ if(this.value){ this.value=''; apply(); } });
+  var pills=document.querySelectorAll('#pills .pill');
+  pills.forEach(function(b){ b.addEventListener('click',function(){ pills.forEach(function(x){x.classList.toggle('on',x===b);}); cat=b.getAttribute('data-cat'); $('q').value=''; apply(); window.scrollTo(0,0); }); });
+  refresh();
+
+  // Тап в поле — курсор всегда в конце: дописываешь «+ ещё пачка», а не вставляешь в середину числа
+  function toEnd(el){ var n=el.value.length; try{ el.setSelectionRange(n,n); }catch(e){} }
+  function endSoon(e){
+    var t=e.target; if(!t.classList||!t.classList.contains('inv-in')) return;
+    if(e.type!=='focusin'&&document.activeElement!==t) return;
+    toEnd(t); setTimeout(function(){ toEnd(t); },0); setTimeout(function(){ toEnd(t); },60);
+  }
+  list.addEventListener('focusin',endSoon); list.addEventListener('click',endSoon); list.addEventListener('touchend',endSoon);
+
+  // Enter на клавиатуре — к следующему полю
+  list.addEventListener('keydown',function(e){
+    if(e.key!=='Enter') return; var t=e.target; if(!t.classList||!t.classList.contains('inv-in')) return; e.preventDefault();
+    var all=Array.prototype.filter.call(list.querySelectorAll('.inv-in'),function(i){ return i.offsetParent!==null; }), i=all.indexOf(t);
+    if(i>-1&&i<all.length-1) all[i+1].focus(); else t.blur();
+  });
+
+  // ---------- сборка бланка ----------
+  var modal=$('modal'), sheet=$('sheet'), file=null, libP=null, tplP=null;
+  function openM(html){ sheet.innerHTML=html; modal.hidden=false; }
+  function closeM(){ modal.hidden=true; }
+  modal.addEventListener('click',function(e){ if(e.target===modal) closeM(); });
+  function loadLib(){ if(window.ExcelJS) return Promise.resolve(); if(libP) return libP;
+    libP=new Promise(function(ok,no){ var s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js'; s.onload=ok; s.onerror=function(){ libP=null; no(new Error('lib')); }; document.head.appendChild(s); }); return libP; }
+  function loadTpl(){ if(tplP) return tplP; tplP=fetch(TPL).then(function(r){ if(!r.ok) throw new Error('tpl'); return r.arrayBuffer(); }).catch(function(e){ tplP=null; throw e; }); return tplP; }
+  setTimeout(function(){ loadLib().catch(function(){}); loadTpl().catch(function(){}); },1200);
+  function pad(n){ return (n<10?'0':'')+n; }
+  var d=new Date(), ruDate=pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear(), isoDate=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  function tsv(){
+    var out=['Инвента ХиП, '+ruDate,''];
+    GROUPS.forEach(function(g){ out.push('['+g.t+']'); POS.filter(function(p){return p.g===g.k;}).forEach(function(p){
+      var l=p.n+'\t'+(num(S.v[p.id])!==null?num(S.v[p.id]):''); if(p.d&&S.monthly) l+='\t'+(num(S.bd[p.id])!==null?num(S.bd[p.id]):''); out.push(l); }); out.push(''); });
+    return out.join('\n');
+  }
+  function copyText(t,btn){
+    function done(){ if(btn){ btn.textContent='Скопировано ✓'; } }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done,fallback); } else fallback();
+    function fallback(){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){} document.body.removeChild(ta); }
+  }
+  async function build(){
+    await loadLib(); var buf=await loadTpl(); var wb=new ExcelJS.Workbook(); await wb.xlsx.load(buf.slice(0));
+    var ws=[wb.getWorksheet('Чаи, посуда, бакалея')||wb.worksheets[0], wb.getWorksheet('Инвентарь')||wb.worksheets[1]];
+    POS.forEach(function(p){ var v=num(S.v[p.id]); if(v!==null) ws[p.s].getCell(p.c).value=v; if(p.d&&S.monthly){ var b=num(S.bd[p.id]); if(b!==null) ws[p.s].getCell(p.d).value=b; } });
+    var extra=wb.getWorksheet('Инвентарь'); if(extra) wb.removeWorksheet(extra.id);
+    var out=await wb.xlsx.writeBuffer(); return new File([out],'Инвента_ХиП_'+isoDate+'.xlsx',{type:MIME});
+  }
+  function ready(){
+    var canShare=(typeof navigator.share==='function');
+    openM('<h3>Бланк готов</h3><p>'+file.name+'</p>'+(canShare?'<button class="main" id="m-share">Поделиться / сохранить в Файлы</button>':'')+'<button class="'+(canShare?'':'main')+'" id="m-dl">Открыть бланк</button><button id="m-copy">Скопировать остатки таблицей</button><p class="hint" id="m-hint">Если бланк открылся просмотром: значок «Поделиться» внизу браузера → «Сохранить в Файлы».</p><button id="m-x">Закрыть</button>');
+    if(canShare) $('m-share').onclick=function(){
+      function fail(e){ if(e&&e.name==='AbortError') return; $('m-hint').textContent='Браузер не дал поделиться файлом. Нажми «Открыть бланк», затем значок «Поделиться» внизу браузера → «Сохранить в Файлы».'; }
+      try{ navigator.share({files:[file]}).catch(fail); }catch(e){ fail(e); }
+    };
+    $('m-dl').onclick=function(){ var a=document.createElement('a'); a.href=URL.createObjectURL(file); a.download=file.name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); document.body.removeChild(a); },60000); };
+    $('m-copy').onclick=function(){ copyText(tsv(),this); }; $('m-x').onclick=closeM;
+  }
+  function go(){
+    openM('<h3>Собираю бланк…</h3><p>Заполняю ваш шаблон остатками.</p>');
+    build().then(function(f){ file=f; ready(); }).catch(function(){
+      openM('<h3>Не получилось собрать файл</h3><p>Нужен интернет для сборки. Остатки можно скопировать таблицей и вставить в бланк вручную.</p><button class="main" id="m-copy">Скопировать остатки таблицей</button><button id="m-retry">Попробовать ещё раз</button><button id="m-x">Закрыть</button>');
+      $('m-copy').onclick=function(){ copyText(tsv(),this); }; $('m-retry').onclick=go; $('m-x').onclick=closeM; });
+  }
+  $('send').addEventListener('click',function(){
+    var miss=POS.filter(function(p){return req(p)&&!has(p.id);}).length;
+    if(!miss){ go(); return; }
+    openM('<h3>Не все остатки заполнены</h3><p>Пустых позиций: '+miss+' (посуда не в счёт). В файле они останутся пустыми.</p><button class="main" id="m-show">К первой пустой</button><button id="m-go">Всё равно собрать</button><button id="m-x">Отмена</button>');
+    $('m-show').onclick=function(){ closeM(); cat='all'; $('q').value=''; pills.forEach(function(x){ x.classList.toggle('on',x.getAttribute('data-cat')==='all'); }); apply(); var e=rows.filter(function(r){ return req(r.p)&&!has(r.p.id); })[0]; if(e){ try{ e.row.scrollIntoView({block:'center',behavior:'smooth'}); }catch(x){ e.row.scrollIntoView(); } } };
+    $('m-go').onclick=go; $('m-x').onclick=closeM;
+  });
+})();
+</script>
+<script>
+(function(){
+  // ---------- Плавный переход между страницами: перелив цвета ----------
+  // Уходя со страницы: поверх неё плавно проступает цвет (и узор) карты, в которую
+  // идём. Приходя: страница стартует закрытой этим же цветом и плавно проявляется.
+  var OWN = 'inventory';
+  var KEY = 'navfade';
+  var FADE_IN = 480, FADE_OUT = 650, OVERSCAN = 24;
+  var SKINS = {
+    chai: { bg:'#F4ECDF', img:'bg-chai.jpg', tint:'rgba(244,236,223,0.37)', size:'460px auto', theme:'#F4ECDF' },
+    bar:  { bg:'#241611', img:'bg-bar.jpg',  tint:'rgba(27,18,13,0.55)',    size:'420px auto', theme:'#241611' },
+    inventory: { bg:'#241611', img:'bg-bar.jpg', tint:'rgba(27,18,13,0.55)', size:'420px auto', theme:'#241611' },
+    home: { bg:'#B39B85', img:'bg-autumn.jpg', tint:'rgba(179,155,133,0)', size:'cover', theme:'#B39B85' }
+  };
+  var root = document.documentElement;
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var ownTheme = themeMeta ? themeMeta.getAttribute('content') : null;
+  var leaving = false;
+
+  function reduceMotion(){
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  function makeVeil(to){
+    var c = SKINS[to], v = document.createElement('div'), st = v.style;
+    v.className = 'nav-veil';
+    st.position = 'fixed';
+    st.top = st.left = st.right = st.bottom = (-OVERSCAN) + 'px';
+    st.zIndex = '2147483000'; st.opacity = '0'; st.pointerEvents = 'none';
+    st.backgroundColor = c.bg;
+    if(c.img){
+      st.backgroundImage = 'linear-gradient(' + c.tint + ',' + c.tint + '), url("' + c.img + '")';
+      st.backgroundSize = c.size + ', ' + c.size;
+      st.backgroundPosition = 'center ' + OVERSCAN + 'px, center ' + OVERSCAN + 'px';
+      st.backgroundRepeat = 'repeat';
+    }
+    root.appendChild(v);
+    return v;
+  }
+  function dropVeil(v){ if(v && v.parentNode) v.parentNode.removeChild(v); }
+
+  // ----- Горизонтальное смещение (как открытие чата в Telegram) -----
+  // Поверх страницы въезжает «лист» с цветом и узором целевой страницы, а сама страница
+  // чуть уезжает в противоположную сторону и темнеет. dir: 1 — лист едет справа, -1 — слева.
+  var SLIDE_MS = 520;
+  function slideOut(to, dir, done){
+    var v = makeVeil(to), st = v.style;
+    v.classList.add('nav-sheet');
+    st.opacity = '1'; st.pointerEvents = 'auto';
+    st.transform = 'translateX(' + (dir * 100) + '%)';
+    st.boxShadow = (dir > 0 ? '-14px' : '14px') + ' 0 36px rgba(0,0,0,.18)';
+    var b = document.body;
+    b.style.transition = 'transform ' + SLIDE_MS + 'ms cubic-bezier(.32,.08,.24,1), filter ' + SLIDE_MS + 'ms ease';
+    void v.offsetHeight;
+    st.transition = 'transform ' + SLIDE_MS + 'ms cubic-bezier(.32,.08,.24,1)';
+    requestAnimationFrame(function(){
+      st.transform = 'translateX(0)';
+      b.style.transform = 'translateX(' + (-dir * 20) + '%)'; b.style.filter = 'brightness(.86)';
+    });
+    setTimeout(done, SLIDE_MS + 40);
+  }
+  function resetBody(){
+    var bd = document.body; bd.style.transition = 'none'; bd.style.transform = ''; bd.style.filter = '';
+    void bd.offsetHeight; bd.style.transition = '';
+  }
+
+  // ----- Приход -----
+  var flag = null;
+  try{ flag = sessionStorage.getItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
+  if(flag){
+    var parts = String(flag).split('|');
+    var fresh = (Date.now() - (parseInt(parts[1], 10) || 0)) < 15000;
+    if(parts[0] === OWN && fresh && !reduceMotion()){
+      var inVeil = makeVeil(OWN);
+      inVeil.style.opacity = '1'; inVeil.style.pointerEvents = 'auto';
+      root.classList.add('entry-veil');
+      var revealed = false;
+      var reveal = function(){
+        if(revealed) return; revealed = true;
+        inVeil.style.transition = 'opacity ' + FADE_OUT + 'ms ease';
+        root.classList.remove('entry-veil');
+        inVeil.style.opacity = '0';
+        setTimeout(function(){ dropVeil(inVeil); }, FADE_OUT + 80);
+      };
+      window.addEventListener('load', function(){
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ setTimeout(reveal, 140); }); });
+      });
+      setTimeout(reveal, 3500); // страховка, если load задержался
+    }
+  }
+
+  // ----- Уход -----
+  function onNavClick(e){
+    var a = e.currentTarget;
+    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if(reduceMotion()) return;
+    var to = a.getAttribute('data-nav');
+    if(!SKINS[to]) return;
+    e.preventDefault();
+    if(leaving) return;
+    leaving = true;
+    var href = a.getAttribute('href');
+    if(themeMeta) themeMeta.setAttribute('content', SKINS[to].theme);
+    try{ sessionStorage.setItem(KEY, to + '|' + Date.now()); if(to !== 'home') sessionStorage.setItem('lastCard', to); }catch(err){}
+    // между картами — replace: в истории остаётся «главная → карта», и стрелка «назад» всегда ведёт на главную
+    slideOut(to, to === 'home' ? -1 : 1, function(){ if(to === 'home'){ window.location.href = href; } else { window.location.replace(href); } });
+  }
+  var links = document.querySelectorAll('a[data-nav]:not(#backBtn)');
+  for(var i = 0; i < links.length; i++){ links[i].addEventListener('click', onNavClick); }
+
+
+  // Стрелка «назад»: если пришли с главной — это ровно «назад» в браузере,
+  // поэтому главная возвращается со своей анимацией (карточка сжимается обратно).
+  var backBtn = document.getElementById('backBtn');
+  if(backBtn){
+    backBtn.addEventListener('click', function(e){
+      if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var viaHome = false;
+      try{ viaHome = sessionStorage.getItem('fromHome') === '1'; }catch(err){}
+      if(viaHome && window.history.length > 1){
+        e.preventDefault();
+        try{ sessionStorage.setItem(KEY, 'home|' + Date.now()); }catch(err){}
+        if(!reduceMotion()){
+          if(leaving) return; leaving = true;
+          if(themeMeta) themeMeta.setAttribute('content', SKINS.home.theme);
+          slideOut('home', -1, function(){ window.history.back(); });
+        } else { window.history.back(); }
+      } else {
+        onNavClick.call(backBtn, e); // открыли карту напрямую — обычный переход в меню
+      }
+    });
+  }
+
+  // Кнопка «назад» вернула страницу из кэша браузера, пока поверх был цвет —
+  // плавно убираем его и возвращаем свой цвет системной шторки.
+  window.addEventListener('pageshow', function(ev){
+    if(!ev.persisted) return;
+    leaving = false; resetBody();
+    try{ sessionStorage.removeItem(KEY); }catch(err){}
+    if(themeMeta && ownTheme) themeMeta.setAttribute('content', ownTheme);
+    var old = document.querySelectorAll('.nav-veil');
+    for(var j = 0; j < old.length; j++){
+      (function(v){
+        v.style.pointerEvents = 'none';
+        v.style.transition = 'opacity .45s ease';
+        v.style.opacity = '0';
+        setTimeout(function(){ dropVeil(v); }, 520);
+      })(old[j]);
+    }
+  });
+})();
+</script>
+</body>
+</html>

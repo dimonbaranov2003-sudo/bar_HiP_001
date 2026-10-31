@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+<meta content="#B39B85" name="theme-color"/>
+<title>Wish Ember · Хачо и Пури / Пхали-Хинкали</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&amp;family=Manrope:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+
+  :root{
+    --page-bg:#B39B85;
+    --panel-bg:rgba(104,76,52,0.16);
+    --panel-line:rgba(255,243,228,0.32);
+    --ink:#F4ECDF;
+    --muted:#6B5342;
+    --accent:#C88A4E;
+    --accent-line:rgba(200,138,78,0.30);
+
+    --tea-surface:#F4ECDF;
+    --tea-ink:#332C2C;
+    --tea-muted:#6D6262;
+
+    --bar-surface:#241611;
+    --bar-line:rgba(200,138,78,0.28);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--page-bg);
+    color:var(--ink);
+    font-family:'Manrope',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:48px 16px 60px;
+  }
+  .wrap{max-width:520px; margin:0 auto;}
+
+  /* ---------- Restaurant panel ---------- */
+  .rest-panel{
+    background:var(--panel-bg); border:1px solid var(--panel-line); border-radius:20px;
+    padding:22px 18px 20px; margin-bottom:24px;
+  }
+  .rest-panel:first-child{margin-top:0;}
+  .rest-panel:last-child{margin-bottom:0;}
+  .rest-name{
+    font-family:'Manrope',sans-serif; font-size:1.32rem; font-weight:700; margin:0;
+    letter-spacing:-.02em; line-height:1.15; text-align:center; color:var(--ink);
+  }
+  .rest-logo{height:56px; width:auto; display:block; margin:0 auto;}
+  .divider{
+    width:100%; height:1px; background:var(--panel-line); margin:16px 0 16px;
+  }
+  .cards{display:flex; flex-direction:column; gap:10px;}
+
+  a.card{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    border-radius:14px;
+    padding:16px 18px; text-decoration:none;
+    transition:border-color .15s ease, box-shadow .18s ease, transform .18s ease;
+  }
+  @media (hover:hover){
+    a.card:hover{ transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,0,0,0.28); }
+  }
+
+  /* Tea card: the bright cream identity, with the recolored medallion texture as a
+     faint watermark so the ornament reads without fighting the logo. */
+  a.card.card-tea{
+    position:relative; justify-content:center;
+    background-color:var(--tea-surface);
+    background-image:linear-gradient(rgba(244,236,223,0.37), rgba(244,236,223,0.37)), url("bg-chai.jpg");
+    background-size:460px auto, 460px auto;
+    background-position:top center, top center;
+    background-repeat:repeat, repeat;
+    color:var(--tea-ink);
+  }
+  .card-name{font-family:'Fraunces',serif; font-size:1.08rem; font-weight:500;}
+  .card-text-center{display:flex; flex-direction:column; align-items:center; gap:7px; width:100%;}
+  .tea-logo{height:25px; width:auto; display:block;}
+  .tea-logo-muted{filter:grayscale(1) opacity(.5);}
+  .card-arrow-corner{
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    font-family:'IBM Plex Mono',monospace; font-size:1rem; color:var(--tea-muted);
+  }
+  .card-text{display:flex; flex-direction:column; gap:3px;}
+  .card-date{
+    font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.04em;
+    color:var(--tea-muted);
+  }
+
+  /* Bar card: the copper-warmed dark identity, cocktail-line watermark texture. */
+  a.card.card-bar{
+    position:relative; justify-content:center;
+    background-color:var(--bar-surface);
+    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg");
+    background-size:420px auto, 420px auto;
+    background-position:top center, top center;
+    background-repeat:repeat, repeat;
+    border:1px solid var(--bar-line);
+  }
+  .bar-logo{height:26px; width:auto; display:block;}
+  a.card.card-bar .card-date{color:var(--accent);}
+  a.card.card-bar .card-arrow-corner{color:var(--accent);}
+
+  /* Plain "nothing here yet" placeholder — used only where a section genuinely
+     hasn't been started (Пхали-Хинкали, both cards). */
+  .card.disabled{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:transparent; border:1.5px dashed var(--panel-line); border-radius:14px;
+    padding:16px 18px; color:var(--muted); cursor:default;
+  }
+  .card.disabled .card-name{color:var(--muted); font-weight:400;}
+  .card.disabled .card-date{color:var(--muted);}
+
+  footer{
+    max-width:520px; margin:36px auto 0; padding:0 18px; color:var(--muted);
+    font-size:.74rem; line-height:1.5; text-align:center;
+  }
+
+  /* ---------- Signature: tap "d.b wish" and contact details fade in beneath it ---------- */
+  .sig-top{
+    position:relative; text-align:center;
+    padding:0 16px 28px; min-height:44px;
+  }
+  .sig-logo-btn{
+    display:inline-block; cursor:pointer; padding:4px 6px; border:none; background:none;
+    -webkit-tap-highlight-color:transparent;
+    transition:opacity .3s ease;
+  }
+  .sig-logo{height:26px; width:auto; display:block;}
+  @media (hover:hover){
+    .sig-logo-btn:hover{ opacity:.75; }
+  }
+  .sig-top.sig-open .sig-logo-btn{ opacity:0; pointer-events:none; }
+  .sig-msg{
+    position:absolute; top:0; left:0; width:100%; padding:0 16px;
+    transform:translateY(4px) scale(.96);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    opacity:0; pointer-events:none;
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .sig-top.sig-open .sig-msg{
+    opacity:1; transform:translateY(0) scale(1); pointer-events:auto;
+  }
+  .sig-tg{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:600; font-size:.8rem;
+    letter-spacing:.03em; color:var(--accent); text-decoration:none;
+    border-bottom:1px dotted var(--accent-line);
+  }
+  .sig-caption{
+    font-family:'Manrope',sans-serif; font-size:.66rem; color:var(--muted);
+    max-width:260px; line-height:1.45;
+  }
+
+  /* Приход с карты по кнопке «Меню»: страница проявляется из цвета. */
+  .wrap{transition:opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);}
+  html.entry-veil .wrap{opacity:0; transform:translateY(10px);}
+  a.card.card-banquet{
+    background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-banquet-dark.jpg");
+    background-size:620px auto, 620px auto;
+  }
+  /* Банкетное меню — низкая кнопка вплотную под барной картой, той же ширины */
+  /* Бар + банкет — единый блок: общий контур, скруглены только внешние углы,
+     между ними тонкая медная линия (её рисует нижняя граница барной карты). */
+  /* ---------- Осенняя тема главной ---------- */
+  html{background:#B39B85 url("bg-autumn.jpg") center top / cover no-repeat; min-height:100%;}
+  body{background:transparent;}
+  .rest-panel{box-shadow:0 10px 26px -14px rgba(60,35,18,0.4);}
+  a.card{box-shadow:0 6px 14px -7px rgba(45,25,12,0.5);}
+  .sig-logo{filter:brightness(.66) saturate(1.15);}
+  .sig-tg{color:#6E4727; border-bottom-color:rgba(110,71,39,0.45);}
+  /* Кнопки главной чуть прозрачные + без стрелок справа */
+  a.card{opacity:0.86;}
+  /* Чай + инвента — единый светлый блок, как бар + банкет */
+  .card-title-text{display:block; font-family:'Manrope',sans-serif; font-weight:800; font-size:20px; line-height:32px; letter-spacing:.02em; text-transform:uppercase; color:#F4ECDF; text-align:center;}
+  /* ================= Новый вид кнопок (по концепту) + общая система ================= */
+  :root{--sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:28px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:20px;}
+  .rest-panel{border-radius:var(--r-xl); padding:var(--sp-5) var(--sp-4) var(--sp-4);}
+  .divider{margin:var(--sp-4) 0;}
+  .cards{gap:var(--sp-3);}
+  a.card{border-radius:var(--r-xl);}
+  a.card.card-hero{flex-direction:column; justify-content:center; min-height:132px; padding:var(--sp-5) var(--sp-4);}
+  a.card.card-hero .card-text-center{gap:6px;}
+  a.card.card-hero .tea-logo{height:30px;}
+  a.card.card-hero .bar-logo{height:28px;}
+  a.card.card-hero .card-date{font-size:.72rem;}
+  a.card .card-open{position:static; transform:none; display:flex; align-items:center; justify-content:center; gap:8px; width:64%; margin-top:6px; padding-top:9px; border-top:1px solid color-mix(in srgb, currentColor 24%, transparent); font-family:'Manrope',sans-serif; font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;}
+  a.card .card-open i{font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:1rem; letter-spacing:0;}
+  a.card.card-tea .card-open{color:var(--tea-ink);}
+  a.card.card-tile{border-radius:var(--r-lg); min-height:56px; padding:0 var(--sp-4); border:1px solid var(--bar-line);}
+  a.card.card-tile .card-date{position:absolute; left:16px; top:50%; transform:translateY(-50%); display:flex; width:26px; height:26px; color:var(--accent); font-size:0;}
+  a.card.card-tile .card-date svg{width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;}
+  a.card.card-tile .card-arrow-corner{right:16px; color:var(--accent);}
+  a.card.card-tile .tea-logo{height:17px;}
+  /* ================= Плитки в строку, поиск и результаты на главной ================= */
+  .tiles{display:flex; gap:var(--sp-3); margin-top:var(--sp-3); overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+  .tiles::-webkit-scrollbar{display:none;}
+  .tiles a.card.card-tile{flex:0 0 calc(46% - 6px); scroll-snap-align:start; min-height:68px; padding:0 30px 0 46px; justify-content:flex-start;}
+  .tiles a.card.card-tile .card-text-center{align-items:flex-start; width:100%;}
+  .tile-fade{display:block;}
+  .tile-label{display:block; font-family:'Manrope',sans-serif; font-weight:800; font-size:11px; line-height:1.3; letter-spacing:.03em; text-transform:uppercase; color:#F4ECDF;}
+  a.card.card-tile .card-date{left:12px;}
+  a.card.card-tile .card-arrow-corner{right:12px; font-size:.9rem;}
+  .fly-title{font-family:'Manrope',sans-serif; font-weight:800; font-size:20px; line-height:32px; letter-spacing:.02em; text-transform:uppercase; color:#F4ECDF; text-align:center;}
+  .ix-search{position:relative; margin:0 0 var(--sp-3);}
+  .ix-search::before{content:'⌕'; position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1.2rem; font-weight:700; color:#6B5858; pointer-events:none;}
+  #ixSearch{width:100%; height:46px; padding:0 14px 0 42px; border-radius:var(--r-md); border:1.5px solid rgba(200,138,78,.55); background:#F4ECDF; color:#332C2C; font:600 1rem 'Manrope',sans-serif; box-sizing:border-box; outline:none; -webkit-appearance:none; appearance:none;}
+  #ixSearch::placeholder{color:#6D6262; font-weight:500;}
+  #ixSearch:focus{border-color:#C88A4E; box-shadow:0 0 0 3px rgba(200,138,78,.3);}
+  body.ix-on #cardsBox, body.ix-on #tiles{display:none;}
+  .ix-results[hidden]{display:none;}
+  .ix-head{display:flex; align-items:center; gap:var(--sp-2); margin:var(--sp-4) 2px var(--sp-3); font-size:1.02rem; font-weight:700; color:#F4ECDF;}
+  .ix-head:first-child{margin-top:var(--sp-1);}
+  .ix-head .n{font-family:'IBM Plex Mono',monospace; font-size:.7rem; font-weight:500; opacity:.7;}
+  .ix-empty{text-align:center; color:#F4ECDF; opacity:.85; font-size:.85rem; padding:22px 0;}
+  .ix-tea{--bg:#F4ECDF; --surface:#FBF9F8; --surface-2:#F3EDEC; --ink:#332C2C; --muted:#6D6262; --line:#DED4D2; --accent:#B7A8A8; --accent-ink:#6B5858;}
+  .ix-bar{--bg:#241611; --surface:#241811; --surface-2:#2C2015; --ink:#F4ECDF; --muted:#B49C89; --line:rgba(200,138,78,0.28); --accent:#C88A4E; --accent-ink:#E8B57E;}
+  .ix-tea, .ix-bar{color:var(--ink);}
+</style>
+<style id="nx">
+  /* ===== Вид «как в Notion» для главной: тот же характер, строже геометрия ===== */
+  :root{--nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif; --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:10px;}
+  .card-date, .tile-label, .card-open, .card-title-text, .fly-title, .rest-name, .sig-caption, .ix-head, .ix-empty, #ixSearch{font-family:var(--nf) !important; letter-spacing:normal;}
+  .rest-panel{border-radius:10px; border:1px solid rgba(255,243,228,.5); box-shadow:none; background:rgba(104,76,52,.2);}
+  .divider{background:rgba(255,243,228,.5);}
+  a.card{border-radius:8px; box-shadow:none; opacity:1;}
+  a.card.card-tile{border-radius:8px;}
+  @media (hover:hover){ a.card:hover{transform:none; box-shadow:none;} }
+  a.card.card-tea{border:1px solid rgba(107,88,88,.35);}
+  a.card.card-bar{border:1px solid rgba(232,181,126,.4);}
+  .card-date{font-weight:500; letter-spacing:0;}
+  a.card .card-open{font-weight:600; letter-spacing:.02em;}
+  .tile-label{font-weight:600; font-size:11.5px; letter-spacing:.02em;}
+  #ixSearch{height:40px; border:0; border-radius:6px; background:#F4ECDF; box-shadow:inset 0 0 0 1px rgba(107,88,88,.35); font-weight:400; font-size:.95rem;}
+  #ixSearch:focus{box-shadow:0 0 0 2px #C88A4E;}
+  .ix-search::before{font-weight:400;}
+  .ix-head{font-weight:700;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="sig-top" id="sigTop">
+  <button aria-label="Контакты" class="sig-logo-btn" id="sigLogoBtn" type="button">
+    <img alt="d.b wish" class="sig-logo" src="sig-wish-dark.png"/>
+  </button>
+  <div class="sig-msg">
+    <a class="sig-tg" href="https://t.me/wish_adc" target="_blank" rel="noopener">@wish_adc</a>
+  </div>
+</div>
+
+<section class="rest-panel">
+<h2 class="rest-name"><img class="rest-logo" src="logo-hacho-puri-light.png" alt="Хачо и Пури"/></h2>
+<div class="divider"></div>
+<div class="search-row ix-search"><input id="ixSearch" type="text" autocomplete="off" placeholder="Найти чай или коктейль…"/></div>
+<div id="ixResults" class="ix-results" hidden></div>
+<div class="cards" id="cardsBox">
+<a class="card card-tea card-hero" href="chai.html" data-final-logo-height="31" data-final-logo-top="20" data-tile-width="460">
+<span class="card-text-center">
+<img class="tea-logo" src="logo-chai-wide.png" alt="Чайная карта"/>
+<span class="card-date">27.07.2026</span>
+<span class="card-arrow-corner card-open">Открыть <i>→</i></span>
+</span>
+</a>
+<a class="card card-bar card-hero" href="bar.html" data-final-logo-height="27" data-final-logo-top="22" data-tile-width="420">
+<span class="card-text-center">
+<img class="bar-logo" src="logo-bar-wide-light.png" alt="Барная карта"/>
+<span class="card-date">05.10.2026</span>
+<span class="card-arrow-corner card-open">Открыть <i>→</i></span>
+</span>
+</a>
+</div>
+<div class="tiles" id="tiles">
+<a class="card card-bar card-tile card-inventory" data-nav="inventory" href="inventory.html" data-final-logo-height="32" data-final-logo-top="20" data-tile-width="420" data-fly-text="Инвента чай">
+<span class="card-text-center"><span class="tile-fade"><span class="card-date"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4.5" width="14" height="16.5" rx="2"/><path d="M9 4.5V3.5h6v1"/><path d="M8.5 10h7M8.5 13.5h7M8.5 17h4"/></svg></span><span class="tile-label">Инвента<br/>чай</span></span></span>
+<span class="card-arrow-corner">→</span>
+</a>
+<a class="card card-bar card-tile card-invbar" href="inventory-bar.html" data-nav="invbar" data-final-logo-height="32" data-final-logo-top="20" data-tile-width="420" data-fly-text="Инвента бар">
+<span class="card-text-center"><span class="tile-fade"><span class="card-date"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3h4v4l1.5 2.5V20a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V9.5L10 7z"/><path d="M8.5 13h7"/></svg></span><span class="tile-label">Инвента<br/>бар</span></span></span>
+<span class="card-arrow-corner">→</span>
+</a>
+<a class="card card-bar card-tile card-banquet" data-nav="banquet" href="banquet.html" data-final-logo-height="22" data-final-logo-top="25" data-tile-width="620" data-fly-logo="logo-banquet-wide-light.png">
+<span class="card-text-center"><span class="tile-fade"><span class="card-date"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18"/><path d="M4.5 18a7.5 7.5 0 0 1 15 0"/><path d="M12 10.5V9"/><circle cx="12" cy="8" r="1"/><path d="M2.5 21h19"/></svg></span><span class="tile-label">Банкетное<br/>меню</span></span></span>
+<span class="card-arrow-corner">→</span>
+</a>
+</div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var EASE = 'cubic-bezier(.4,0,.2,1)';
+  var TOTAL_MS = 1200;        // единая длительность роста/сжатия кнопки — двигается ВСЁ разом, с этой же скоростью едет и текст
+  var TEXT_FADE_MS = 240;     // сколько длится исчезновение текста в самом конце полёта
+  var CLONE_FADE_MS = 380;    // при возврате: плавное растворение клона в настоящую (уже с узором) кнопку — без щелчка
+  var CARD_OPACITY = '0.86'; // должно совпадать с opacity у a.card в CSS
+  var OVERSCAN = 24;          // запас за края экрана — гарантирует идеальную заливку без шва по краю
+  var FADE_OUT_MS = 480;      // при клике остальные кнопки гаснут быстро и разом — до того, как клон дорастёт до них
+  var GROW_DELAY_MS = 200;     // клон трогается с места чуть позже, когда остальные уже почти погасли
+  var FADE_MS = 360;          // длительность угасания/проявления каждого из остальных элементов
+  var FADE_STAGGER_MS = 130;  // и шаг между ними — один за другим, а не разом
+  var FADE_OUT_BASE_MS = 480; // при уходе: пауза перед первым угасанием — даём кнопке время подрасти
+
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var ORIGINAL_THEME_COLOR = themeMeta ? themeMeta.getAttribute('content') : null;
+  function setThemeColor(c){
+    if(themeMeta && c) themeMeta.setAttribute('content', c);
+  }
+
+  // Список карточек, которые в момент ухода со страницы остались "подвешены"
+  // в летящем состоянии. Если браузер восстановит эту страницу из bfcache при
+  // нажатии "назад" — здесь будет запись, и мы аккуратно соберём карточку
+  // обратно, без перезагрузки.
+  var activeFlights = [];
+
+  function siblingCardsOf(link){
+    var panel = link.closest ? link.closest('.rest-panel') : null, res = [], all = (panel || document).querySelectorAll('a.card, .card.disabled');
+    for(var i = 0; i < all.length; i++){ if(all[i] !== link) res.push(all[i]); }
+    return res;
+  }
+
+  function panelsOtherThan(link){
+    var res = [], ps = document.querySelectorAll('.rest-panel');
+    for(var i = 0; i < ps.length; i++){ if(!ps[i].contains(link)) res.push(ps[i]); }
+    return res;
+  }
+
+  function cardKey(link){ return (link.getAttribute('href') || '').replace('.html', ''); }
+
+  function attachFly(link){
+    link.addEventListener('click', function(e){
+      // Открытие в новой вкладке / модификаторы — не трогаем, пусть работает как обычная ссылка
+      if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      // Запоминаем, что в карту зашли с главной и какую именно — для стрелки «назад» на карте.
+      try{ sessionStorage.setItem('fromHome', '1'); sessionStorage.setItem('lastCard', cardKey(link)); }catch(err){}
+
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduceMotion) return; // обычный переход без анимации
+
+      e.preventDefault();
+      var targetHref = link.getAttribute('href');
+      var finalLogoH = parseInt(link.getAttribute('data-final-logo-height'), 10) || 30;
+      var finalLogoTop = parseInt(link.getAttribute('data-final-logo-top'), 10);
+      if(isNaN(finalLogoTop)) finalLogoTop = 14;
+      var tileW = parseInt(link.getAttribute('data-tile-width'), 10) || 460;
+
+      // Синхронизируем цвет системной шторки браузера с цветом, в который
+      // вот-вот превратится весь экран — чтобы она не переключалась рывком
+      // отдельно от нашей анимации.
+      setThemeColor(getComputedStyle(link).backgroundColor);
+
+      var rect = link.getBoundingClientRect();
+      var clone = link.cloneNode(true);
+      clone.classList.add('fly-clone');
+      clone.removeAttribute('href');
+      clone.removeAttribute('data-final-logo-height');
+      clone.removeAttribute('data-final-logo-top');
+      clone.style.position = 'fixed';
+      clone.style.margin = '0';
+      clone.style.top = rect.top + 'px';
+      clone.style.left = rect.left + 'px';
+      clone.style.width = rect.width + 'px';
+      clone.style.height = rect.height + 'px';
+      clone.style.zIndex = '99999';
+      clone.style.pointerEvents = 'none';
+      clone.style.borderRadius = getComputedStyle(link).borderRadius;
+      clone.style.willChange = 'top, left, width, height';
+      // Узор фона задан в фиксированных пикселях, поэтому при росте коробки
+      // он не тянется и не даёт швов — просто становится видно больше повторов
+      // того же узора, что и на самой странице назначения. НО background-position
+      // считается относительно рамки самого элемента, а не экрана — а рамка на
+      // финальном кадре уходит в отрицательные координаты (запас за края экрана
+      // против шва в Telegram). Поэтому точку отсчёта узора ниже компенсируем
+      // явным пересчётом в пикселях, чтобы к моменту передачи страницы узор
+      // стоял ровно там же, где будет на реальной странице назначения.
+
+      document.body.appendChild(clone);
+      link.style.visibility = 'hidden'; // прячем оригинал, место в макете не трогаем
+      activeFlights.push({ link: link, clone: clone });
+
+      // Остальной контент тоже уходит — но не разом и не сразу, а по одному,
+      // и с задержкой, достаточной для того, чтобы растущая карточка успела
+      // закрыть его собой. К моменту, когда элемент реально начинает таять,
+      // под ним уже не голый тёмный фон, а сама кнопка — поэтому затемнения
+      // не видно, а плавное угасание — видно.
+      var siblingCard = null;
+      if(link.parentElement){
+        var cardsInSamePanel = link.parentElement.querySelectorAll('a.card, .card.disabled');
+        for(var j = 0; j < cardsInSamePanel.length; j++){
+          if(cardsInSamePanel[j] !== link){ siblingCard = cardsInSamePanel[j]; break; }
+        }
+      }
+      var otherPanelsFwd = panelsOtherThan(link);
+      var sigFooterFwd = document.getElementById('sigTop');
+
+      var fadeOutTargets = [];
+      var sibsFwd = siblingCardsOf(link); for(var sf = 0; sf < sibsFwd.length; sf++) fadeOutTargets.push(sibsFwd[sf]);
+      for(var pf = 0; pf < otherPanelsFwd.length; pf++) fadeOutTargets.push(otherPanelsFwd[pf]);
+      if(sigFooterFwd) fadeOutTargets.push(sigFooterFwd);
+      var ixSearchFwd = document.getElementById('ixSearch'); if(ixSearchFwd && ixSearchFwd.parentElement) fadeOutTargets.push(ixSearchFwd.parentElement);
+
+      for(var k = 0; k < fadeOutTargets.length; k++){
+        var elOut = fadeOutTargets[k];
+        var delayOut = 0;
+        elOut.style.pointerEvents = 'none';
+        elOut.style.transition = 'opacity ' + FADE_OUT_MS + 'ms ease-in-out ' + delayOut + 'ms';
+        elOut.style.opacity = '0';
+      }
+
+      var cloneText = clone.querySelector('.card-text-center');
+      var cloneLogo = clone.querySelector('.tea-logo, .bar-logo');
+      var cloneDate = clone.querySelector('.card-date');
+      var cloneArrow = clone.querySelector('.card-arrow-corner');
+
+      // Плитки с текстовой подписью: подпись гаснет, а ближе к концу проявляется настоящий
+      // заголовок страницы (логотип или текст) — ровно там, где он стоит в шапке.
+      var flyImg = link.getAttribute('data-fly-logo'), flyTxt = link.getAttribute('data-fly-text');
+      var tileFade = null, flyFinal = null;
+      if(flyImg || flyTxt){
+        tileFade = clone.querySelector('.tile-fade'); cloneText = null; cloneLogo = null;
+        if(flyImg){
+          flyFinal = document.createElement('img'); flyFinal.src = flyImg; flyFinal.alt = '';
+          flyFinal.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);top:' + finalLogoTop + 'px;height:' + finalLogoH + 'px;width:auto;opacity:0;pointer-events:none;';
+        } else {
+          flyFinal = document.createElement('span'); flyFinal.className = 'fly-title'; flyFinal.textContent = flyTxt;
+          flyFinal.style.cssText = 'position:fixed;left:0;right:0;top:' + finalLogoTop + 'px;opacity:0;pointer-events:none;';
+        }
+        flyFinal.classList.add('fly-final'); clone.appendChild(flyFinal);
+      }
+
+      // Текст — на собственном позиционировании "поверх экрана", полностью
+      // независимом от коробки вокруг. Едет туда же и с той же скоростью,
+      // что и сама коробка — оба движения ощущаются одним целым, без спешки.
+      if(cloneText){
+        var textRectNow = cloneText.getBoundingClientRect();
+        cloneText.style.position = 'fixed';
+        cloneText.style.left = '0';
+        cloneText.style.top = textRectNow.top + 'px';
+        cloneText.style.margin = '0';
+      }
+
+      function goToPage(){
+        try{ sessionStorage.setItem('fly:' + targetHref, '1'); }catch(err){}
+        window.location.href = targetHref;
+      }
+
+      clone.style.transition =
+        'top ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'left ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'width ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'height ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'background-position ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'border-radius ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'opacity ' + TOTAL_MS + 'ms ' + EASE;
+      if(cloneText){
+        cloneText.style.transition = 'top ' + TOTAL_MS + 'ms ' + EASE + ', gap ' + TOTAL_MS + 'ms ' + EASE;
+      }
+      if(cloneArrow){
+        cloneArrow.style.transition = 'opacity .25s ease';
+      }
+      if(cloneLogo){
+        cloneLogo.style.transition = 'height ' + TOTAL_MS + 'ms ' + EASE;
+      }
+      if(cloneDate){
+        cloneDate.style.transition = 'opacity 420ms ease';
+      }
+
+      // форсируем рефлоу, чтобы браузер зафиксировал стартовое состояние
+      void clone.offsetHeight;
+
+      setTimeout(function(){
+        requestAnimationFrame(function(){
+          clone.style.top = (-OVERSCAN) + 'px';
+          clone.style.left = (-OVERSCAN) + 'px';
+          clone.style.width = (window.innerWidth + OVERSCAN * 2) + 'px';
+          clone.style.height = (window.innerHeight + OVERSCAN * 2) + 'px';
+          clone.style.borderRadius = '0px';
+          clone.style.opacity = '1'; // непрозрачность уходит плавно вместе с ростом
+          // Точка отсчёта узора — ровно та же, что будет у настоящей страницы
+          // назначения (её фон всегда «top center» относительно всего экрана).
+          var bgX = (window.innerWidth - tileW) / 2 + OVERSCAN;
+          var bgY = OVERSCAN;
+          clone.style.backgroundPosition = '0px 0px, ' + bgX + 'px ' + bgY + 'px';
+          if(cloneText){ cloneText.style.top = finalLogoTop + 'px'; cloneText.style.gap = '3px'; } // точная позиция и отступ, как в реальной шапке
+          if(cloneArrow) cloneArrow.style.opacity = '0';
+          // Лого и дата остаются видимыми и просто уменьшаются до размера,
+          // который они займут в реальной шапке — это то самое "оставить
+          // кнопку видимой", а не спрятать её перед переходом.
+          if(cloneLogo){ cloneLogo.style.height = finalLogoH + 'px'; }
+          if(cloneDate){ cloneDate.style.opacity = '0'; }
+          if(tileFade){ tileFade.style.transition = 'opacity 380ms ease'; tileFade.style.opacity = '0'; }
+          if(flyFinal){ flyFinal.style.transition = 'opacity 380ms ease ' + Math.round(TOTAL_MS * 0.62) + 'ms'; flyFinal.style.opacity = '1'; }
+
+          setTimeout(goToPage, TOTAL_MS + 60);
+        });
+      }, GROW_DELAY_MS);
+    });
+  }
+
+  var flyLinks = document.querySelectorAll('a.card.card-hero');
+  for(var i = 0; i < flyLinks.length; i++){ attachFly(flyLinks[i]); }
+
+  // ---------- Возврат назад без перезагрузки ----------
+  // Если браузер восстанавливает эту страницу из bfcache (кнопка "назад" после
+  // перехода в чайную/барную карту), она будет заморожена ровно в момент ухода —
+  // то есть с летящим клоном на весь экран, спрятанной настоящей карточкой и
+  // угасшим остальным контентом. Вместо перезагрузки — зеркально собираем всё
+  // обратно: коробка и текст едут единым движением, остальной контент проявляется
+  // по одному сразу же (клон в это время ещё большой и надёжно его прикрывает),
+  // а в самом конце клон плавно растворяется в настоящую (уже с узором) кнопку —
+  // без щелчка.
+  function reverseCollapse(flight){
+    var link = flight.link, clone = flight.clone;
+
+    // Остальной контент (сосед по панели, вторая панель, подпись внизу) мог
+    // остаться угасшим ещё с прошлого угасания при уходе — возвращаем его,
+    // по одному, тем же порядком.
+    function restoreOtherContent(staggered){
+      var siblingCard = null;
+      if(link && link.parentElement){
+        var cardsInSamePanel = link.parentElement.querySelectorAll('a.card, .card.disabled');
+        for(var j = 0; j < cardsInSamePanel.length; j++){
+          if(cardsInSamePanel[j] !== link){ siblingCard = cardsInSamePanel[j]; break; }
+        }
+      }
+      var otherPanels = panelsOtherThan(link);
+      var sigFooter = document.getElementById('sigTop');
+
+      var targets = [];
+      var sibsBack = siblingCardsOf(link); for(var sb = 0; sb < sibsBack.length; sb++) targets.push(sibsBack[sb]);
+      for(var po = 0; po < otherPanels.length; po++) targets.push(otherPanels[po]);
+      if(sigFooter) targets.push(sigFooter);
+      var ixs = document.querySelector('.ix-search'); if(ixs) targets.push(ixs);
+
+      for(var k = 0; k < targets.length; k++){
+        var el = targets[k];
+        if(staggered){
+          // зеркало вылета: остальные проявляются только в самом конце сжатия, а не под большим клоном
+          el.style.transition = 'opacity ' + FADE_OUT_MS + 'ms ease-in-out ' + Math.max(0, TOTAL_MS + GROW_DELAY_MS - FADE_OUT_MS) + 'ms';
+          el.style.opacity = (el.matches && el.matches('a.card, .card.disabled')) ? CARD_OPACITY : '1';
+        } else {
+          el.style.transition = '';
+          el.style.opacity = '';
+        }
+        el.style.pointerEvents = '';
+      }
+    }
+
+    if(!clone || !clone.parentNode){
+      if(link) link.style.visibility = '';
+      if(ORIGINAL_THEME_COLOR) setThemeColor(ORIGINAL_THEME_COLOR);
+      restoreOtherContent(false);
+      return;
+    }
+
+    var cloneText = clone.querySelector('.card-text-center');
+    var cloneLogo = clone.querySelector('.tea-logo, .bar-logo');
+    var cloneDate = clone.querySelector('.card-date');
+    var cloneArrow = clone.querySelector('.card-arrow-corner');
+    var tileW = parseInt(clone.getAttribute('data-tile-width'), 10);
+    if(isNaN(tileW)) tileW = 460;
+    var tileFadeB = clone.querySelector('.tile-fade'), flyFinalB = clone.querySelector('.fly-final');
+    if(flyFinalB){ cloneText = null; cloneLogo = null; }
+
+    clone.style.transition =
+      'top ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'left ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'width ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'height ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'background-position ' + TOTAL_MS + 'ms ' + EASE + ',' +
+      'border-radius ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'opacity ' + TOTAL_MS + 'ms ' + EASE;
+    if(cloneText){
+      cloneText.style.transition = 'top ' + TOTAL_MS + 'ms ' + EASE + ', gap ' + TOTAL_MS + 'ms ' + EASE;
+    }
+    if(cloneArrow){
+      cloneArrow.style.transition = 'opacity .3s ease';
+    }
+    if(cloneLogo){
+      cloneLogo.style.transition =
+        'height ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'opacity ' + TEXT_FADE_MS + 'ms ease';
+    }
+    if(cloneDate){
+      cloneDate.style.transition =
+        'font-size ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'letter-spacing ' + TOTAL_MS + 'ms ' + EASE + ',' +
+        'opacity ' + TEXT_FADE_MS + 'ms ease';
+    }
+
+    void clone.offsetHeight;
+
+    // Координаты берём не сейчас, а в последний момент, прямо перед стартом
+    // движения — и только когда шрифты точно готовы. Если измерить раньше
+    // (сразу при восстановлении страницы из bfcache), разметка может ещё не
+    // до конца устояться (например, из-за донагрузки шрифта) — тогда клон
+    // летит по чуть устаревшим координатам и в конце ощутимо "доезжает"/
+    // подпрыгивает до настоящего места. Пересчёт в последний момент убирает
+    // этот зазор.
+    function startShrink(){
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          restoreOtherContent(true); // отсчёт «проявления остальных» идёт от старта сжатия
+          if(flyFinalB){ flyFinalB.style.transition = 'opacity 240ms ease'; flyFinalB.style.opacity = '0'; }
+          if(tileFadeB){ tileFadeB.style.transition = 'opacity 420ms ease ' + Math.round(TOTAL_MS * 0.7) + 'ms'; tileFadeB.style.opacity = '1'; }
+          var rectNow = link.getBoundingClientRect();
+          var naturalTextTopNow = rectNow.top;
+          if(cloneText){
+            var linkTextNow = link.querySelector('.card-text-center');
+            if(linkTextNow) naturalTextTopNow = linkTextNow.getBoundingClientRect().top;
+          }
+          var realRadiusNow = getComputedStyle(link).borderRadius;
+
+          clone.style.top = rectNow.top + 'px';
+          clone.style.left = rectNow.left + 'px';
+          clone.style.width = rectNow.width + 'px';
+          clone.style.height = rectNow.height + 'px';
+          clone.style.borderRadius = realRadiusNow;
+          clone.style.opacity = CARD_OPACITY; // возвращаем прозрачность кнопки
+          // Возвращаем узор туда же, где он был у кнопки в естественном состоянии
+          // (до клика) — то есть «top center» относительно самой карточки.
+          var bgXBack = (rectNow.width - tileW) / 2;
+          clone.style.backgroundPosition = '0px 0px, ' + bgXBack + 'px 0px';
+          if(cloneText){ cloneText.style.top = naturalTextTopNow + 'px'; cloneText.style.gap = ''; }
+          if(cloneArrow) cloneArrow.style.opacity = '1';
+          if(cloneLogo){ cloneLogo.style.height = ''; cloneLogo.style.opacity = '1'; }
+          if(cloneDate){ cloneDate.style.fontSize = ''; cloneDate.style.letterSpacing = ''; cloneDate.style.opacity = '1'; }
+
+          // Коробка и текст пришли на точное место настоящей кнопки. Показываем
+          // настоящую (уже с узором фона) кнопку под клоном и плавно растворяем
+          // клон поверх неё — узор проступает мягко, а не щелчком. Остальной
+          // контент всё это время оставался на месте (его никто не прятал), так
+          // что отдельно "проявлять" его не нужно — он уже там.
+          setTimeout(function(){
+            if(link) link.style.visibility = '';
+            clone.style.willChange = '';
+            clone.style.transition = 'opacity ' + CLONE_FADE_MS + 'ms ease';
+            void clone.offsetHeight;
+            clone.style.opacity = '0';
+
+            setTimeout(function(){
+              if(clone.parentNode) clone.parentNode.removeChild(clone);
+              if(ORIGINAL_THEME_COLOR) setThemeColor(ORIGINAL_THEME_COLOR);
+            }, CLONE_FADE_MS + 20);
+          }, TOTAL_MS + 40);
+        });
+      });
+    }
+
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(startShrink, startShrink);
+    } else {
+      startShrink();
+    }
+  }
+
+  // Если на карте переключились на соседнюю (чай ↔ бар) и вернулись назад, замороженная
+  // страница помнит вылет другой карточки. Подменяем её на нужную — раскрытую на весь экран.
+  function swapFlight(flight, key){
+    var newLink = document.querySelector('a.card[href="' + key + '.html"]');
+    if(!newLink || newLink === flight.link) return null;
+    if(flight.clone && flight.clone.parentNode) flight.clone.parentNode.removeChild(flight.clone);
+    flight.link.style.visibility = '';
+    var all = document.querySelectorAll('a.card, .card.disabled, .rest-panel, #sigTop');
+    for(var a = 0; a < all.length; a++){ all[a].style.transition = ''; all[a].style.opacity = ''; all[a].style.pointerEvents = ''; }
+    setThemeColor(getComputedStyle(newLink).backgroundColor);
+
+    var finalLogoH = parseInt(newLink.getAttribute('data-final-logo-height'), 10) || 30;
+    var finalLogoTop = parseInt(newLink.getAttribute('data-final-logo-top'), 10);
+    if(isNaN(finalLogoTop)) finalLogoTop = 14;
+    var tileW = parseInt(newLink.getAttribute('data-tile-width'), 10) || 460;
+    var clone = newLink.cloneNode(true);
+    clone.classList.add('fly-clone');
+    clone.removeAttribute('href');
+    clone.removeAttribute('data-final-logo-height');
+    clone.removeAttribute('data-final-logo-top');
+    var st = clone.style;
+    st.position = 'fixed'; st.margin = '0';
+    st.top = (-OVERSCAN) + 'px'; st.left = (-OVERSCAN) + 'px';
+    st.width = (window.innerWidth + OVERSCAN * 2) + 'px';
+    st.height = (window.innerHeight + OVERSCAN * 2) + 'px';
+    st.zIndex = '99999'; st.pointerEvents = 'none'; st.borderRadius = '0px'; st.opacity = '1'; st.willChange = 'top, left, width, height';
+    st.backgroundPosition = '0px 0px, ' + ((window.innerWidth - tileW) / 2 + OVERSCAN) + 'px ' + OVERSCAN + 'px';
+    var cText = clone.querySelector('.card-text-center');
+    if(cText){ cText.style.position = 'fixed'; cText.style.left = '0'; cText.style.top = finalLogoTop + 'px'; cText.style.margin = '0'; cText.style.gap = '3px'; }
+    var cLogo = clone.querySelector('.tea-logo, .bar-logo'); if(cLogo) cLogo.style.height = finalLogoH + 'px';
+    var cDate = clone.querySelector('.card-date'); if(cDate) cDate.style.opacity = '0';
+    var cArrow = clone.querySelector('.card-arrow-corner'); if(cArrow) cArrow.style.opacity = '0';
+    document.body.appendChild(clone);
+    newLink.style.visibility = 'hidden';
+    var fImg = newLink.getAttribute('data-fly-logo'), fTxt = newLink.getAttribute('data-fly-text');
+    if(fImg || fTxt){
+      var tf = clone.querySelector('.tile-fade'); if(tf) tf.style.opacity = '0';
+      var ff;
+      if(fImg){ ff = document.createElement('img'); ff.src = fImg; ff.alt = ''; ff.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);top:' + finalLogoTop + 'px;height:' + finalLogoH + 'px;width:auto;pointer-events:none;'; }
+      else { ff = document.createElement('span'); ff.className = 'fly-title'; ff.textContent = fTxt; ff.style.cssText = 'position:fixed;left:0;right:0;top:' + finalLogoTop + 'px;pointer-events:none;'; }
+      ff.classList.add('fly-final'); clone.appendChild(ff);
+    }
+
+    var sib = null, sibs = newLink.parentElement.querySelectorAll('a.card, .card.disabled');
+    for(var j = 0; j < sibs.length; j++){ if(sibs[j] !== newLink){ sib = sibs[j]; break; } }
+    var faded = siblingCardsOf(newLink).concat([document.getElementById('sigTop')], panelsOtherThan(newLink));
+    for(var k = 0; k < faded.length; k++){ if(faded[k]){ faded[k].style.opacity = '0'; faded[k].style.pointerEvents = 'none'; } }
+    void document.body.offsetHeight;
+    return { link: newLink, clone: clone };
+  }
+
+  window.addEventListener('pageshow', function(){
+    if(!activeFlights.length) return;
+    // Если страница была прокручена — сбрасываем прокрутку в начало ДО
+    // расчёта целевой позиции кнопки. Иначе клон летит туда, где кнопка
+    // была на момент замера, а реальная (уже прокрученная к началу или
+    // ещё нет) страница может показать её в другом месте — отсюда и рывок
+    // в конце. Так позиция всегда однозначна и совпадает с тем, что видит
+    // пользователь.
+    window.scrollTo(0, 0);
+    var flights = activeFlights;
+    activeFlights = [];
+    var lastCard = null;
+    try{ lastCard = sessionStorage.getItem('lastCard'); }catch(err){}
+    for(var i = 0; i < flights.length; i++){
+      var fl = flights[i];
+      if(lastCard && cardKey(fl.link) !== lastCard){ fl = swapFlight(fl, lastCard) || fl; }
+      reverseCollapse(fl);
+    }
+  });
+})();
+
+(function(){
+  // Тап по подписи "проглатывает" её на 6 секунд, показывая на её же месте
+  // контакты, и сама возвращается обратно — без повторного нажатия.
+  var sigTop = document.getElementById('sigTop');
+  var sigBtn = document.getElementById('sigLogoBtn');
+  if(!sigTop || !sigBtn) return;
+  var hideTimer = null;
+
+  sigBtn.addEventListener('click', function(){
+    sigTop.classList.add('sig-open');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function(){
+      sigTop.classList.remove('sig-open');
+    }, 6000);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  // ---------- Плавный переход между страницами: перелив цвета ----------
+  // Уходя со страницы: поверх неё плавно проступает цвет (и узор) карты, в которую
+  // идём. Приходя: страница стартует закрытой этим же цветом и плавно проявляется.
+  var OWN = 'home';
+  var KEY = 'navfade';
+  var FADE_IN = 480, FADE_OUT = 650, OVERSCAN = 24;
+  var SKINS = {
+    chai: { bg:'#F4ECDF', img:'bg-chai.jpg', tint:'rgba(244,236,223,0.37)', size:'460px auto', theme:'#F4ECDF' },
+    bar:  { bg:'#241611', img:'bg-bar.jpg',  tint:'rgba(27,18,13,0.55)',    size:'420px auto', theme:'#241611' },
+    inventory: { bg:'#241611', img:'bg-bar.jpg', tint:'rgba(27,18,13,0.55)', size:'420px auto', theme:'#241611' },
+    invbar: { bg:'#241611', img:'bg-bar.jpg', tint:'rgba(27,18,13,0.55)', size:'420px auto', theme:'#241611' },
+    banquet: { bg:'#241611', img:'bg-banquet-dark.jpg', tint:'rgba(27,18,13,0.55)', size:'620px auto', theme:'#241611' },
+    home: { bg:'#B39B85', img:'bg-autumn.jpg', tint:'rgba(179,155,133,0)', size:'cover', theme:'#B39B85' }
+  };
+  var root = document.documentElement;
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var ownTheme = themeMeta ? themeMeta.getAttribute('content') : null;
+  var leaving = false;
+
+  function reduceMotion(){
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  function makeVeil(to){
+    var c = SKINS[to], v = document.createElement('div'), st = v.style;
+    v.className = 'nav-veil';
+    st.position = 'fixed';
+    st.top = st.left = st.right = st.bottom = (-OVERSCAN) + 'px';
+    st.zIndex = '2147483000'; st.opacity = '0'; st.pointerEvents = 'none';
+    st.backgroundColor = c.bg;
+    if(c.img){
+      st.backgroundImage = 'linear-gradient(' + c.tint + ',' + c.tint + '), url("' + c.img + '")';
+      st.backgroundSize = c.size + ', ' + c.size;
+      st.backgroundPosition = 'center ' + OVERSCAN + 'px, center ' + OVERSCAN + 'px';
+      st.backgroundRepeat = 'repeat';
+    }
+    root.appendChild(v);
+    return v;
+  }
+  function dropVeil(v){ if(v && v.parentNode) v.parentNode.removeChild(v); }
+
+  // ----- Горизонтальное смещение (как открытие чата в Telegram) -----
+  // Поверх страницы въезжает «лист» с цветом и узором целевой страницы, а сама страница
+  // чуть уезжает в противоположную сторону и темнеет. dir: 1 — лист едет справа, -1 — слева.
+  var SLIDE_MS = 520;
+  function slideOut(to, dir, done){
+    var v = makeVeil(to), st = v.style;
+    v.classList.add('nav-sheet');
+    st.opacity = '1'; st.pointerEvents = 'auto';
+    st.transform = 'translateX(' + (dir * 100) + '%)';
+    st.boxShadow = (dir > 0 ? '-14px' : '14px') + ' 0 36px rgba(0,0,0,.18)';
+    var b = document.body;
+    b.style.transition = 'transform ' + SLIDE_MS + 'ms cubic-bezier(.32,.08,.24,1), filter ' + SLIDE_MS + 'ms ease';
+    void v.offsetHeight;
+    st.transition = 'transform ' + SLIDE_MS + 'ms cubic-bezier(.32,.08,.24,1)';
+    requestAnimationFrame(function(){
+      st.transform = 'translateX(0)';
+      b.style.transform = 'translateX(' + (-dir * 20) + '%)'; b.style.filter = 'brightness(.86)';
+    });
+    setTimeout(done, SLIDE_MS + 40);
+  }
+  function resetBody(){
+    var bd = document.body; bd.style.transition = 'none'; bd.style.transform = ''; bd.style.filter = '';
+    void bd.offsetHeight; bd.style.transition = '';
+  }
+
+  // ----- Приход -----
+  var flag = null;
+  try{ flag = sessionStorage.getItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
+  if(flag){
+    var parts = String(flag).split('|');
+    var fresh = (Date.now() - (parseInt(parts[1], 10) || 0)) < 15000;
+    if(parts[0] === OWN && fresh && !reduceMotion()){
+      var inVeil = makeVeil(OWN);
+      inVeil.style.opacity = '1'; inVeil.style.pointerEvents = 'auto';
+      root.classList.add('entry-veil');
+      var revealed = false;
+      var reveal = function(){
+        if(revealed) return; revealed = true;
+        inVeil.style.transition = 'opacity ' + FADE_OUT + 'ms ease';
+        root.classList.remove('entry-veil');
+        inVeil.style.opacity = '0';
+        setTimeout(function(){ dropVeil(inVeil); }, FADE_OUT + 80);
+      };
+      window.addEventListener('load', function(){
+        requestAnimationFrame(function(){ requestAnimationFrame(function(){ setTimeout(reveal, 140); }); });
+      });
+      setTimeout(reveal, 3500); // страховка, если load задержался
+    }
+  }
+
+  // ----- Уход -----
+  function onNavClick(e){
+    var a = e.currentTarget;
+    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var to = a.getAttribute('data-nav');
+    // запоминаем, что в карту зашли с главной, — для стрелки «назад» на карте
+    try{ sessionStorage.setItem('fromHome', '1'); sessionStorage.setItem('lastCard', to); }catch(err){}
+    if(reduceMotion()) return;
+    if(!SKINS[to]) return;
+    e.preventDefault();
+    if(leaving) return;
+    leaving = true;
+    var href = a.getAttribute('href');
+    if(themeMeta) themeMeta.setAttribute('content', SKINS[to].theme);
+    try{ sessionStorage.setItem(KEY, to + '|' + Date.now()); }catch(err){}
+    slideOut(to, 1, function(){ window.location.href = href; });
+  }
+  var links = document.querySelectorAll('a[data-nav]');
+  for(var i = 0; i < links.length; i++){ links[i].addEventListener('click', onNavClick); }
+
+  // Кнопка «назад» вернула страницу из кэша браузера, пока поверх был цвет —
+  // плавно убираем его и возвращаем свой цвет системной шторки.
+  window.addEventListener('pagehide', function(ev){
+    if(!ev.persisted) return;
+    var sh = document.querySelectorAll('.nav-sheet'), h = SKINS.home;
+    for(var q = 0; q < sh.length; q++){
+      sh[q].style.backgroundColor = h.bg;
+      sh[q].style.backgroundImage = 'linear-gradient(' + h.tint + ',' + h.tint + '), url("' + h.img + '")';
+      sh[q].style.backgroundSize = h.size + ', ' + h.size;
+    }
+  });
+  window.addEventListener('pageshow', function(ev){
+    if(!ev.persisted) return;
+    leaving = false; resetBody();
+    try{ sessionStorage.removeItem(KEY); }catch(err){}
+    if(themeMeta && ownTheme) themeMeta.setAttribute('content', ownTheme);
+    var old = document.querySelectorAll('.nav-veil');
+    for(var j = 0; j < old.length; j++){
+      (function(v){
+        v.style.pointerEvents = 'none';
+        v.style.transition = 'opacity .45s ease';
+        v.style.opacity = '0';
+        setTimeout(function(){ dropVeil(v); }, 520);
+      })(old[j]);
+    }
+  });
+})();
+</script>
+<script>
+(function(){
+  // ---------- Быстрый поиск по чайной и барной картам: результаты прямо здесь, без перехода ----------
+  var inp=document.getElementById('ixSearch'), box=document.getElementById('ixResults');
+  if(!inp||!box) return;
+  var DB=null, loading=null, CSSB={}, SHEETS={};
+  // Карточка рисуется в изолированной оболочке (Shadow DOM) со стилями самой страницы —
+  // поэтому выглядит ровно так же, как в чайной и барной картах.
+  function cardCss(css){
+    var bm=css.match(/(?:^|[}\s])body\s*\{([^}]*)\}/), base='';
+    if(bm){ base=bm[1].split(';').filter(function(d){ return /^\s*(font-family|font-size|line-height|color|font-weight|letter-spacing)\s*:/.test(d); }).join(';'); }
+    return ':host{display:block;'+base+'} *,*::before,*::after{box-sizing:border-box;} '+css.replace(/:root/g,':host')+' details.card{background:var(--surface);} .card-name{color:var(--ink);}';
+  }
+  // Плавное раскрытие карточек — та же анимация, что в самих картах; одна открытая за раз
+  var rendered=[];
+  function contentOf(d){ return d.querySelector(':scope > .card-content'); }
+  function scrollCardIntoView(d){
+    var gap=10, rect=d.getBoundingClientRect(), availableH=window.innerHeight;
+    var targetTop=rect.height<=availableH ? (availableH-rect.height)/2 : gap, delta=rect.top-targetTop;
+    if(Math.abs(delta)>4) window.scrollBy({top:delta, behavior:'smooth'});
+  }
+  function closeCard(d){
+    if(!d.hasAttribute('open')) return;
+    var content=contentOf(d); if(!content){ d.removeAttribute('open'); return; }
+    var current=content.scrollHeight;
+    content.style.willChange='height'; content.style.transition='none'; content.style.height=current+'px';
+    content.getBoundingClientRect();
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ content.style.transition='height .3s cubic-bezier(.4,0,.2,1)'; content.style.height='0px'; }); });
+    var onEnd=function(e){
+      if(e.target!==content||e.propertyName!=='height') return;
+      content.removeEventListener('transitionend',onEnd);
+      d.removeAttribute('open'); content.style.transition=''; content.style.height=''; content.style.willChange='';
+    };
+    content.addEventListener('transitionend',onEnd);
+  }
+  function openCard(d){
+    if(d.hasAttribute('open')) return;
+    d.setAttribute('open','');
+    var content=contentOf(d); if(!content) return;
+    content.style.willChange='height'; content.style.transition='none'; content.style.height='0px';
+    content.getBoundingClientRect();
+    var target=content.scrollHeight;
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ content.style.transition='height .36s cubic-bezier(.4,0,.2,1)'; content.style.height=target+'px'; }); });
+    var onEnd=function(e){
+      if(e.target!==content||e.propertyName!=='height') return;
+      content.removeEventListener('transitionend',onEnd);
+      content.style.transition=''; content.style.height='auto'; content.style.willChange='';
+      scrollCardIntoView(d);
+    };
+    content.addEventListener('transitionend',onEnd);
+  }
+  function wire(d){
+    var summary=d.querySelector(':scope > summary'); if(!summary) return;
+    rendered.push(d);
+    summary.addEventListener('click',function(e){
+      e.preventDefault();
+      if(!d.hasAttribute('open')){ rendered.forEach(function(o){ if(o!==d) closeCard(o); }); openCard(d); } else closeCard(d);
+    });
+  }
+  function mount(kind, card){
+    var host=document.createElement('div'), sr=host.attachShadow({mode:'open'}), css=CSSB[kind]||'';
+    try{
+      if(!SHEETS[kind] && window.CSSStyleSheet && CSSStyleSheet.prototype.replaceSync){ SHEETS[kind]=new CSSStyleSheet(); SHEETS[kind].replaceSync(css); }
+      if(!SHEETS[kind]) throw 0; sr.adoptedStyleSheets=[SHEETS[kind]];
+    }catch(e){ var st=document.createElement('style'); st.textContent=css; sr.appendChild(st); }
+    sr.appendChild(card); wire(card); return host;
+  }
+  function norm(x){ return (x||'').toLowerCase().replace(/ё/g,'е'); }
+  function load(){
+    if(DB) return Promise.resolve(DB); if(loading) return loading;
+    loading=Promise.all(['chai.html','bar.html'].map(function(u){ return fetch(u).then(function(r){ if(!r.ok) throw new Error(u); return r.text(); }); })).then(function(txts){
+      DB=[];
+      txts.forEach(function(t,i){
+        var doc=new DOMParser().parseFromString(t,'text/html'), kind=i?'bar':'tea';
+        CSSB[kind]=cardCss(Array.prototype.map.call(doc.querySelectorAll('style'),function(x){ return x.textContent; }).join('\n'));
+        doc.querySelectorAll('details.card').forEach(function(card){
+          var nm=card.querySelector('.card-name'); if(!nm) return;
+          var c=nm.cloneNode(true), pn=c.querySelector('.prep-note'); if(pn) pn.remove();
+          var rows=[];
+          card.querySelectorAll('.ing-table tbody tr').forEach(function(tr){ var tds=tr.querySelectorAll('td'); if(tds.length<2||tr.classList.contains('total')) return; rows.push({n:tds[0].textContent.trim(), a:tds[1].textContent.trim()}); });
+          card.querySelectorAll('.decor-list li').forEach(function(li){ var a=li.querySelector('.decor-name'), v=li.querySelector('.decor-val'); if(a&&!/^(премикс|подача)$/i.test(a.textContent.trim())) rows.push({n:a.textContent.trim(), a:v?v.textContent.trim():''}); });
+          var holder=card.closest('[style*="--dot"]'), dot=card.style.getPropertyValue('--dot')||(holder?holder.style.getPropertyValue('--dot'):'');
+          DB.push({kind:kind, card:card, name:norm(c.textContent+' '+(card.getAttribute('data-tags')||'')), rows:rows, dot:dot.trim()});
+        });
+      });
+      return DB;
+    }).catch(function(e){ loading=null; throw e; });
+    return loading;
+  }
+  var HEAD={tea:'Чайная карта', bar:'Барная карта'};
+  function render(){
+    var tokens=norm(inp.value.trim()).split(/\s+/).filter(Boolean), on=tokens.length>0;
+    document.body.classList.toggle('ix-on',on); box.hidden=!on; box.innerHTML=''; rendered=[];
+    if(!on) return;
+    if(!DB){ box.innerHTML='<div class="ix-empty">Ищу…</div>'; load().then(render,function(){ box.innerHTML='<div class="ix-empty">Не удалось загрузить карты для поиска</div>'; }); return; }
+    var total=0;
+    ['tea','bar'].forEach(function(kind){
+      var found=DB.filter(function(it){
+        if(it.kind!==kind) return false;
+        return tokens.every(function(t){ return it.name.indexOf(t)>-1; });
+      });
+      if(!found.length) return; total+=found.length;
+      var h=document.createElement('div'); h.className='ix-head'; h.innerHTML='<span></span><span class="n"></span>'; h.firstChild.textContent=HEAD[kind]; h.lastChild.textContent=found.length; box.appendChild(h);
+      var wrap=document.createElement('div'); wrap.className='ix-'+kind;
+      found.forEach(function(it){
+        var el=document.importNode(it.card,true); el.removeAttribute('open'); el.classList.remove('js-hidden');
+        if(it.dot) el.style.setProperty('--dot',it.dot);
+        wrap.appendChild(mount(kind, el));
+      });
+      box.appendChild(wrap);
+    });
+    if(!total) box.innerHTML='<div class="ix-empty">Ничего не найдено</div>';
+  }
+  inp.addEventListener('input',render);
+  inp.addEventListener('focus',function(){ if(inp.value){ inp.value=''; render(); } });
+  setTimeout(function(){ load().catch(function(){}); },900);
+})();
+</script>
+<script>
+(function(){
+  // Содержимое главной — по центру видимой области (в Telegram снизу ещё лежит тулбар браузера).
+  var RESERVE_BOTTOM=96, MIN_TOP=16;
+  function center(){
+    var w=document.querySelector('.wrap'); if(!w||document.body.classList.contains('ix-on')) return;
+    var f=document.activeElement; if(f&&f.id==='ixSearch') return; // клавиатура меняет высоту — не двигаем
+    var top=Math.max(MIN_TOP, (window.innerHeight-RESERVE_BOTTOM-w.offsetHeight)/2);
+    document.body.style.paddingTop=Math.round(top)+'px'; document.body.style.paddingBottom=RESERVE_BOTTOM+'px';
+  }
+  center();
+  window.addEventListener('load',center); window.addEventListener('resize',center); window.addEventListener('orientationchange',center);
+  window.addEventListener('pageshow',center);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(center);
+})();
+</script>
+</body>
+</html>
