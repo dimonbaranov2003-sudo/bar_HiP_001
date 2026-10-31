@@ -490,6 +490,37 @@
   .bq-it .nm{font-size:.96rem;}
   .bq-qty{background:color-mix(in srgb, var(--accent) 22%, transparent); border-radius:4px;}
 </style>
+<style id="nx3">
+  /* ===== Шаг 3: списки от края до края, как в Notion. Цвета и фоны — прежние ===== */
+  :root{--bleed:16px;}
+  details.card, .item, .group{margin-left:calc(-1 * var(--bleed)); margin-right:calc(-1 * var(--bleed)); border-left:0; border-right:0; border-radius:0;}
+  details.card > summary.card-head{padding:12px var(--bleed);}
+  details.card > summary.card-head:active{background:rgba(128,128,128,.12);}
+  .item{padding:11px var(--bleed);}
+  .group-title{padding:12px var(--bleed) 4px;}
+  .card-content-inner{padding:0 0 12px;}
+  .badges{padding:0 var(--bleed) 10px;}
+  .decor-box{margin:12px var(--bleed) 0;}
+  .card-note{margin:8px var(--bleed) 0;}
+  .ing-table, .group table{border-left:0; border-right:0; border-radius:0;}
+  .ing-table td:first-child, .ing-table th:first-child, .group td:first-child, .group th:first-child{padding-left:var(--bleed);}
+  .ing-table td:last-child, .ing-table th:last-child, .group td:last-child, .group th:last-child{padding-right:var(--bleed);}
+  .inv-tare{margin-left:0;}
+
+  /* банкеты: карточка и строки — во всю ширину */
+  .bq-ev{margin:0 calc(-1 * var(--bleed)) 12px; border-left:0; border-right:0; border-radius:0;}
+  .bq-ev-h{padding:11px var(--bleed);}
+  .bq-ev-h:active{background:rgba(128,128,128,.12);}
+  .bq-grp{padding:10px var(--bleed) 4px;}
+  .bq-it{padding:9px var(--bleed);}
+  .bq-it.ed{padding:10px var(--bleed);}
+  .bq-edit{padding:12px var(--bleed);}
+  .bq-col .bq-act{padding:10px var(--bleed);}
+  .bq-col .bq-edit + .bq-act{padding-top:0;}
+  .bq-res{margin:0 calc(-1 * var(--bleed)); padding:10px var(--bleed);}
+  .bq-empty{padding-left:var(--bleed); padding-right:var(--bleed);}
+  details.bq-past > summary{margin-left:2px;}
+</style>
 </head>
 <body>
 <script>
