@@ -518,6 +518,38 @@
   .bq-empty{padding-left:var(--bleed); padding-right:var(--bleed);}
   details.bq-past > summary{margin-left:2px;}
 </style>
+<style id="nx4">
+  /* ===== Шаг 4: цветные метки категорий, крупнее фильтры, читаемее мелкий текст ===== */
+  details.card, .item, .group{border-left:3px solid var(--dot,transparent);}
+  details.card > summary.card-head{padding-left:calc(var(--bleed) - 3px);}
+  .item{padding-left:calc(var(--bleed) - 3px);}
+  .group-title{padding-left:calc(var(--bleed) - 3px);}
+  .bq-res{border-left:3px solid var(--dot,transparent); padding-left:calc(var(--bleed) - 3px);}
+
+  /* фильтры — удобнее попадать пальцем */
+  .pill, button.pill{height:36px; padding:0 14px; font-size:.86rem;}
+  .pills, .pills.scroll{gap:8px;}
+  .bq-chip{height:36px; padding:0 13px; font-size:.86rem;}
+  .pill .n{font-size:.74rem;}
+
+  /* мелкий текст крупнее и контрастнее */
+  .it-sub, .bq-it .sb{font-size:.78rem;}
+  .it-sup{font-size:.78rem;}
+  .it-note, .bq-it .sb b{font-size:.74rem;}
+  .prep-note, .card-note, .cat-note, .group-title .note{font-size:.82rem;}
+  .ing-table th, .group th{font-size:.72rem;}
+  .ing-table td, .group td{font-size:.9rem;}
+  .decor-list li{font-size:.88rem;}
+  .decor-val{font-size:.82rem;}
+  .badge{font-size:.76rem;}
+  .bq-ev-h .c, .bq-lbl{font-size:.8rem;}
+  .bq-grp{font-size:.74rem;}
+  .inv-fld label{font-size:.68rem;}
+  .inv-prog{font-size:.8rem;}
+  .count, #count{font-size:.8rem;}
+  
+</style>
+<style id="nx4-chai">:root{--muted:#5E5454;}</style>
 </head>
 <body>
 <script>
