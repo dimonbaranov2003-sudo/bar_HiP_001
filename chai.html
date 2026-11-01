@@ -25,7 +25,6 @@
     --c-fruit:#A8455A;
     --c-milk:#7A5233;
     --c-classic:#6B3030;
-    --c-summer:#B8763A;
     --c-toppings:#8C6F9E;
     --c-autumn:#5A6F96;
   }
@@ -245,8 +244,6 @@
 #tab-milk:checked ~ header label[for="tab-milk"]{background:var(--dot);border-color:var(--dot);color:#fff;}
 #tab-classic:checked ~ #scroll-area main .category:not([data-cat="classic"]){display:none;}
 #tab-classic:checked ~ header label[for="tab-classic"]{background:var(--dot);border-color:var(--dot);color:#fff;}
-#tab-summer:checked ~ #scroll-area main .category:not([data-cat="summer"]){display:none;}
-#tab-summer:checked ~ header label[for="tab-summer"]{background:var(--dot);border-color:var(--dot);color:#fff;}
 #tab-autumn:checked ~ #scroll-area main .category:not([data-cat="autumn"]){display:none;}
   #tab-autumn:checked ~ header label[for="tab-autumn"]{background:var(--dot);border-color:var(--dot);color:#fff;}
   #tab-toppings:checked ~ #scroll-area main .category:not([data-cat="toppings"]){display:none;}
@@ -545,7 +542,7 @@
   }
 })();
 </script>
-<input checked="" class="tab-radio" id="tab-all" name="cat" type="radio"/><input class="tab-radio" id="tab-cold" name="cat" type="radio"/><input class="tab-radio" id="tab-detox" name="cat" type="radio"/><input class="tab-radio" id="tab-fruit" name="cat" type="radio"/><input class="tab-radio" id="tab-milk" name="cat" type="radio"/><input class="tab-radio" id="tab-classic" name="cat" type="radio"/><input class="tab-radio" id="tab-summer" name="cat" type="radio"/><input class="tab-radio" id="tab-autumn" name="cat" type="radio"/><input class="tab-radio" id="tab-toppings" name="cat" type="radio"/>
+<input checked="" class="tab-radio" id="tab-all" name="cat" type="radio"/><input class="tab-radio" id="tab-cold" name="cat" type="radio"/><input class="tab-radio" id="tab-detox" name="cat" type="radio"/><input class="tab-radio" id="tab-fruit" name="cat" type="radio"/><input class="tab-radio" id="tab-milk" name="cat" type="radio"/><input class="tab-radio" id="tab-classic" name="cat" type="radio"/><input class="tab-radio" id="tab-autumn" name="cat" type="radio"/><input class="tab-radio" id="tab-toppings" name="cat" type="radio"/>
 <header class="topbar">
 <div class="brand">
 <a class="back-btn" id="backBtn" href="index.html" data-nav="home" aria-label="В меню"><svg viewBox="0 0 11 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5 2 9.5l7.5 8"/></svg></a>
@@ -557,8 +554,8 @@
 <div class="search-row">
 <input autocomplete="off" id="search" placeholder="Найти чай или ингредиент…" type="text"/>
 </div>
-<span id="count">Всего рецептов и позиций: 68</span>
-<nav class="pills"><label class="pill" for="tab-all">Все<span class="n">68</span></label><label class="pill" for="tab-cold" style="--dot:var(--c-cold)">Холодные чаи<span class="n">6</span></label><label class="pill" for="tab-detox" style="--dot:var(--c-detox)">Детоксы<span class="n">4</span></label><label class="pill" for="tab-fruit" style="--dot:var(--c-fruit)">Фруктовые тизаны<span class="n">9</span></label><label class="pill" for="tab-milk" style="--dot:var(--c-milk)">Чаи на молоке и соке<span class="n">6</span></label><label class="pill" for="tab-classic" style="--dot:var(--c-classic)">Классика и пуэры<span class="n">27</span></label><label class="pill" for="tab-summer" style="--dot:var(--c-summer)">Спец лето<span class="n">4</span></label><label class="pill" for="tab-autumn" style="--dot:var(--c-autumn)">Осень-зима<span class="n">6</span></label><label class="pill" for="tab-toppings" style="--dot:var(--c-toppings)">Топинги (отдельно)<span class="n">6</span></label></nav>
+<span id="count">Всего рецептов и позиций: 64</span>
+<nav class="pills"><label class="pill" for="tab-all">Все<span class="n">64</span></label><label class="pill" for="tab-cold" style="--dot:var(--c-cold)">Холодные чаи<span class="n">6</span></label><label class="pill" for="tab-detox" style="--dot:var(--c-detox)">Детоксы<span class="n">4</span></label><label class="pill" for="tab-fruit" style="--dot:var(--c-fruit)">Фруктовые тизаны<span class="n">9</span></label><label class="pill" for="tab-milk" style="--dot:var(--c-milk)">Чаи на молоке и соке<span class="n">6</span></label><label class="pill" for="tab-classic" style="--dot:var(--c-classic)">Классика и пуэры<span class="n">27</span></label><label class="pill" for="tab-autumn" style="--dot:var(--c-autumn)">Осень-зима<span class="n">6</span></label><label class="pill" for="tab-toppings" style="--dot:var(--c-toppings)">Топинги (отдельно)<span class="n">6</span></label></nav>
 </header>
 <div id="scroll-area">
 <noscript><p style="margin:14px 14px 0;">Поиск работает только с включённым JavaScript. Категории вверху и раскрытие карточек работают в любом просмотрщике, JS для них не нужен.</p></noscript>
@@ -996,88 +993,12 @@
 </table>
 </div>
 </section>
-<section class="category" data-cat="summer" style="--dot:var(--c-summer)">
-<div class="cat-head">
-<span class="dot"></span>
-<h2>Спец лето</h2>
-<span class="n" data-count="">4</span>
-</div>
-<details class="card" data-search="«тбилиский сад» · чай тайский синий · чай лаванда · смородина · грейпфрут · лимон · розмарин · сахарный сироп · медовый сироп">
-<summary class="card-head">
-<span class="card-name">«Тбилиский Сад»</span>
-<span class="chev">⌄</span>
-</summary>
-
-
-<div class="card-content"><div class="card-content-inner"><div class="badges"><span class="badge">400мл</span><span class="badge">1000мл</span><span class="badge">Укр. 400</span></div><div class="card-body">
-<table class="ing-table">
-<thead><tr><th>Ингредиент</th><th>400мл</th><th>1000мл</th></tr></thead>
-<tbody><tr><td class="ing-name">Чай "Тайский синий"</td><td class="ing-amt">2гр</td><td class="ing-amt">4гр</td></tr><tr><td class="ing-name">Чай "Лаванда"</td><td class="ing-amt">2гр</td><td class="ing-amt">4гр</td></tr><tr><td class="ing-name">Смородина</td><td class="ing-amt">25гр</td><td class="ing-amt">50гр</td></tr><tr><td class="ing-name">Грейпфрут</td><td class="ing-amt">20гр</td><td class="ing-amt">40гр</td></tr><tr><td class="ing-name">Лимон</td><td class="ing-amt">15гр</td><td class="ing-amt">30гр</td></tr><tr><td class="ing-name">Розмарин</td><td class="ing-amt">2гр</td><td class="ing-amt">3гр</td></tr><tr><td class="ing-name">Сахарный сироп</td><td class="ing-amt">20мл(10гр)</td><td class="ing-amt">40мл(20гр)</td></tr><tr><td class="ing-name">Медовый сироп</td><td class="ing-amt">10мл(5гр)</td><td class="ing-amt">20мл(15гр)</td></tr></tbody>
-</table>
-<div class="decor-box">
-<div class="decor-title">Укр. 400</div>
-<ul class="decor-list"><li><span class="decor-name">Грейпфрут</span><span class="decor-val">5гр</span></li><li><span class="decor-name">Лимон</span><span class="decor-val">5гр</span></li></ul>
-</div>
-</div></div></div></details>
-<details class="card" data-search="«хевсурский эликсир» · чай хризантема · чай хвоя · облепиха · мята · киви · лимон · сахарный сироп · медовый сироп">
-<summary class="card-head">
-<span class="card-name">«Хевсурский эликсир»</span>
-<span class="chev">⌄</span>
-</summary>
-
-
-<div class="card-content"><div class="card-content-inner"><div class="badges"><span class="badge">400мл</span><span class="badge">1000мл</span><span class="badge">Укр. 400</span></div><div class="card-body">
-<table class="ing-table">
-<thead><tr><th>Ингредиент</th><th>400мл</th><th>1000мл</th></tr></thead>
-<tbody><tr><td class="ing-name">Чай " Хризантема"</td><td class="ing-amt">4гр</td><td class="ing-amt">6гр</td></tr><tr><td class="ing-name">Чай "Хвоя"</td><td class="ing-amt">1гр</td><td class="ing-amt">2гр</td></tr><tr><td class="ing-name">Облепиха</td><td class="ing-amt">30гр</td><td class="ing-amt">50гр</td></tr><tr><td class="ing-name">Мята</td><td class="ing-amt">3гр</td><td class="ing-amt">6гр</td></tr><tr><td class="ing-name">Киви</td><td class="ing-amt">25гр</td><td class="ing-amt">50гр</td></tr><tr><td class="ing-name">Лимон</td><td class="ing-amt">15гр</td><td class="ing-amt">30гр</td></tr><tr><td class="ing-name">Сахарный сироп</td><td class="ing-amt">20мл(10гр)</td><td class="ing-amt">40мл(20гр)</td></tr><tr><td class="ing-name">Медовый сироп</td><td class="ing-amt">10мл(5гр)</td><td class="ing-amt">20мл(15гр)</td></tr></tbody>
-</table>
-<div class="decor-box">
-<div class="decor-title">Укр. 400</div>
-<ul class="decor-list"><li><span class="decor-name">Мята</span><span class="decor-val">1гр</span></li><li><span class="decor-name">Лимон</span><span class="decor-val">5гр</span></li></ul>
-</div>
-</div></div></div></details>
-<details class="card" data-search="колхидский чай · чай асамуши сенча · чай саган дайля · ананас · алое · огурец · мята · лимон · сахарный сироп">
-<summary class="card-head">
-<span class="card-name">"Колхидский Чай"</span>
-<span class="chev">⌄</span>
-</summary>
-
-
-<div class="card-content"><div class="card-content-inner"><div class="badges"><span class="badge">400мл</span><span class="badge">1000мл</span><span class="badge">Укр. 400</span></div><div class="card-body">
-<table class="ing-table">
-<thead><tr><th>Ингредиент</th><th>400мл</th><th>1000мл</th></tr></thead>
-<tbody><tr><td class="ing-name">Чай "Асамуши сенча"</td><td class="ing-amt">2гр</td><td class="ing-amt">4гр</td></tr><tr><td class="ing-name">Чай "Саган дайля"</td><td class="ing-amt">1гр</td><td class="ing-amt">2гр</td></tr><tr><td class="ing-name">Ананас</td><td class="ing-amt">30гр</td><td class="ing-amt">50гр</td></tr><tr><td class="ing-name">Алое</td><td class="ing-amt">25гр</td><td class="ing-amt">45гр</td></tr><tr><td class="ing-name">Огурец</td><td class="ing-amt">20гр</td><td class="ing-amt">40гр</td></tr><tr><td class="ing-name">Мята</td><td class="ing-amt">3гр</td><td class="ing-amt">6гр</td></tr><tr><td class="ing-name">Лимон</td><td class="ing-amt">15гр</td><td class="ing-amt">30гр</td></tr><tr><td class="ing-name">Сахарный сироп</td><td class="ing-amt">20мл(10гр)</td><td class="ing-amt">40мл(20гр)</td></tr></tbody>
-</table>
-<div class="decor-box">
-<div class="decor-title">Укр. 400</div>
-<ul class="decor-list"><li><span class="decor-name">Огурец</span><span class="decor-val">10гр</span></li><li><span class="decor-name">Мята</span><span class="decor-val">1гр</span></li></ul>
-</div>
-</div></div></div></details>
-<details class="card" data-search="«имеретинская свежесть» · липа с мятой ( летняя беседа) · мята · киви · лимон · пюре манго- маракуйя · сахарный сироп">
-<summary class="card-head">
-<span class="card-name">«Имеретинская свежесть»</span>
-<span class="chev">⌄</span>
-</summary>
-
-
-<div class="card-content"><div class="card-content-inner"><div class="badges"><span class="badge">400мл</span><span class="badge">1000мл</span><span class="badge">Укр. 400</span></div><div class="card-body">
-<table class="ing-table">
-<thead><tr><th>Ингредиент</th><th>400мл</th><th>1000мл</th></tr></thead>
-<tbody><tr><td class="ing-name">Липа с мятой ( Летняя беседа)</td><td class="ing-amt">4гр</td><td class="ing-amt">6гр</td></tr><tr><td class="ing-name">Мята</td><td class="ing-amt">3гр</td><td class="ing-amt">6гр</td></tr><tr><td class="ing-name">Киви</td><td class="ing-amt">30гр</td><td class="ing-amt">50гр</td></tr><tr><td class="ing-name">Лимон</td><td class="ing-amt">30гр</td><td class="ing-amt">50гр</td></tr><tr><td class="ing-name">Пюре манго- маракуйя</td><td class="ing-amt">20гр</td><td class="ing-amt">40гр</td></tr><tr><td class="ing-name">Сахарный сироп</td><td class="ing-amt">10мл(20гр)</td><td class="ing-amt">20мл(15гр)</td></tr></tbody>
-</table>
-<div class="decor-box">
-<div class="decor-title">Укр. 400</div>
-<ul class="decor-list"><li><span class="decor-name">Мята</span><span class="decor-val">1гр</span></li><li><span class="decor-name">Лимон</span><span class="decor-val">5гр</span></li></ul>
-</div>
-</div></div></div></details>
-</section>
 <section class="category" data-cat="autumn" style="--dot:var(--c-autumn)">
 <div class="cat-head">
 <span class="dot"></span>
 <h2>Осень-зима</h2>
 <span class="n" data-count="">6</span>
 </div>
-<p class="cat-note">Новое спец предложение: ещё не запущено. «Спец лето» пока остаётся в карте.</p>
 <details class="card" data-search="кавказские горы · чай ягодный · чай таежный · клюква · корица · апельсин · мёд · сахар">
 <summary class="card-head">
 <span class="card-name">Кавказские Горы</span>
