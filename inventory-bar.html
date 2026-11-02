@@ -412,215 +412,9 @@
   .sub-expr:empty{display:none;}
   .grp-actions{display:flex; gap:16px; margin-top:8px;}
   .grp-actions button{padding:2px 0; background:none; border:none; color:var(--accent-ink); font:600 .74rem 'Manrope',sans-serif; text-decoration:underline; text-underline-offset:2px;}
+  .send-stock{display:block; width:100%; height:var(--h-ctl); margin:18px 0 0; border-radius:var(--r-md); border:1.5px solid var(--accent-ink); background:var(--surface); color:var(--accent-ink); font:700 .9rem 'Manrope',sans-serif;}
   .clear-all{display:block; margin:18px auto 0; padding:10px; background:none; border:none; color:var(--muted); font:600 .76rem 'Manrope',sans-serif; text-decoration:underline;}
   .demo-panel{margin-bottom:16px;}
-</style>
-<style id="nx">
-  /* ===== Вид «как в Notion»: плоские строки, чёткие разделители, маленькие скругления. Цвета и фоны — прежние. ===== */
-  :root{
-    --nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
-    --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:10px; --h-ctl:40px; --h-pill:28px;
-    --row:rgba(244,236,223,.05); --row-line:rgba(232,181,126,.26); --field:rgba(244,236,223,.07);
-  }
-  *{font-family:var(--nf) !important; letter-spacing:normal;}
-  body{font-variant-numeric:tabular-nums;}
-  header.topbar{border-bottom:1px solid var(--row-line);}
-
-  /* поиск */
-  #search, #ingSearch, .search input{height:40px; padding-top:0; padding-bottom:0; border:0; border-radius:6px; background:var(--field); box-shadow:inset 0 0 0 1px var(--row-line); font-weight:400; font-size:.95rem; color:var(--ink);}
-  #search:focus, #ingSearch:focus, .search input:focus{border:0; box-shadow:0 0 0 2px var(--accent);}
-  #search::placeholder, #ingSearch::placeholder, .search input::placeholder{font-weight:400;}
-  .search::before, .search-row::before{color:var(--muted); font-weight:400;}
-
-  /* фильтры — «теги» */
-  .pill, button.pill{height:28px; padding:0 11px; border:0; border-radius:4px; background:var(--field); color:var(--ink); font-weight:500; font-size:.8rem; display:inline-flex; align-items:center;}
-  .pill.on{background:var(--accent); color:var(--bg);}
-  #tab-sets:checked ~ header label[for="tab-sets"], #tab-cocktail:checked ~ header label[for="tab-cocktail"], #tab-calc:checked ~ header label[for="tab-calc"], #tab-premix:checked ~ header label[for="tab-premix"]{border:0;}
-
-  /* разделы */
-  .cat-head{margin:6px 2px 8px;}
-  .cat-head h2{font-size:1.2rem; font-weight:700; letter-spacing:-.01em;}
-  .cat-head .dot{width:8px; height:8px;}
-  .cat-head .n{font-size:.8rem;}
-  .cat-note{margin:0 2px 10px;}
-
-  /* строки списка: сплошные, с отчётливой линией между ними и цветной меткой слева */
-  details.card, .item{background:var(--row); border:0; border-bottom:1px solid var(--row-line); border-left:3px solid var(--dot,var(--accent)); border-radius:0; margin:0; box-shadow:none; transform:none;}
-  details.card:hover{box-shadow:none; transform:none;}
-  .demo-panel{margin-bottom:22px;}
-  .demo-panel > :is(details.card,.item):first-of-type{border-top:1px solid var(--row-line); border-top-left-radius:6px;}
-  .cat-head ~ :is(details.card,.item):last-of-type{border-bottom-left-radius:6px;}
-  summary.card-head{padding:11px 12px;}
-  .card-name{font-weight:600; font-size:.98rem;}
-  .prep-note{font-style:normal; font-weight:400;}
-  .chev{color:var(--muted);}
-  .badges{padding:0 12px 10px;}
-  .badge{border:0; border-radius:3px; padding:1px 7px; font-weight:500; font-size:.7rem; background:color-mix(in srgb, var(--dot) 20%, transparent);}
-  .ing-table th{font-weight:500; text-transform:none; letter-spacing:0; background:rgba(244,236,223,.06); border-top:1px solid var(--row-line);}
-  .ing-table td{border-top:1px solid var(--row-line);}
-  .ing-table tr:nth-child(odd) td{background:rgba(244,236,223,.035);}
-  .decor-box{border-radius:6px; background:rgba(244,236,223,.05); border:1px solid var(--row-line);}
-  .decor-title{text-transform:none; letter-spacing:0; font-weight:600; font-size:.72rem;}
-
-  /* позиции банкетного меню */
-  .item{padding:10px 12px; gap:14px; align-items:center;}
-  .it-name{font-weight:600; font-size:.98rem; color:var(--ink);}
-  .it-sup{display:inline-block; align-self:flex-start; margin-top:2px; padding:0 6px; border-radius:3px; background:rgba(244,236,223,.1); color:var(--ink); font-weight:500; font-size:.72rem; line-height:1.5;}
-  .it-sub{font-size:.72rem; color:var(--muted); opacity:1;}
-  .it-note{margin-top:3px; padding:0 6px; border:0; border-radius:3px; background:color-mix(in srgb, var(--accent) 24%, transparent); color:var(--accent-ink); font-weight:500; font-size:.68rem; line-height:1.55;}
-  .it-price{font-weight:600; font-size:.9rem; color:var(--accent-ink);}
-
-  /* калькулятор и пересчёт */
-  .seg{border-radius:8px; background:var(--row); border-color:var(--row-line);}
-  .seg-btn{border-radius:6px; font-weight:500;}
-  .calc-box{border-radius:8px; background:var(--row); border-color:var(--row-line);}
-  .calc-label, .calc-info{text-transform:none; letter-spacing:0;}
-  .step-btn, .num-in, .size-btn, .rm-open, .add-open, .calc-reset, .scale-btn, .scale-banner, .chip{border-radius:6px; border-color:var(--row-line);}
-  .size-btn, .step-btn, .chip{background:var(--field);}
-  .result{border-radius:6px; border-color:var(--row-line);}
-  .res-num{font-weight:700;}
-  .sc-sheet{border-radius:12px 12px 0 0; border-color:var(--row-line);}
-  .sc-chip, .sc-custom input, .sc-go{border-radius:6px;}
-  .sc-chip{border-width:1px; border-color:var(--row-line); background:var(--field);}
-  .sc-chip.on{background:var(--accent); border-color:var(--accent);}
-  .sc-sheet h3{font-weight:700;}
-  .scale-btn{border-width:1px;}
-  .foot-date, .tagline{letter-spacing:0;}
-</style>
-<style id="nx-inv">
-  .inv-meta input{border:1px solid var(--row-line); border-radius:6px; background:var(--field); font-weight:400;}
-  .inv-meta input:focus{border-color:var(--accent);}
-  .inv-in{border:1px solid var(--row-line); border-radius:6px; background:var(--field); font-weight:600;}
-  .inv-in.has, .inv-in:focus, .inv-in.act{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, transparent); box-shadow:none;}
-  .inv-plus{border:1px solid var(--row-line); border-radius:6px; background:var(--field);}
-  .inv-fld label{text-transform:none; letter-spacing:0;}
-  .inv-tare{border-top:1px solid var(--row-line);}
-  .inv-tare-btn{border-width:1px; border-color:var(--row-line); border-radius:4px;}
-  .inv-dock, .inv-kp{border-top:1px solid var(--row-line);}
-  .inv-send{border-radius:6px; background:var(--accent); font-weight:600;}
-  .inv-sheet{border-radius:12px 12px 0 0; border-top:1px solid var(--row-line);}
-  .inv-sheet button{border-radius:6px; border-width:1px; border-color:var(--row-line); font-weight:500;}
-  .inv-sheet button.main{background:var(--accent); border-color:transparent; color:var(--bg); font-weight:600;}
-  .inv-sheet h3{font-weight:700;}
-  .inv-kp button{border-radius:6px;}
-  .clear-all{border-radius:6px;}
-  .it-expr{color:var(--accent-ink);}
-</style>
-<style id="nx2">
-  /* ===== Шаг 2: системный шрифт, ещё ближе к Notion ===== */
-  :root{--nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;}
-  body{line-height:1.45;}
-  /* жирное — названия; тонкое — составы и описания */
-  .card-name, .it-name, .group-title, .bq-it .nm, .bq-res .mn b, .bq-ev-h .d, .cat-head h2, .rest-name, .ix-head{font-weight:600;}
-  .prep-note, .ing-name, .ing-table td, .group td, .decor-name, .decor-list li, .it-sub, .bq-it .sb, .bq-ev-h .tt, .cat-note, .group-title .note{font-weight:400;}
-  .ing-amt, .decor-val{font-weight:500;}
-  .it-sup, .bq-grp, .bq-qty{font-weight:600;}
-  .bq-qty{font-weight:700;}
-  .badge, .it-note, .bq-when{font-weight:600;}
-
-  /* строки без цветных полос слева — как в базе Notion; цвет остаётся в заголовках и тегах */
-  details.card, .item, .group{border-left:0; border-radius:0; padding-left:0;}
-  details.card > summary.card-head{padding-left:4px;}
-  .item{padding-left:4px;}
-  .group-title{padding-left:4px;}
-  .badges{padding-left:4px;}
-  .cat-head .dot{width:10px; height:10px; border-radius:3px;}
-  .bq-res{border-left:0; padding-left:4px;}
-  .bq-ev{border-left:1px solid var(--row-line);}
-
-  /* стрелка раскрытия: ▸ → ▾ */
-  .chev{font-size:0 !important; width:18px; text-align:center;}
-  .chev::before{content:'▸'; font-size:.8rem; display:inline-block; color:var(--muted); transition:transform .15s ease;}
-  details.card[open] .chev{transform:none !important;}
-  details.card[open] .chev::before{transform:rotate(90deg);}
-
-  /* подсказки — «выноска» */
-  .cat-note{background:var(--row); border-radius:6px; padding:9px 12px; margin:0 0 10px; color:var(--muted);}
-
-  /* таблицы составов: полная сетка линий, как в таблице Notion */
-  .ing-table, .group table{border:1px solid var(--row-line); border-radius:4px; border-collapse:separate; border-spacing:0; overflow:hidden;}
-  .ing-table td, .ing-table th, .group td, .group th{border-top:0 !important; border-bottom:1px solid var(--row-line);}
-  .ing-table tr:last-child td, .group tr:last-child td{border-bottom:0;}
-  .ing-table td + td, .ing-table th + th, .group td + td, .group th + th{border-left:1px solid var(--row-line);}
-  .ing-table td:first-child{padding-left:10px;}
-  .ing-table th, .group th{font-weight:600; color:var(--muted);}
-  .ing-table tr.total td{font-weight:700;}
-  .card-content-inner{padding:0 10px 10px;}
-  .decor-box{margin:10px 0 0;}
-  .badges{padding:0 0 10px;}
-  .card-note{margin:8px 0 0;}
-
-  /* поля и кнопки: плоские, тонкая рамка */
-  .pill, button.pill{box-shadow:none;}
-  .bq-btn, .scale-btn, .seg-btn, .size-btn, .step-btn, .chip, .add-open, .calc-reset, .inv-send, .inv-sheet button{box-shadow:none;}
-  .bq-top, header.topbar{backdrop-filter:none;}
-
-  /* банкеты */
-  .bq-grp{background:transparent; padding-left:14px; color:var(--muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;}
-  .bq-it .nm{font-size:.96rem;}
-  .bq-qty{background:color-mix(in srgb, var(--accent) 22%, transparent); border-radius:4px;}
-</style>
-<style id="nx3">
-  /* ===== Шаг 3: списки от края до края, как в Notion. Цвета и фоны — прежние ===== */
-  :root{--bleed:16px;}
-  details.card, .item, .group{margin-left:calc(-1 * var(--bleed)); margin-right:calc(-1 * var(--bleed)); border-left:0; border-right:0; border-radius:0;}
-  details.card > summary.card-head{padding:12px var(--bleed);}
-  details.card > summary.card-head:active{background:rgba(128,128,128,.12);}
-  .item{padding:11px var(--bleed);}
-  .group-title{padding:12px var(--bleed) 4px;}
-  .card-content-inner{padding:0 0 12px;}
-  .badges{padding:0 var(--bleed) 10px;}
-  .decor-box{margin:12px var(--bleed) 0;}
-  .card-note{margin:8px var(--bleed) 0;}
-  .ing-table, .group table{border-left:0; border-right:0; border-radius:0;}
-  .ing-table td:first-child, .ing-table th:first-child, .group td:first-child, .group th:first-child{padding-left:var(--bleed);}
-  .ing-table td:last-child, .ing-table th:last-child, .group td:last-child, .group th:last-child{padding-right:var(--bleed);}
-  .inv-tare{margin-left:0;}
-
-  /* банкеты: карточка и строки — во всю ширину */
-  .bq-ev{margin:0 calc(-1 * var(--bleed)) 12px; border-left:0; border-right:0; border-radius:0;}
-  .bq-ev-h{padding:11px var(--bleed);}
-  .bq-ev-h:active{background:rgba(128,128,128,.12);}
-  .bq-grp{padding:10px var(--bleed) 4px;}
-  .bq-it{padding:9px var(--bleed);}
-  .bq-it.ed{padding:10px var(--bleed);}
-  .bq-edit{padding:12px var(--bleed);}
-  .bq-col .bq-act{padding:10px var(--bleed);}
-  .bq-col .bq-edit + .bq-act{padding-top:0;}
-  .bq-res{margin:0 calc(-1 * var(--bleed)); padding:10px var(--bleed);}
-  .bq-empty{padding-left:var(--bleed); padding-right:var(--bleed);}
-  details.bq-past > summary{margin-left:2px;}
-</style>
-<style id="nx4">
-  /* ===== Шаг 4: цветные метки категорий, крупнее фильтры, читаемее мелкий текст ===== */
-  details.card, .item, .group{border-left:3px solid var(--dot,transparent);}
-  details.card > summary.card-head{padding-left:calc(var(--bleed) - 3px);}
-  .item{padding-left:calc(var(--bleed) - 3px);}
-  .group-title{padding-left:calc(var(--bleed) - 3px);}
-  .bq-res{border-left:3px solid var(--dot,transparent); padding-left:calc(var(--bleed) - 3px);}
-
-  /* фильтры — удобнее попадать пальцем */
-  .pill, button.pill{height:36px; padding:0 14px; font-size:.86rem;}
-  .pills, .pills.scroll{gap:8px;}
-  .bq-chip{height:36px; padding:0 13px; font-size:.86rem;}
-  .pill .n{font-size:.74rem;}
-
-  /* мелкий текст крупнее и контрастнее */
-  .it-sub, .bq-it .sb{font-size:.78rem;}
-  .it-sup{font-size:.78rem;}
-  .it-note, .bq-it .sb b{font-size:.74rem;}
-  .prep-note, .card-note, .cat-note, .group-title .note{font-size:.82rem;}
-  .ing-table th, .group th{font-size:.72rem;}
-  .ing-table td, .group td{font-size:.9rem;}
-  .decor-list li{font-size:.88rem;}
-  .decor-val{font-size:.82rem;}
-  .badge{font-size:.76rem;}
-  .bq-ev-h .c, .bq-lbl{font-size:.8rem;}
-  .bq-grp{font-size:.74rem;}
-  .inv-fld label{font-size:.68rem;}
-  .inv-prog{font-size:.8rem;}
-  .count, #count{font-size:.8rem;}
-  :root{--muted:#C9B4A2;}
 </style>
 </head>
 <body>
@@ -665,6 +459,7 @@
 <main id="app">
 <div id="list"></div>
 <p class="empty" id="empty" hidden>Ничего не найдено</p>
+<button class="send-stock" id="sendStock" type="button">Отправить в общие остатки</button>
 <button class="clear-all" id="clearAll" type="button">Очистить всё</button>
 <datalist id="ttk-names"></datalist>
 </main>
@@ -677,6 +472,7 @@
     <a class="sig-tg" href="https://t.me/wish_adc" target="_blank" rel="noopener">@wish_adc</a>
   </div>
 </footer>
+<script src="core.js"></script>
 <script>
 (function(){
   var BLANK=[{"g":"ПРОЧЕЕ","cat":"bar","s":0,"req":false,"items":[{"c":"203723","n":"Разовый товар","u":"шт","r":9,"s":0,"sp":false},{"c":"2046822","n":"Разовый товар2","u":"шт","r":10,"s":0,"sp":false}]},{"g":"ТОВАРЫ БАР","cat":"bar","s":0,"req":true,"items":[{"c":"00995","n":"Варенье в асс","u":"кг","r":11,"s":0,"sp":true},{"c":"00979","n":"Горячий шоколад","u":"кг","r":12,"s":0,"sp":false},{"c":"2050450","n":"Дрип пакеты с кофе фильтр","u":"шт","r":13,"s":0,"sp":false},{"c":"02039","n":"Кокосовая стружка","u":"кг","r":14,"s":0,"sp":false},{"c":"00973","n":"Кофе в зернах","u":"кг","r":15,"s":0,"sp":false},{"c":"66164247","n":"Малина сухая","u":"кг","r":16,"s":0,"sp":false},{"c":"01591","n":"Основа для напитков Лимонная","u":"л","r":17,"s":0,"sp":false},{"c":"2049879","n":"Пенообразователь пищевой","u":"кг","r":18,"s":0,"sp":false},{"c":"02556","n":"Пюре Монин","u":"л","r":19,"s":0,"sp":true},{"c":"2050260","n":"Сироп Клавис в асс","u":"л","r":20,"s":0,"sp":true},{"c":"66164298","n":"Сироп Кордиал в асс","u":"л","r":21,"s":0,"sp":true},{"c":"01590","n":"Сироп Монин","u":"л","r":22,"s":0,"sp":true},{"c":"01749","n":"Сливки взбитые баллончик 180мл(уп250гр)","u":"л","r":23,"s":0,"sp":false}]},{"g":"Аперитив","cat":"strong","s":0,"req":true,"items":[{"c":"00833","n":"Аперитив Апероль/Люксардо","u":"л","r":24,"s":0,"sp":false},{"c":"00834","n":"Биттер Кампари/Люксардо","u":"л","r":25,"s":0,"sp":false}]},{"g":"Вермут","cat":"strong","s":0,"req":true,"items":[{"c":"20074","n":"Вермут в асс","u":"л","r":26,"s":0,"sp":true}]},{"g":"Вино Белое","cat":"wine","s":0,"req":true,"items":[{"c":"00798","n":"Вино бел. Алазанская Долина в асс 0,75","u":"л","r":27,"s":0,"sp":false},{"c":"00809","n":"Вино бел. Горули Мцване Шато Мухрани","u":"л","r":28,"s":0,"sp":false},{"c":"2050459","n":"Вино бел. Киси Асканели","u":"л","r":29,"s":0,"sp":false},{"c":"2048853","n":"Вино бел. Киси Дакишвили Фэмили Селекшн","u":"л","r":30,"s":0,"sp":false},{"c":"66164313","n":"Вино бел. Крахуна Мравали","u":"л","r":31,"s":0,"sp":false},{"c":"2050480","n":"Вино бел. Лефкадия","u":"л","r":32,"s":0,"sp":false},{"c":"2047902","n":"Вино бел. Мцване Квеври Вази","u":"л","r":33,"s":0,"sp":false},{"c":"2047032","n":"Вино бел. п/сл Киси Кончо и Ко/Гиоргоба/Ма Брели","u":"л","r":34,"s":0,"sp":false},{"c":"203440","n":"Вино бел. п/сл Твиши Гиоргоба/Марани","u":"л","r":35,"s":0,"sp":false},{"c":"2050452","n":"Вино бел. п/сух Пиросмани Телури Телиани Вели/Ма Брели","u":"л","r":36,"s":0,"sp":false},{"c":"2047686","n":"Вино бел. Пино Гриджо Чиело","u":"л","r":37,"s":0,"sp":false},{"c":"2050477","n":"Вино бел. Рислинг Локо Чимбали","u":"л","r":38,"s":0,"sp":false},{"c":"2049782","n":"Вино бел. Ркацители Бегасо Розе Квеври","u":"л","r":39,"s":0,"sp":false},{"c":"2049795","n":"Вино бел. Ркацители Коктебель","u":"л","r":40,"s":0,"sp":false},{"c":"203807","n":"Вино бел. Ркацители Резер(Квеври) Чотиашвили","u":"л","r":41,"s":0,"sp":false},{"c":"2050121","n":"Вино бел. Ркацители Шенда","u":"л","r":42,"s":0,"sp":false},{"c":"66164763","n":"Вино бел. Совиньон Блан Мальборо Саундс Мисти Коув","u":"л","r":43,"s":0,"sp":false},{"c":"66165360","n":"Вино бел. Совиньон Блан Мартла","u":"л","r":44,"s":0,"sp":false},{"c":"202968","n":"Вино бел. сух. Кахури Киндзмараули Марани","u":"л","r":45,"s":0,"sp":false},{"c":"2050345","n":"Вино бел. сух. Кундза Квеври","u":"л","r":46,"s":0,"sp":false},{"c":"02557","n":"Вино бел. сух. Манави Асканели","u":"л","r":47,"s":0,"sp":false},{"c":"66165431","n":"Вино бел. сух. Ркацители АВЕ","u":"л","r":48,"s":0,"sp":false},{"c":"02549","n":"Вино бел. сух. Ркацители Квеври","u":"л","r":49,"s":0,"sp":false},{"c":"02756","n":"Вино бел. сух. Ркацители Квеври Братья Асканели","u":"л","r":50,"s":0,"sp":false},{"c":"00799","n":"Вино бел. сух. Ркацители Палавани","u":"л","r":51,"s":0,"sp":false},{"c":"02566","n":"Вино бел. сух. Ркацители-Мцване Элибо","u":"л","r":52,"s":0,"sp":false},{"c":"2050463","n":"Вино бел. сух. Хихви Нараклишвили","u":"л","r":53,"s":0,"sp":false},{"c":"01931","n":"Вино бел. сух. Цинандали Александрова","u":"л","r":54,"s":0,"sp":false},{"c":"203439","n":"Вино бел. сух. Цинандали Гиоргоба","u":"л","r":59,"s":0,"sp":false},{"c":"00800","n":"Вино бел. сух. Цинандали Палавани","u":"л","r":60,"s":0,"sp":false},{"c":"2050455","n":"Вино бел. сух. Цинандали Телиани Велли","u":"л","r":61,"s":0,"sp":false},{"c":"2048087","n":"Вино бел. сух. Цинандали/Ркацители Болеро (домашнее)","u":"л","r":62,"s":0,"sp":false},{"c":"2046944","n":"Вино бел. сух. Цоликаури Вайн Мэйкер","u":"л","r":63,"s":0,"sp":false},{"c":"66164315","n":"Вино бел. Хихви Совиньон","u":"л","r":64,"s":0,"sp":false},{"c":"66164708","n":"Вино бел. Шардоне Селар","u":"л","r":65,"s":0,"sp":false}]},{"g":"Вино в керамике","cat":"wine","s":0,"req":true,"items":[{"c":"2047353","n":"Вино Алазанская долина в керамике","u":"л","r":66,"s":0,"sp":false},{"c":"01008","n":"Вино кр. п/сл Киндзмараули в керамике (ахашени)","u":"л","r":67,"s":0,"sp":false},{"c":"01009","n":"Вино кр. сух. Саперави в керамике","u":"л","r":68,"s":0,"sp":false}]},{"g":"Вино Десертное","cat":"wine","s":0,"req":true,"items":[{"c":"2050489","n":"Вино десертное Мускат белый Красного камня","u":"л","r":69,"s":0,"sp":false},{"c":"2046953","n":"Вино десертное Ркацители Вайн Мейкер","u":"л","r":70,"s":0,"sp":false},{"c":"2050493","n":"Граппа Коктебель резерв","u":"л","r":71,"s":0,"sp":false},{"c":"2049959","n":"Портвейн белый Коктебель","u":"л","r":72,"s":0,"sp":false},{"c":"2050487","n":"Херес Ореанда","u":"л","r":73,"s":0,"sp":false}]},{"g":"Вино Игристое","cat":"wine","s":0,"req":true,"items":[{"c":"66164746","n":"Вино игр. Асти дольче","u":"л","r":74,"s":0,"sp":false},{"c":"00794","n":"Вино игр. Блан де Блан Талисман бел. брют","u":"л","r":75,"s":0,"sp":false},{"c":"2048843","n":"Вино игр. Карас Экстра Брют","u":"л","r":76,"s":0,"sp":false},{"c":"2049786","n":"Вино игр. Мартини Асти бел. 0,187л","u":"л","r":77,"s":0,"sp":false},{"c":"2047672","n":"Вино игр. Мартини Просекко","u":"л","r":78,"s":0,"sp":false},{"c":"2046942","n":"Вино игр. Маэстро/Астория Бадагони Брют","u":"л","r":79,"s":0,"sp":false},{"c":"2049420","n":"Вино игр. Просекко Вальвазоре","u":"л","r":80,"s":0,"sp":false},{"c":"2050671","n":"Вино игр. Рислинг Эндемы","u":"л","r":81,"s":0,"sp":false},{"c":"01404","n":"Вино игр. Российское шампанское в асс","u":"л","r":82,"s":0,"sp":false},{"c":"2046940","n":"Вино игр.п/сл Маэстро/Астория Бадагони Саперави кр","u":"л","r":83,"s":0,"sp":false}]},{"g":"Вино Красное","cat":"wine","s":0,"req":true,"items":[{"c":"00814","n":"Вино кр. Алазанская Долина в асс","u":"л","r":84,"s":0,"sp":false},{"c":"2048099","n":"Вино кр. Ахашени Гиоргоба","u":"л","r":85,"s":0,"sp":false},{"c":"66165034","n":"Вино кр. Каберне Совиньон Урбан","u":"л","r":86,"s":0,"sp":false},{"c":"2047711","n":"Вино кр. Ле Гран Нуар Пино Нуар Лангедок","u":"л","r":87,"s":0,"sp":false},{"c":"2050485","n":"Вино кр. Локо Чимбали Пино Минье","u":"л","r":88,"s":0,"sp":false},{"c":"203183","n":"Вино кр. Мукузани Гиоргоба","u":"л","r":89,"s":0,"sp":false},{"c":"2048861","n":"Вино кр. Оджалеши Бинехи Квеври","u":"л","r":90,"s":0,"sp":false},{"c":"66164319","n":"Вино кр. Оджалеши Каберне Фран","u":"л","r":91,"s":0,"sp":false},{"c":"66164770","n":"Вино кр. п/сл Киндзмараули Мравали/Ма Брели","u":"л","r":92,"s":0,"sp":false},{"c":"66165024","n":"Вино кр. Пино Нуар Шмитт","u":"л","r":93,"s":0,"sp":false},{"c":"66165022","n":"Вино кр. Примитиво Тарантино","u":"л","r":94,"s":0,"sp":false},{"c":"66164358","n":"Вино кр. Саперави квеври АВЕ","u":"л","r":95,"s":0,"sp":false},{"c":"66164768","n":"Вино кр. Саперави Мравали/Ма Брели","u":"л","r":96,"s":0,"sp":false},{"c":"00813","n":"Вино кр. Саперави Палавани","u":"л","r":97,"s":0,"sp":false},{"c":"204119","n":"Вино кр. Саперави Супериор Шато Мухрани","u":"л","r":98,"s":0,"sp":false},{"c":"2050469","n":"Вино кр. Саперави Телиани Велли","u":"л","r":99,"s":0,"sp":false},{"c":"2050122","n":"Вино кр. Саперави Шенда","u":"л","r":100,"s":0,"sp":false},{"c":"2050482","n":"Вино кр. Семисам Мерло-Каберне Совиньон","u":"л","r":101,"s":0,"sp":false},{"c":"2048096","n":"Вино кр. Тавквери Дугладзе","u":"л","r":102,"s":0,"sp":false},{"c":"42178612","n":"Вино кр. Тавквери Чотиашвили","u":"л","r":103,"s":0,"sp":false},{"c":"203679","n":"Вино кр. Хванчкара Гиоргоба","u":"л","r":104,"s":0,"sp":false},{"c":"00830","n":"Вино кр. Шавкапито Шато Мухрани","u":"л","r":109,"s":0,"sp":false},{"c":"00824","n":"Вино кр.п/сл Ахашени Бадагони/Асканели","u":"л","r":110,"s":0,"sp":false},{"c":"66165362","n":"Вино кр.п/сл Грузинское домашнее кувшин","u":"л","r":111,"s":0,"sp":false},{"c":"203993","n":"Вино кр.п/сл Киндзмараули Гиоргоба","u":"л","r":112,"s":0,"sp":false},{"c":"2050784","n":"Вино кр.п/сл Киндзмараули Иверия","u":"л","r":113,"s":0,"sp":false},{"c":"2048863","n":"Вино кр.п/сл Киндзмараули Нанати п/сл 0,375","u":"л","r":114,"s":0,"sp":false},{"c":"01965","n":"Вино кр.п/сл Киндзмараули Оригинал Марани","u":"л","r":115,"s":0,"sp":false},{"c":"00817","n":"Вино кр.п/сл Киндзмараули Палавани/ТеллиВелли","u":"л","r":116,"s":0,"sp":false},{"c":"2048085","n":"Вино кр.п/сл Саперави п/сл Бельбек/Хай Руф (домашнее)","u":"л","r":117,"s":0,"sp":false},{"c":"01926","n":"Вино кр.п/сух Пиросмани Кв.Погреб/Гиоргоба","u":"л","r":118,"s":0,"sp":false},{"c":"66165361","n":"Вино кр.сух. Грузинское домашнее кувшин","u":"л","r":119,"s":0,"sp":false},{"c":"00822","n":"Вино кр.сух. Мукузани Бесини","u":"л","r":120,"s":0,"sp":false},{"c":"00816","n":"Вино кр.сух. Мукузани Палавани","u":"л","r":121,"s":0,"sp":false},{"c":"02570","n":"Вино кр.сух. Нестореули Александров","u":"л","r":122,"s":0,"sp":false},{"c":"2048086","n":"Вино кр.сух. Саперави Болеро/ХАЙ РУФ/Собер Баш кр (домашнее)","u":"л","r":123,"s":0,"sp":false},{"c":"203664","n":"Вино кр.сух. Саперави Гиоргоба","u":"л","r":124,"s":0,"sp":false},{"c":"2050346","n":"Вино кр.сух. Саперави Квеври Будешури","u":"л","r":125,"s":0,"sp":false},{"c":"2049789","n":"Вино кр.сух. Усахелоури ВайнМэйкер","u":"л","r":126,"s":0,"sp":false},{"c":"02540.","n":"Вино плодовое в асс. п/сл","u":"л","r":127,"s":0,"sp":false}]},{"g":"Вино Розовое","cat":"wine","s":0,"req":true,"items":[{"c":"203792","n":"Вино роз. Арт Вайн Братья Асканели","u":"л","r":128,"s":0,"sp":false},{"c":"02554","n":"Вино роз.п/сух Пиросмани Розе Гиоргоба","u":"л","r":129,"s":0,"sp":false},{"c":"2048855","n":"Вино роз.п/сух Саперави Розе Руставели","u":"л","r":130,"s":0,"sp":false}]},{"g":"Вино Российские","cat":"wine","s":0,"req":true,"items":[{"c":"66164321","n":"Вино бел. Вионье Каффа","u":"л","r":131,"s":0,"sp":false},{"c":"66164355","n":"Вино бел. Деликат Шато Тамань","u":"л","r":132,"s":0,"sp":false},{"c":"66164322","n":"Вино бел. Совиньон Блан Альма Велли","u":"л","r":133,"s":0,"sp":false},{"c":"66164324","n":"Вино бел. Траминер высокий берег","u":"л","r":134,"s":0,"sp":false},{"c":"66164323","n":"Вино бел. Шардоне Голубицкое","u":"л","r":135,"s":0,"sp":false},{"c":"66164331","n":"Вино кр. Вечерница Усадьба Дивноморское","u":"л","r":136,"s":0,"sp":false},{"c":"66164330","n":"Вино кр. Дисоно Каберне Совиньон","u":"л","r":137,"s":0,"sp":false},{"c":"66164333","n":"Вино кр.Гравити Альма Велли","u":"л","r":138,"s":0,"sp":false}]},{"g":"Виски","cat":"strong","s":0,"req":true,"items":[{"c":"66164788","n":"Виски Баллантайнс","u":"л","r":139,"s":0,"sp":false},{"c":"2049780","n":"Виски Гленфиддик 12 лет","u":"л","r":140,"s":0,"sp":false},{"c":"00850","n":"Виски Джек Дэниэлс","u":"л","r":141,"s":0,"sp":false},{"c":"66164847","n":"Виски Джимшер Цинандали 5*","u":"л","r":142,"s":0,"sp":false},{"c":"00849","n":"Виски Дюарс белая этикетка","u":"л","r":143,"s":0,"sp":false},{"c":"2048121","n":"Виски Дюарс Карибиан","u":"л","r":144,"s":0,"sp":false},{"c":"2049787","n":"Виски Синглтон 12 лет","u":"л","r":145,"s":0,"sp":false},{"c":"2049779","n":"Виски Талмор Дью","u":"л","r":146,"s":0,"sp":false},{"c":"66164907","n":"Виски Тилинг Смол Бэтч","u":"л","r":147,"s":0,"sp":false}]},{"g":"Водка","cat":"strong","s":0,"req":true,"items":[{"c":"2048372","n":"Водка Арбени/Анууш гранат/абрикос/шелковица/груша","u":"л","r":148,"s":0,"sp":false},{"c":"2050642","n":"Водка Белая Белуга Нобл","u":"л","r":149,"s":0,"sp":false},{"c":"2046958","n":"Водка Белая Березка","u":"л","r":150,"s":0,"sp":false},{"c":"2046979","n":"Водка Белая Березка Белый Налив","u":"л","r":151,"s":0,"sp":false},{"c":"66164342","n":"Водка Белая Березка Груша","u":"л","r":152,"s":0,"sp":false},{"c":"2046960","n":"Водка Белая Березка Золото","u":"л","r":153,"s":0,"sp":false},{"c":"2050495","n":"Водка Белая Березка Облепиха","u":"л","r":154,"s":0,"sp":false},{"c":"66164343","n":"Водка Гастроном Купаж №1","u":"л","r":155,"s":0,"sp":false},{"c":"00842","n":"Водка Онегин","u":"л","r":160,"s":0,"sp":false},{"c":"203427","n":"Водка плодовая Анасеули/Асканели в асс","u":"л","r":161,"s":0,"sp":true},{"c":"2048881","n":"Водка Сибирский Экспресс","u":"л","r":162,"s":0,"sp":false},{"c":"2046956","n":"Водка Хаски","u":"л","r":163,"s":0,"sp":false}]},{"g":"Джин","cat":"strong","s":0,"req":true,"items":[{"c":"203443","n":"Джин Барристер/Нива Дистиллери","u":"л","r":164,"s":0,"sp":false},{"c":"2047767","n":"Джин Бомбей Сапфир","u":"л","r":165,"s":0,"sp":false},{"c":"2049864","n":"Джин Брум","u":"л","r":166,"s":0,"sp":false},{"c":"66165169","n":"Джин Хопперс Лаванда","u":"л","r":167,"s":0,"sp":false},{"c":"66164420","n":"Джин Хопперс Мандарин и Розмарин","u":"л","r":168,"s":0,"sp":false}]},{"g":"Коньяк","cat":"strong","s":0,"req":true,"items":[{"c":"2048877","n":"Коньяк Ани 7* Арарат","u":"л","r":169,"s":0,"sp":false},{"c":"2049942","n":"Коньяк Арарат Априкот","u":"л","r":170,"s":0,"sp":false},{"c":"2048879","n":"Коньяк Ахтамар 10* Арарат","u":"л","r":171,"s":0,"sp":false},{"c":"00836","n":"Коньяк Братья Асканели 3*","u":"л","r":172,"s":0,"sp":false},{"c":"66164339","n":"Коньяк Коктебель 11*","u":"л","r":173,"s":0,"sp":false},{"c":"66164338","n":"Коньяк Коктебель резерв 5*","u":"л","r":174,"s":0,"sp":false},{"c":"2049781","n":"Коньяк Руставели 5*","u":"л","r":175,"s":0,"sp":false},{"c":"01403","n":"Коньяк Сараджишвили VS","u":"л","r":176,"s":0,"sp":false}]},{"g":"Ликер","cat":"strong","s":0,"req":true,"items":[{"c":"00863","n":"Ликер Бейлиз","u":"л","r":177,"s":0,"sp":false},{"c":"66165170","n":"Ликер Гамбини в асс.","u":"л","r":178,"s":0,"sp":true},{"c":"2050491","n":"Ликер Гастроном купаж N9","u":"л","r":179,"s":0,"sp":false},{"c":"2050446","n":"Ликер Люксардо","u":"л","r":180,"s":0,"sp":false},{"c":"66164595","n":"Ликер Люксардо Абрикос","u":"л","r":181,"s":0,"sp":false},{"c":"66164594","n":"Ликер Люксардо Мараскино","u":"л","r":182,"s":0,"sp":false},{"c":"01610","n":"Ликер Трипл Сек","u":"л","r":183,"s":0,"sp":false}]},{"g":"Напитки б/а","cat":"soft","s":0,"req":true,"items":[{"c":"01807","n":"Вода Бон Аква л","u":"л","r":184,"s":0,"sp":false},{"c":"2047830","n":"Вода Боржоми ПЭТ 0,5","u":"шт","r":185,"s":0,"sp":false},{"c":"00872","n":"Вода Боржоми стекло 0,5","u":"шт","r":186,"s":0,"sp":false},{"c":"2047801","n":"Вода Доусуз 0,85","u":"шт","r":187,"s":0,"sp":false},{"c":"00874","n":"Вода Набеглави 0,5","u":"шт","r":188,"s":0,"sp":false},{"c":"204134","n":"Вода Саирме 0,5","u":"шт","r":189,"s":0,"sp":false},{"c":"01445","n":"Компот в асс","u":"шт","r":190,"s":0,"sp":true},{"c":"00868","n":"Лимонад Зедазени/Казбеги/Натахтари 0,5л","u":"шт","r":191,"s":0,"sp":false},{"c":"2049837","n":"Лимонад ПЭТ д/коктейлей","u":"л","r":192,"s":0,"sp":false},{"c":"00870","n":"Лимонады в асс. 250мл","u":"шт","r":193,"s":0,"sp":true},{"c":"203949","n":"Молоко для капучино","u":"л","r":194,"s":0,"sp":false},{"c":"2048267","n":"Молоко растительное в асс","u":"л","r":195,"s":0,"sp":true},{"c":"00869","n":"Морс в ассорт.","u":"л","r":196,"s":0,"sp":true},{"c":"00871","n":"Сок розлив в асс. л","u":"л","r":197,"s":0,"sp":true}]},{"g":"Настойка","cat":"strong","s":0,"req":true,"items":[{"c":"2049816","n":"Настойка Онегин","u":"л","r":198,"s":0,"sp":false},{"c":"00862","n":"Ягермейстер","u":"л","r":199,"s":0,"sp":false}]},{"g":"Пиво бутылочное","cat":"beer","s":0,"req":true,"items":[{"c":"2049450","n":"Пиво Алиспери Томат Эль3 0,5 бут","u":"шт","r":200,"s":0,"sp":false},{"c":"66165356","n":"Пиво Амбер Лагер 0,5 бут","u":"шт","r":201,"s":0,"sp":false},{"c":"2048575","n":"Пиво Атами ИПА б/а 0,33 бут","u":"шт","r":202,"s":0,"sp":false},{"c":"00866","n":"Пиво Зедазени/Натахтари/Рагнар/Бичо светлое 0,5 бут","u":"шт","r":203,"s":0,"sp":false},{"c":"2049769","n":"Пиво Казбеги/Коникс/Брю Брюн темное 0,44 бут","u":"шт","r":204,"s":0,"sp":false},{"c":"66164505","n":"Пиво Клиави Сливовый Эль11 0,45 бут","u":"шт","r":205,"s":0,"sp":false},{"c":"2046972","n":"Пиво Крон Бланш Бьер б/а 0,45 бут","u":"шт","r":206,"s":0,"sp":false},{"c":"204314","n":"Пиво Тхили 0,5 бут","u":"шт","r":207,"s":0,"sp":false},{"c":"2050510","n":"Сидр Гранат 0,45 бут Фруктовый 8","u":"шт","r":208,"s":0,"sp":false},{"c":"2049184","n":"Сидр Мцване Тархун 0,45 бут Фруктовый 7","u":"шт","r":209,"s":0,"sp":false},{"c":"66165293","n":"Сидр Натели абрикосовый 0,5 бут","u":"шт","r":210,"s":0,"sp":false}]},{"g":"Пиво разливное","cat":"beer","s":0,"req":true,"items":[{"c":"2046898","n":"Пиво пшеничное/нефильтрованное в асс л","u":"л","r":211,"s":0,"sp":true},{"c":"02012","n":"Пиво светлое в асс л","u":"л","r":212,"s":0,"sp":true},{"c":"2046899","n":"Пиво темное в асс л","u":"л","r":213,"s":0,"sp":true}]},{"g":"Ром","cat":"strong","s":0,"req":true,"items":[{"c":"2049643","n":"Ром Барсело/Каладос Уайт","u":"л","r":214,"s":0,"sp":false},{"c":"2050504","n":"Ром Легендарио Ронсе","u":"л","r":215,"s":0,"sp":false},{"c":"2049642","n":"Ром Оакхарт Ориджинал","u":"л","r":219,"s":0,"sp":false},{"c":"2050503","n":"Ром Рон Каладос Дарк","u":"л","r":220,"s":0,"sp":false}]},{"g":"Текила","cat":"strong","s":0,"req":true,"items":[{"c":"2048886","n":"Текила Буэн Амиго Голд","u":"л","r":221,"s":0,"sp":false},{"c":"2048884","n":"Текила Буэн Амиго Сильвер","u":"л","r":222,"s":0,"sp":false},{"c":"66164798","n":"Текила Ольмека Сильвер","u":"л","r":223,"s":0,"sp":false}]},{"g":"Чача","cat":"strong","s":0,"req":true,"items":[{"c":"00846","n":"Чача Асканели золотая","u":"л","r":224,"s":0,"sp":false},{"c":"00845","n":"Чача Асканели платиновая","u":"л","r":225,"s":0,"sp":false},{"c":"00847","n":"Чача Гиоргоба","u":"л","r":226,"s":0,"sp":false},{"c":"01401","n":"Чача Гиоргоба Резерв","u":"л","r":227,"s":0,"sp":false},{"c":"202902","n":"Чача Мураз/Водка домашняя","u":"л","r":228,"s":0,"sp":false}]},{"g":"БАКАЛЕЯ","cat":"food","s":0,"req":true,"items":[{"c":"00009","n":"Мед цветочный","u":"кг","r":229,"s":0,"sp":false},{"c":"00013","n":"Сахар песок","u":"кг","r":230,"s":0,"sp":false},{"c":"00014","n":"Сахарная пудра","u":"кг","r":231,"s":0,"sp":false},{"c":"00015","n":"Соль","u":"кг","r":232,"s":0,"sp":false},{"c":"00020","n":"Чай пакетированный","u":"шт","r":233,"s":0,"sp":false}]},{"g":"БАКАЛЕЯ СПЕЦИИ","cat":"food","s":0,"req":true,"items":[{"c":"00049","n":"сп.гр.Сванская соль","u":"кг","r":234,"s":0,"sp":false}]},{"g":"СПЕЦИИ БАР","cat":"food","s":0,"req":true,"items":[{"c":"00041","n":"сп.Анис (Бадьян)","u":"кг","r":235,"s":0,"sp":false},{"c":"00042","n":"сп.Гвоздика","u":"кг","r":236,"s":0,"sp":false},{"c":"00044","n":"сп.Корица молотая","u":"кг","r":237,"s":0,"sp":false},{"c":"00043","n":"сп.Корица палки","u":"кг","r":238,"s":0,"sp":false}]},{"g":"ДЕСЕРТЫ С/М","cat":"food","s":0,"req":true,"items":[{"c":"00061","n":"Мороженое ванильное кг","u":"кг","r":239,"s":0,"sp":false},{"c":"00062","n":"Мороженое шоколадное кг","u":"кг","r":240,"s":0,"sp":false},{"c":"00063","n":"Сорбет малина","u":"кг","r":241,"s":0,"sp":false}]},{"g":"ЗАМОРОЗКА","cat":"food","s":0,"req":true,"items":[{"c":"00064","n":"Клубника с/м","u":"кг","r":242,"s":0,"sp":false},{"c":"01588","n":"Клюква с/м","u":"кг","r":243,"s":0,"sp":false},{"c":"01589","n":"Малина с/м","u":"кг","r":244,"s":0,"sp":false},{"c":"00066","n":"Облепиха с/м","u":"кг","r":245,"s":0,"sp":false},{"c":"01614","n":"Смородина с/м","u":"кг","r":246,"s":0,"sp":false}]},{"g":"МОЛОЧНЫЕ ПРОДУКТЫ","cat":"bar","s":0,"req":true,"items":[{"c":"01586","n":"Сливки 11%","u":"л","r":247,"s":0,"sp":false}]},{"g":"МЯСО","cat":"food","s":0,"req":true,"items":[{"c":"00089","n":"Кура филе бедра с/м","u":"кг","r":248,"s":0,"sp":false},{"c":"2046656","n":"Свинина лопатка/окорок","u":"кг","r":249,"s":0,"sp":false}]},{"g":"ОВОЩИ ЗЕЛЕНЬ","cat":"food","s":0,"req":true,"items":[{"c":"00127","n":"Базилик зеленый\\красный св","u":"кг","r":250,"s":0,"sp":false},{"c":"00128","n":"Кинза св","u":"кг","r":251,"s":0,"sp":false},{"c":"00130","n":"Мята св","u":"кг","r":252,"s":0,"sp":false},{"c":"00132","n":"Розмарин св","u":"кг","r":253,"s":0,"sp":false},{"c":"00135","n":"Тимьян/Чабрец св","u":"кг","r":254,"s":0,"sp":false},{"c":"00134","n":"Укроп св","u":"кг","r":255,"s":0,"sp":false}]},{"g":"ОВОЩИ ОРЕХИ СУХОФРУКТЫ","cat":"food","s":0,"req":true,"items":[{"c":"203050","n":"Миндаль лепестки","u":"кг","r":256,"s":0,"sp":false}]},{"g":"ОВОЩИ ФРУКТЫ","cat":"food","s":0,"req":true,"items":[{"c":"00729","n":"Ананасы","u":"кг","r":257,"s":0,"sp":false},{"c":"00093","n":"Апельсины","u":"кг","r":258,"s":0,"sp":false},{"c":"00096","n":"Виноград","u":"кг","r":259,"s":0,"sp":false},{"c":"00097","n":"Гранаты","u":"кг","r":260,"s":0,"sp":false},{"c":"00098","n":"Грейпфруты","u":"кг","r":261,"s":0,"sp":false},{"c":"00317","n":"Груша","u":"кг","r":262,"s":0,"sp":false},{"c":"00103","n":"Имбирь корень","u":"кг","r":263,"s":0,"sp":false},{"c":"203925","n":"Капуста Китайская","u":"кг","r":264,"s":0,"sp":false},{"c":"00102","n":"Картофель св","u":"кг","r":265,"s":0,"sp":false},{"c":"00731","n":"Киви","u":"кг","r":266,"s":0,"sp":false},{"c":"00105","n":"Лаймы","u":"кг","r":267,"s":0,"sp":false},{"c":"00106","n":"Лимоны","u":"кг","r":268,"s":0,"sp":false},{"c":"00108","n":"Морковь св","u":"кг","r":269,"s":0,"sp":false},{"c":"00109","n":"Огурцы св","u":"кг","r":270,"s":0,"sp":false},{"c":"00110","n":"Перец болгарский,ласточка св (рамиро)","u":"кг","r":271,"s":0,"sp":false},{"c":"00112","n":"Помидоры ХЦ св","u":"кг","r":272,"s":0,"sp":false},{"c":"00124","n":"Яблоки","u":"кг","r":273,"s":0,"sp":false}]},{"g":"СОУСА","cat":"bar","s":0,"req":true,"items":[{"c":"00152","n":"Соус Наршараб л","u":"л","r":279,"s":0,"sp":false}]},{"g":"П/Ф бар чайная карта","cat":"pf","s":1,"req":true,"items":[{"c":"66165269","n":"ЧК Ананасы п/ф","u":"кг","r":9,"s":1,"sp":false},{"c":"66165255","n":"ЧК Апельсины п/ф","u":"кг","r":10,"s":1,"sp":false},{"c":"66165256","n":"ЧК Базилик зеленый/красный п/ф","u":"кг","r":11,"s":1,"sp":false},{"c":"66165272","n":"ЧК Виноград п/ф","u":"кг","r":12,"s":1,"sp":false},{"c":"66165261","n":"ЧК Грейпфруты п/ф","u":"кг","r":13,"s":1,"sp":false},{"c":"66165267","n":"ЧК Груша п/ф","u":"кг","r":14,"s":1,"sp":false},{"c":"66165260","n":"ЧК Имбирь корень п/ф","u":"кг","r":15,"s":1,"sp":false},{"c":"66165263","n":"ЧК Киви п/ф","u":"кг","r":16,"s":1,"sp":false},{"c":"66165265","n":"ЧК Клубника с/м п/ф","u":"кг","r":17,"s":1,"sp":false},{"c":"66165258","n":"ЧК Клюква с/м п/ф","u":"кг","r":18,"s":1,"sp":false},{"c":"66165257","n":"ЧК Лаймы п/ф","u":"кг","r":19,"s":1,"sp":false},{"c":"66165253","n":"ЧК Лимоны п/ф","u":"кг","r":20,"s":1,"sp":false},{"c":"66165271","n":"ЧК Малина с/м п/ф","u":"кг","r":21,"s":1,"sp":false},{"c":"66165254","n":"ЧК Мед п/ф","u":"кг","r":22,"s":1,"sp":false},{"c":"66165275","n":"ЧК Морковь п/ф","u":"кг","r":23,"s":1,"sp":false},{"c":"66165262","n":"ЧК Мята св п/ф","u":"кг","r":24,"s":1,"sp":false},{"c":"66165274","n":"ЧК Наршараб п/ф","u":"кг","r":25,"s":1,"sp":false},{"c":"66165268","n":"ЧК Облепиха с/м п/ф","u":"кг","r":26,"s":1,"sp":false},{"c":"66165273","n":"ЧК Огурцы св п/ф","u":"кг","r":27,"s":1,"sp":false},{"c":"66165266","n":"ЧК Розмарин п/ф","u":"кг","r":28,"s":1,"sp":false},{"c":"66165264","n":"ЧК Смородина с/м п/ф","u":"кг","r":29,"s":1,"sp":false},{"c":"66165259","n":"ЧК Тимьян/Чабрец п/ф","u":"кг","r":30,"s":1,"sp":false},{"c":"66165252","n":"ЧК Яблоки п/ф","u":"кг","r":31,"s":1,"sp":false}]}], TTK=["Алое","Алоэ (на весах, без джигера)","Ананас","Ананас п/ф","Анис звёздочки","Апельсин","Апельсин (кольца)","Апельсиновые чипсы ПФ","Апельсиновый сок","Аперитив Апероль/Люксардо","Базилик зелёный","Буэн Амиго Сильвер","Варенье с шишками и кедровым орехом","Вермут","Вермут россо","Взбитые сливки","Виноград","Вишневый сок","Водка Арбени/Ануш","Газ-вода","Гвоздика","Гранат очищ. ПФ (на доску)","Гранат очищ. ПФ (украшение)","Гранат ядра","Грейпфрут","Грейпфрут (четвертинка слайса на доску)","Груша","Груша (украшение)","Джин Барристер/Нива","Джин Хопперс Мандарин и Розмарин","Джус-боллы Йогурт","Джус-боллы Клубника","Зеленый Базилик","Зеленый базик","Имбирь","Имбирь корень","Итого премикса","Кардамон","Киви","Кинза зачищ. ПФ (украшение)","Клубника С/з","Клубника с/м","Клюква","Клюква с/м","Кокосовая стружка","Кокосовый сироп","Корица","Корица палки","Лайм","Ликёр Люксардо","Ликёр Трипл Сек","Лимон","Лимон (украшение)","Лимонад 7up (в бокал)","Лимонад ПЭТ д/коктейлей (кола)","Лимонная основа","Липа с мятой ( Летняя беседа)","Малина с/м","Мед","Медовый сироп","Медовый сироп /мед","Молоко","Молоко 3,2%","Морс","Мускатный орех тёртый","Мята","Мята зачищ. ПФ (украшение)","Мята с/в","Мята св","Мята св. (украшение)","Мёд","Мёд цветочный ( в чайник )","Наршараб (соус)/мл","Наршараб микс ПФ","Облепиха","Облепиха с/м","Огурец","Огурец св. (пробить в блендере)","Пенообразователь","Пенообразователь пищевой (в шейкер)","Пюре Груша","Пюре Клубника-Фейхоа","Пюре Малина","Пюре Манго","Пюре Манго-Маракуйа","Пюре Маракуя","Пюре Черника - лаванда","Пюре дыни","Пюре манго- маракуйя","Ревень пюре","Розмарин","Ром Барсело/Каладос Уайт","Российское шампанское","Сахар","Сахар ( Добавляем если не сладкий)","Сахарный сироп","Сахарный сироп (если пюре не сладкое)/Сахар","Сахарный сироп /Сахар","Сахарный сироп ПФ","Сироп Spice Bazar","Сироп Алыча (Монин)","Сироп Бузина","Сироп Клубника","Сироп Монин гранатовый","Сироп Монин имбирный","Сироп Роза","Сироп карамель","Сироп маракуйя","Сироп маракуя","Сироп шиповника","Смородина","Смородина с/м","Сок грейпфрут","Сок розлив в асс. (отдельно)","Сорбет Малина","Тоник (лимонад ПЭТ д/коктейлей)","Украшение","Хаски","Чабрец","Чай Асамуши сенча","Чай Ассам","Чай Брусничный лист","Чай Голубая маття","Чай Гречишный","Чай Для настроения и концентрации (умники и ум)","Чай Для настроя и концентрации чай ( умники и ум)","Чай Иван чай","Чай Иван-чай","Чай Китайская Роза","Чай Красная маття","Чай Лаванда","Чай Липа с мятой ( Летняя беседа)","Чай Личи хун ча","Чай Масала","Чай Моли хуа ча","Чай Релакс","Чай Ройбос","Чай Саган Дайля","Чай Саган дайля","Чай Таежный","Чай Тайский синий","Чай Тайский синий чай","Чай Улун Медовая дыня","Чай Хвоя","Чай Хризантема","Чай Чень Нянь пуэр 10 лет","Чай Эрл грей","Чай Ягодный","ЧайЧень Нянь пуэр 10 лет","Чача Асканели платиновая","Чача Мураз/водка домашняя","Шарик мороженного сливочное","Шафран (в чайник)","Шейкер","Яблоки (слайсы на доску)","Яблоко","Яблочный сок"], DATE='31.10.2026';
@@ -893,6 +689,31 @@
     sheet.querySelector('p').textContent='Пустых позиций: '+miss.length+'. В файле они останутся пустыми.';
     $('m-show').onclick=function(){ closeM(); setCat('all'); $('q').value=''; apply(); var r=rowOf[miss[0].c]; try{ r.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){ r.scrollIntoView(); } };
     $('m-go').onclick=go; $('m-x').onclick=closeM;
+  });
+  function baseline(){
+    var items={}, o=0;
+    ALL.forEach(function(it){
+      var v=itemVal(it); if(v===null) return; var x={n:it.n,u:it.u,g:it.g,cat:it.cat,o:o++,q:v}, sp=S.split[it.c];
+      if(sp) x.sub=sp.filter(function(r){ return parse(r.v)!==null; }).map(function(r){ return {n:(r.n||'без названия').trim(),q:parse(r.v)}; });
+      items[it.c]=x;
+    });
+    return {date:DATE.split('.').reverse().join('-'), at:new Date().toISOString(), items:items};
+  }
+  $('sendStock').addEventListener('click',function(){
+    if(!window.HIP){ openM('<h3>Нет модуля</h3><p>Файл core.js не найден рядом со страницами.</p><button class="main" id="m-x">Закрыть</button>'); $('m-x').onclick=closeM; return; }
+    if(!HIP.isAdmin()){ HIP.adminDialog(function(){ $('sendStock').click(); }); return; }
+    var n=ALL.filter(has).length;
+    confirmM('Отправить в общие остатки?','Позиций с количеством: '+n+'. Текущие общие остатки будут заменены остатками этой инвенты ('+DATE+'). Старые сохранятся в истории.','Отправить',function(){
+      openM('<h3>Отправляю…</h3><p>Сохраняю остатки в общие данные.</p>');
+      HIP.update(function(st){
+        if(st.baseline) st.history=(st.history||[]).concat([{baseline:st.baseline,supplies:st.supplies||[],deductions:st.deductions||[],corrections:st.corrections||[]}]).slice(-3);
+        st.baseline=baseline(); st.supplies=[]; st.deductions=[]; st.corrections=[]; return st;
+      }).then(function(){
+        openM('<h3>Готово</h3><p>Остатки отправлены. Остальные увидят их на странице «Остатки» через минуту-две.</p><button class="main" id="m-x">Закрыть</button>'); $('m-x').onclick=closeM;
+      }).catch(function(e){
+        openM('<h3>Не получилось</h3><p></p><button class="main" id="m-x">Закрыть</button>'); sheet.querySelector('p').textContent=(e&&e.message)||'Ошибка сохранения.'; $('m-x').onclick=closeM;
+      });
+    });
   });
   $('clearAll').addEventListener('click',function(){
     confirmM('Очистить всё?','Все введённые остатки и разбивки будут удалены.','Очистить',function(){ snapshot(); try{ localStorage.removeItem(KEY); }catch(e){} location.reload(); });

@@ -218,26 +218,6 @@
   .ix-bar{--bg:#241611; --surface:#241811; --surface-2:#2C2015; --ink:#F4ECDF; --muted:#B49C89; --line:rgba(200,138,78,0.28); --accent:#C88A4E; --accent-ink:#E8B57E;}
   .ix-tea, .ix-bar{color:var(--ink);}
 </style>
-<style id="nx">
-  /* ===== Вид «как в Notion» для главной: тот же характер, строже геометрия ===== */
-  :root{--nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif; --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:10px;}
-  .card-date, .tile-label, .card-open, .card-title-text, .fly-title, .rest-name, .sig-caption, .ix-head, .ix-empty, #ixSearch{font-family:var(--nf) !important; letter-spacing:normal;}
-  .rest-panel{border-radius:10px; border:1px solid rgba(255,243,228,.5); box-shadow:none; background:rgba(104,76,52,.2);}
-  .divider{background:rgba(255,243,228,.5);}
-  a.card{border-radius:8px; box-shadow:none; opacity:1;}
-  a.card.card-tile{border-radius:8px;}
-  @media (hover:hover){ a.card:hover{transform:none; box-shadow:none;} }
-  a.card.card-tea{border:1px solid rgba(107,88,88,.35);}
-  a.card.card-bar{border:1px solid rgba(232,181,126,.4);}
-  .card-date{font-weight:500; letter-spacing:0;}
-  a.card .card-open{font-weight:600; letter-spacing:.02em;}
-  .tile-label{font-weight:600; font-size:11.5px; letter-spacing:.02em;}
-  #ixSearch{height:40px; border:0; border-radius:6px; background:#F4ECDF; box-shadow:inset 0 0 0 1px rgba(107,88,88,.35); font-weight:400; font-size:.95rem;}
-  #ixSearch:focus{box-shadow:0 0 0 2px #C88A4E;}
-  .ix-search::before{font-weight:400;}
-  .ix-head{font-weight:700;}
-</style>
-<style id="nx2">:root{--nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;}</style>
 </head>
 <body>
 <div class="wrap">
@@ -279,6 +259,10 @@
 </a>
 <a class="card card-bar card-tile card-invbar" href="inventory-bar.html" data-nav="invbar" data-final-logo-height="32" data-final-logo-top="20" data-tile-width="420" data-fly-text="Инвента бар">
 <span class="card-text-center"><span class="tile-fade"><span class="card-date"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3h4v4l1.5 2.5V20a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V9.5L10 7z"/><path d="M8.5 13h7"/></svg></span><span class="tile-label">Инвента<br/>бар</span></span></span>
+<span class="card-arrow-corner">→</span>
+</a>
+<a class="card card-bar card-tile card-stock" href="stock.html" data-nav="stock" data-final-logo-height="32" data-final-logo-top="20" data-tile-width="420" data-fly-text="Остатки">
+<span class="card-text-center"><span class="tile-fade"><span class="card-date"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span><span class="tile-label">Остатки</span></span></span>
 <span class="card-arrow-corner">→</span>
 </a>
 <a class="card card-bar card-tile card-banquet" data-nav="banquet" href="banquet.html" data-final-logo-height="22" data-final-logo-top="25" data-tile-width="620" data-fly-logo="logo-banquet-wide-light.png">
@@ -760,6 +744,7 @@
     bar:  { bg:'#241611', img:'bg-bar.jpg',  tint:'rgba(27,18,13,0.55)',    size:'420px auto', theme:'#241611' },
     inventory: { bg:'#241611', img:'bg-bar.jpg', tint:'rgba(27,18,13,0.55)', size:'420px auto', theme:'#241611' },
     invbar: { bg:'#241611', img:'bg-bar.jpg', tint:'rgba(27,18,13,0.55)', size:'420px auto', theme:'#241611' },
+    stock: { bg:'#241611', img:'bg-bar.jpg', tint:'rgba(27,18,13,0.55)', size:'420px auto', theme:'#241611' },
     banquet: { bg:'#241611', img:'bg-banquet-dark.jpg', tint:'rgba(27,18,13,0.55)', size:'620px auto', theme:'#241611' },
     home: { bg:'#B39B85', img:'bg-autumn.jpg', tint:'rgba(179,155,133,0)', size:'cover', theme:'#B39B85' }
   };
@@ -898,7 +883,7 @@
   function cardCss(css){
     var bm=css.match(/(?:^|[}\s])body\s*\{([^}]*)\}/), base='';
     if(bm){ base=bm[1].split(';').filter(function(d){ return /^\s*(font-family|font-size|line-height|color|font-weight|letter-spacing)\s*:/.test(d); }).join(';'); }
-    return ':host{display:block;'+base+'} *,*::before,*::after{box-sizing:border-box;} '+css.replace(/:root/g,':host')+' details.card{background:var(--surface);} .card-name{color:var(--ink);}';
+    return ':host{display:block;'+base+'} *,*::before,*::after{box-sizing:border-box;} '+css.replace(/:root/g,':host');
   }
   // Плавное раскрытие карточек — та же анимация, что в самих картах; одна открытая за раз
   var rendered=[];
@@ -961,7 +946,7 @@
       DB=[];
       txts.forEach(function(t,i){
         var doc=new DOMParser().parseFromString(t,'text/html'), kind=i?'bar':'tea';
-        CSSB[kind]=cardCss(Array.prototype.map.call(doc.querySelectorAll('style'),function(x){ return x.textContent; }).join('\n'));
+        var stEl=doc.querySelector('style'); CSSB[kind]=cardCss(stEl?stEl.textContent:'');
         doc.querySelectorAll('details.card').forEach(function(card){
           var nm=card.querySelector('.card-name'); if(!nm) return;
           var c=nm.cloneNode(true), pn=c.querySelector('.prep-note'); if(pn) pn.remove();
