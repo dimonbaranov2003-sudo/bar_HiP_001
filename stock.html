@@ -430,6 +430,230 @@
   body.edit .item, body.edit .srow{cursor:pointer;}
   #meta{margin:0 2px 12px;}
 </style>
+<style id="nx">
+  /* ===== Вид «как в Notion»: плоские строки, чёткие разделители, маленькие скругления. Цвета и фоны — прежние. ===== */
+  :root{
+    --nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:10px; --h-ctl:40px; --h-pill:28px;
+    --row:rgba(244,236,223,.05); --row-line:rgba(232,181,126,.26); --field:rgba(244,236,223,.07);
+  }
+  *{font-family:var(--nf) !important; letter-spacing:normal;}
+  body{font-variant-numeric:tabular-nums;}
+  header.topbar{border-bottom:1px solid var(--row-line);}
+
+  /* поиск */
+  #search, #ingSearch, .search input{height:40px; padding-top:0; padding-bottom:0; border:0; border-radius:6px; background:var(--field); box-shadow:inset 0 0 0 1px var(--row-line); font-weight:400; font-size:.95rem; color:var(--ink);}
+  #search:focus, #ingSearch:focus, .search input:focus{border:0; box-shadow:0 0 0 2px var(--accent);}
+  #search::placeholder, #ingSearch::placeholder, .search input::placeholder{font-weight:400;}
+  .search::before, .search-row::before{color:var(--muted); font-weight:400;}
+
+  /* фильтры — «теги» */
+  .pill, button.pill{height:28px; padding:0 11px; border:0; border-radius:4px; background:var(--field); color:var(--ink); font-weight:500; font-size:.8rem; display:inline-flex; align-items:center;}
+  .pill.on{background:var(--accent); color:var(--bg);}
+  #tab-sets:checked ~ header label[for="tab-sets"], #tab-cocktail:checked ~ header label[for="tab-cocktail"], #tab-calc:checked ~ header label[for="tab-calc"], #tab-premix:checked ~ header label[for="tab-premix"]{border:0;}
+
+  /* разделы */
+  .cat-head{margin:6px 2px 8px;}
+  .cat-head h2{font-size:1.2rem; font-weight:700; letter-spacing:-.01em;}
+  .cat-head .dot{width:8px; height:8px;}
+  .cat-head .n{font-size:.8rem;}
+  .cat-note{margin:0 2px 10px;}
+
+  /* строки списка: сплошные, с отчётливой линией между ними и цветной меткой слева */
+  details.card, .item{background:var(--row); border:0; border-bottom:1px solid var(--row-line); border-left:3px solid var(--dot,var(--accent)); border-radius:0; margin:0; box-shadow:none; transform:none;}
+  details.card:hover{box-shadow:none; transform:none;}
+  .demo-panel{margin-bottom:22px;}
+  .demo-panel > :is(details.card,.item):first-of-type{border-top:1px solid var(--row-line); border-top-left-radius:6px;}
+  .cat-head ~ :is(details.card,.item):last-of-type{border-bottom-left-radius:6px;}
+  summary.card-head{padding:11px 12px;}
+  .card-name{font-weight:600; font-size:.98rem;}
+  .prep-note{font-style:normal; font-weight:400;}
+  .chev{color:var(--muted);}
+  .badges{padding:0 12px 10px;}
+  .badge{border:0; border-radius:3px; padding:1px 7px; font-weight:500; font-size:.7rem; background:color-mix(in srgb, var(--dot) 20%, transparent);}
+  .ing-table th{font-weight:500; text-transform:none; letter-spacing:0; background:rgba(244,236,223,.06); border-top:1px solid var(--row-line);}
+  .ing-table td{border-top:1px solid var(--row-line);}
+  .ing-table tr:nth-child(odd) td{background:rgba(244,236,223,.035);}
+  .decor-box{border-radius:6px; background:rgba(244,236,223,.05); border:1px solid var(--row-line);}
+  .decor-title{text-transform:none; letter-spacing:0; font-weight:600; font-size:.72rem;}
+
+  /* позиции банкетного меню */
+  .item{padding:10px 12px; gap:14px; align-items:center;}
+  .it-name{font-weight:600; font-size:.98rem; color:var(--ink);}
+  .it-sup{display:inline-block; align-self:flex-start; margin-top:2px; padding:0 6px; border-radius:3px; background:rgba(244,236,223,.1); color:var(--ink); font-weight:500; font-size:.72rem; line-height:1.5;}
+  .it-sub{font-size:.72rem; color:var(--muted); opacity:1;}
+  .it-note{margin-top:3px; padding:0 6px; border:0; border-radius:3px; background:color-mix(in srgb, var(--accent) 24%, transparent); color:var(--accent-ink); font-weight:500; font-size:.68rem; line-height:1.55;}
+  .it-price{font-weight:600; font-size:.9rem; color:var(--accent-ink);}
+
+  /* калькулятор и пересчёт */
+  .seg{border-radius:8px; background:var(--row); border-color:var(--row-line);}
+  .seg-btn{border-radius:6px; font-weight:500;}
+  .calc-box{border-radius:8px; background:var(--row); border-color:var(--row-line);}
+  .calc-label, .calc-info{text-transform:none; letter-spacing:0;}
+  .step-btn, .num-in, .size-btn, .rm-open, .add-open, .calc-reset, .scale-btn, .scale-banner, .chip{border-radius:6px; border-color:var(--row-line);}
+  .size-btn, .step-btn, .chip{background:var(--field);}
+  .result{border-radius:6px; border-color:var(--row-line);}
+  .res-num{font-weight:700;}
+  .sc-sheet{border-radius:12px 12px 0 0; border-color:var(--row-line);}
+  .sc-chip, .sc-custom input, .sc-go{border-radius:6px;}
+  .sc-chip{border-width:1px; border-color:var(--row-line); background:var(--field);}
+  .sc-chip.on{background:var(--accent); border-color:var(--accent);}
+  .sc-sheet h3{font-weight:700;}
+  .scale-btn{border-width:1px;}
+  .foot-date, .tagline{letter-spacing:0;}
+</style>
+<style id="nx-inv">
+  .inv-meta input{border:1px solid var(--row-line); border-radius:6px; background:var(--field); font-weight:400;}
+  .inv-meta input:focus{border-color:var(--accent);}
+  .inv-in{border:1px solid var(--row-line); border-radius:6px; background:var(--field); font-weight:600;}
+  .inv-in.has, .inv-in:focus, .inv-in.act{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, transparent); box-shadow:none;}
+  .inv-plus{border:1px solid var(--row-line); border-radius:6px; background:var(--field);}
+  .inv-fld label{text-transform:none; letter-spacing:0;}
+  .inv-tare{border-top:1px solid var(--row-line);}
+  .inv-tare-btn{border-width:1px; border-color:var(--row-line); border-radius:4px;}
+  .inv-dock, .inv-kp{border-top:1px solid var(--row-line);}
+  .inv-send{border-radius:6px; background:var(--accent); font-weight:600;}
+  .inv-sheet{border-radius:12px 12px 0 0; border-top:1px solid var(--row-line);}
+  .inv-sheet button{border-radius:6px; border-width:1px; border-color:var(--row-line); font-weight:500;}
+  .inv-sheet button.main{background:var(--accent); border-color:transparent; color:var(--bg); font-weight:600;}
+  .inv-sheet h3{font-weight:700;}
+  .inv-kp button{border-radius:6px;}
+  .clear-all{border-radius:6px;}
+  .it-expr{color:var(--accent-ink);}
+</style>
+<style id="nx2">
+  /* ===== Шаг 2: системный шрифт, ещё ближе к Notion ===== */
+  :root{--nf:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;}
+  body{line-height:1.45;}
+  /* жирное — названия; тонкое — составы и описания */
+  .card-name, .it-name, .group-title, .bq-it .nm, .bq-res .mn b, .bq-ev-h .d, .cat-head h2, .rest-name, .ix-head{font-weight:600;}
+  .prep-note, .ing-name, .ing-table td, .group td, .decor-name, .decor-list li, .it-sub, .bq-it .sb, .bq-ev-h .tt, .cat-note, .group-title .note{font-weight:400;}
+  .ing-amt, .decor-val{font-weight:500;}
+  .it-sup, .bq-grp, .bq-qty{font-weight:600;}
+  .bq-qty{font-weight:700;}
+  .badge, .it-note, .bq-when{font-weight:600;}
+
+  /* строки без цветных полос слева — как в базе Notion; цвет остаётся в заголовках и тегах */
+  details.card, .item, .group{border-left:0; border-radius:0; padding-left:0;}
+  details.card > summary.card-head{padding-left:4px;}
+  .item{padding-left:4px;}
+  .group-title{padding-left:4px;}
+  .badges{padding-left:4px;}
+  .cat-head .dot{width:10px; height:10px; border-radius:3px;}
+  .bq-res{border-left:0; padding-left:4px;}
+  .bq-ev{border-left:1px solid var(--row-line);}
+
+  /* стрелка раскрытия: ▸ → ▾ */
+  .chev{font-size:0 !important; width:18px; text-align:center;}
+  .chev::before{content:'▸'; font-size:.8rem; display:inline-block; color:var(--muted); transition:transform .15s ease;}
+  details.card[open] .chev{transform:none !important;}
+  details.card[open] .chev::before{transform:rotate(90deg);}
+
+  /* подсказки — «выноска» */
+  .cat-note{background:var(--row); border-radius:6px; padding:9px 12px; margin:0 0 10px; color:var(--muted);}
+
+  /* таблицы составов: полная сетка линий, как в таблице Notion */
+  .ing-table, .group table{border:1px solid var(--row-line); border-radius:4px; border-collapse:separate; border-spacing:0; overflow:hidden;}
+  .ing-table td, .ing-table th, .group td, .group th{border-top:0 !important; border-bottom:1px solid var(--row-line);}
+  .ing-table tr:last-child td, .group tr:last-child td{border-bottom:0;}
+  .ing-table td + td, .ing-table th + th, .group td + td, .group th + th{border-left:1px solid var(--row-line);}
+  .ing-table td:first-child{padding-left:10px;}
+  .ing-table th, .group th{font-weight:600; color:var(--muted);}
+  .ing-table tr.total td{font-weight:700;}
+  .card-content-inner{padding:0 10px 10px;}
+  .decor-box{margin:10px 0 0;}
+  .badges{padding:0 0 10px;}
+  .card-note{margin:8px 0 0;}
+
+  /* поля и кнопки: плоские, тонкая рамка */
+  .pill, button.pill{box-shadow:none;}
+  .bq-btn, .scale-btn, .seg-btn, .size-btn, .step-btn, .chip, .add-open, .calc-reset, .inv-send, .inv-sheet button{box-shadow:none;}
+  .bq-top, header.topbar{backdrop-filter:none;}
+
+  /* банкеты */
+  .bq-grp{background:transparent; padding-left:14px; color:var(--muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;}
+  .bq-it .nm{font-size:.96rem;}
+  .bq-qty{background:color-mix(in srgb, var(--accent) 22%, transparent); border-radius:4px;}
+</style>
+<style id="nx3">
+  /* ===== Шаг 3: списки от края до края, как в Notion. Цвета и фоны — прежние ===== */
+  :root{--bleed:16px;}
+  details.card, .item, .group{margin-left:calc(-1 * var(--bleed)); margin-right:calc(-1 * var(--bleed)); border-left:0; border-right:0; border-radius:0;}
+  details.card > summary.card-head{padding:12px var(--bleed);}
+  details.card > summary.card-head:active{background:rgba(128,128,128,.12);}
+  .item{padding:11px var(--bleed);}
+  .group-title{padding:12px var(--bleed) 4px;}
+  .card-content-inner{padding:0 0 12px;}
+  .badges{padding:0 var(--bleed) 10px;}
+  .decor-box{margin:12px var(--bleed) 0;}
+  .card-note{margin:8px var(--bleed) 0;}
+  .ing-table, .group table{border-left:0; border-right:0; border-radius:0;}
+  .ing-table td:first-child, .ing-table th:first-child, .group td:first-child, .group th:first-child{padding-left:var(--bleed);}
+  .ing-table td:last-child, .ing-table th:last-child, .group td:last-child, .group th:last-child{padding-right:var(--bleed);}
+  .inv-tare{margin-left:0;}
+
+  /* банкеты: карточка и строки — во всю ширину */
+  .bq-ev{margin:0 calc(-1 * var(--bleed)) 12px; border-left:0; border-right:0; border-radius:0;}
+  .bq-ev-h{padding:11px var(--bleed);}
+  .bq-ev-h:active{background:rgba(128,128,128,.12);}
+  .bq-grp{padding:10px var(--bleed) 4px;}
+  .bq-it{padding:9px var(--bleed);}
+  .bq-it.ed{padding:10px var(--bleed);}
+  .bq-edit{padding:12px var(--bleed);}
+  .bq-col .bq-act{padding:10px var(--bleed);}
+  .bq-col .bq-edit + .bq-act{padding-top:0;}
+  .bq-res{margin:0 calc(-1 * var(--bleed)); padding:10px var(--bleed);}
+  .bq-empty{padding-left:var(--bleed); padding-right:var(--bleed);}
+  details.bq-past > summary{margin-left:2px;}
+</style>
+<style id="nx4">
+  /* ===== Шаг 4: цветные метки категорий, крупнее фильтры, читаемее мелкий текст ===== */
+  details.card, .item, .group{border-left:3px solid var(--dot,transparent);}
+  details.card > summary.card-head{padding-left:calc(var(--bleed) - 3px);}
+  .item{padding-left:calc(var(--bleed) - 3px);}
+  .group-title{padding-left:calc(var(--bleed) - 3px);}
+  .bq-res{border-left:3px solid var(--dot,transparent); padding-left:calc(var(--bleed) - 3px);}
+
+  /* фильтры — удобнее попадать пальцем */
+  .pill, button.pill{height:36px; padding:0 14px; font-size:.86rem;}
+  .pills, .pills.scroll{gap:8px;}
+  .bq-chip{height:36px; padding:0 13px; font-size:.86rem;}
+  .pill .n{font-size:.74rem;}
+
+  /* мелкий текст крупнее и контрастнее */
+  .it-sub, .bq-it .sb{font-size:.78rem;}
+  .it-sup{font-size:.78rem;}
+  .it-note, .bq-it .sb b{font-size:.74rem;}
+  .prep-note, .card-note, .cat-note, .group-title .note{font-size:.82rem;}
+  .ing-table th, .group th{font-size:.72rem;}
+  .ing-table td, .group td{font-size:.9rem;}
+  .decor-list li{font-size:.88rem;}
+  .decor-val{font-size:.82rem;}
+  .badge{font-size:.76rem;}
+  .bq-ev-h .c, .bq-lbl{font-size:.8rem;}
+  .bq-grp{font-size:.74rem;}
+  .inv-fld label{font-size:.68rem;}
+  .inv-prog{font-size:.8rem;}
+  .count, #count{font-size:.8rem;}
+  :root{--muted:#C9B4A2;}
+</style>
+<style id="nx-stock">
+  /* Остатки: плоские строки, цветные метки статуса (зелёный / жёлтый / красный) */
+  .qv b{font-weight:600;}
+  .srows{margin-top:8px;}
+  .srow{border-top:1px solid var(--row-line); border-radius:0; padding:8px 0 8px 10px;}
+  .srow .sn{font-weight:500; font-size:.92rem;}
+  .norm-note{font-weight:500; font-size:.74rem; color:var(--muted);}
+  .item.st-ok{border-left-color:#7FB08A !important;}
+  .item.st-low{border-left-color:#E0A458 !important;}
+  .item.st-crit{border-left-color:#D8584E !important;}
+  .item.is-hidden, .srow.is-hidden{opacity:.5;}
+  #meta{background:var(--row); border-radius:6px; padding:9px 12px; margin:0 0 12px;}
+  .inv-sheet label{display:block; margin:6px 0 -4px; font-size:.78rem; color:var(--muted);}
+  .inv-sheet input{width:100%; height:40px; padding:0 12px; border:1px solid var(--row-line); border-radius:6px; background:var(--field); color:var(--ink); font-size:1rem; box-sizing:border-box; outline:none; -webkit-appearance:none; appearance:none;}
+  .inv-sheet input:focus{border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);}
+  .inv-sheet .err{color:#E58B80; font-size:.8rem;}
+</style>
 </head>
 <body>
 <script>
