@@ -918,7 +918,7 @@
       openM('<h3>Отправляю…</h3><p>Сохраняю остатки в общие данные.</p>');
       HIP.update(function(st){
         if(st.baseline) st.history=(st.history||[]).concat([{baseline:st.baseline,supplies:st.supplies||[],deductions:st.deductions||[],corrections:st.corrections||[]}]).slice(-3);
-        st.baseline=baseline(); st.supplies=[]; st.deductions=[]; st.corrections=[]; return st;
+        st.baseline=baseline(); st.supplies=[]; st.deductions=[]; st.corrections=[]; st.sales=[]; return st;
       }).then(function(){
         openM('<h3>Готово</h3><p>Остатки отправлены. Остальные увидят их на странице «Остатки» через минуту-две.</p><button class="main" id="m-x">Закрыть</button>'); $('m-x').onclick=closeM;
       }).catch(function(e){

@@ -650,6 +650,95 @@
   .item.is-hidden, .srow.is-hidden{opacity:.5;}
   #meta{background:var(--row); border-radius:6px; padding:9px 12px; margin:0 0 12px;}
 </style>
+<style id="nx-sup">
+  /* ===== Остатки: без прыжков, подстроки групп от края до края, кнопки и экран «Поставка» ===== */
+  /* вход без сдвига: только плавное проявление */
+  html.entry-veil .tagline, html.entry-veil .pills, html.entry-veil main, html.entry-veil footer, html.entry-veil .search, html.entry-veil .nav-row, html.entry-veil .act-row{transform:none;}
+  /* строка со сводкой занимает место заранее, чтобы список не прыгал, когда придут данные */
+  #meta{min-height:58px; box-sizing:border-box;}
+  /* подстроки групп (например «Брют», «Экстра брют») — на всю ширину, как остальные строки */
+  .item.grp{padding:8px var(--bleed) 0 calc(var(--bleed) - 3px);}
+  .grp-head{padding-bottom:8px;}
+  .srows{margin:0 calc(-1 * var(--bleed)); padding:0;}
+  .srow{margin:0; border-top:1px solid var(--row-line); border-left:3px solid transparent; padding:10px var(--bleed) 10px calc(var(--bleed) + 5px);}
+  .srow.st-ok{border-left-color:#7FB08A;} .srow.st-low{border-left-color:#E0A458;} .srow.st-crit{border-left-color:#D8584E;}
+
+  /* кнопки сверху — только в админ-режиме */
+  .adm-only{display:none;}
+  body.hip-admin .adm-only{display:flex;}
+  body.edit .act-row{display:none !important;}
+  .act-row{gap:8px; margin:0 0 12px;}
+  .act-btn{flex:1 1 0; min-width:0; display:flex; align-items:center; justify-content:flex-start; gap:10px; height:40px; padding:0 14px; border:1px solid var(--row-line); border-radius:6px; background:var(--field); color:var(--ink); font:500 .92rem var(--nf); box-shadow:none; -webkit-tap-highlight-color:transparent;}
+  .act-btn svg{width:20px; height:20px; flex:0 0 auto; fill:none; stroke:var(--accent-ink); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round;}
+  .act-btn span{flex:1; text-align:left;}
+  .act-btn i{font-style:normal; font-family:'IBM Plex Mono',monospace; color:var(--accent-ink);}
+  .act-btn:active{background:color-mix(in srgb, var(--accent) 16%, transparent);}
+
+  /* экран «Поставка» */
+  html.sp-lock{overflow:hidden;}
+  .sp{--sp-ext:160px; position:fixed; top:calc(-1 * var(--sp-ext)); left:0; right:0; bottom:0; z-index:200; color:var(--ink); font-family:var(--nf); background-color:var(--bg); background-image:linear-gradient(rgba(27,18,13,0.55), rgba(27,18,13,0.55)), url("bg-bar.jpg"); background-size:420px auto, 420px auto; background-position:top center, top center; -webkit-font-smoothing:antialiased;}
+  .sp[hidden]{display:none;}
+  .sp-sc{position:absolute; top:var(--sp-ext); left:0; right:0; bottom:0; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;}
+  .sp-top{position:sticky; top:0; z-index:3; display:flex; align-items:center; gap:8px; padding:8px 16px; background:color-mix(in srgb, var(--bg) 94%, transparent); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border-bottom:1px solid var(--row-line);}
+  .sp-top h2{flex:1; margin:0; text-align:center; font:800 .95rem/1.2 var(--nf); letter-spacing:.05em; text-transform:uppercase;}
+  .sp-x{width:44px; height:44px; margin-left:-12px; display:flex; align-items:center; justify-content:center; border:0; background:none; color:var(--accent-ink); -webkit-tap-highlight-color:transparent;}
+  .sp-x svg{width:11px; height:19px;}
+  .sp-pad{width:32px;}
+  .sp-body{max-width:560px; margin:0 auto; padding:14px 16px 130px;}
+  .sp-hint{margin:6px 2px; color:var(--muted); font-size:.86rem;}
+  .sp-h{margin:18px 2px 8px; font:700 .74rem var(--nf); letter-spacing:.06em; text-transform:uppercase; color:var(--muted);}
+  .sp-row{display:flex; align-items:center; justify-content:space-between; gap:10px; width:calc(100% + 2 * var(--bleed)); margin:0 calc(-1 * var(--bleed)); padding:11px var(--bleed); border:0; border-bottom:1px solid var(--row-line); background:var(--row); color:var(--ink); text-align:left; font:600 .98rem var(--nf); -webkit-tap-highlight-color:transparent;}
+  .sp-row:active{background:color-mix(in srgb, var(--accent) 14%, transparent);}
+  .sp-n{min-width:0;}
+  .sp-g{flex:0 0 auto; font-weight:400; font-size:.78rem; color:var(--muted); white-space:nowrap;}
+  .sp-form{margin:0 calc(-1 * var(--bleed)); padding:14px var(--bleed) 16px; background:var(--row); border-top:1px solid var(--row-line); border-bottom:1px solid var(--row-line);}
+  .sp-fh{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px;}
+  .sp-fn{font-weight:700; font-size:1.05rem; line-height:1.25;}
+  .sp-cur{margin-top:3px; font-size:.82rem; color:var(--muted);}
+  .sp-link{flex:0 0 auto; padding:2px 0; border:0; background:none; color:var(--accent-ink); font:500 .84rem var(--nf); text-decoration:underline; text-underline-offset:2px;}
+  .sp-lbl{display:block; margin:12px 0 6px; font-size:.8rem; color:var(--muted);}
+  .sp-chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .sp-chip{height:38px; padding:0 14px; border:0; border-radius:4px; background:var(--field); color:var(--ink); font:500 .92rem var(--nf); -webkit-tap-highlight-color:transparent;}
+  .sp-chip.on{background:var(--accent); color:var(--bg); font-weight:600;}
+  .sp-in{width:100%; height:44px; padding:0 12px; border:1px solid var(--row-line); border-radius:6px; background:var(--field); color:var(--ink); font:600 1.05rem var(--nf); box-sizing:border-box; outline:none; -webkit-appearance:none; appearance:none;}
+  .sp-in:focus{border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);}
+  .sp-prev{min-height:1.4em; margin:10px 0 0; font:600 1rem var(--nf); color:var(--accent-ink);}
+  .sp-add, .sp-save{display:block; width:100%; height:44px; margin-top:12px; border:0; border-radius:6px; background:var(--accent); color:var(--bg); font:600 .95rem var(--nf);}
+  .sp-add[disabled]{opacity:.4;}
+  .sp-dr, .sp-lg{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 calc(-1 * var(--bleed)); padding:10px var(--bleed); border-bottom:1px solid var(--row-line); background:var(--row);}
+  .sp-dr .t, .sp-lg .t{min-width:0; display:flex; flex-direction:column; gap:2px; font-weight:600; font-size:.96rem; line-height:1.25;}
+  .sp-dr .t small, .sp-lg .t small{font-weight:400; font-size:.8rem; color:var(--muted);}
+  .sp-rm{flex:0 0 auto; width:36px; height:36px; border:0; border-radius:4px; background:none; color:var(--muted); font:400 1.3rem/1 var(--nf);}
+  .sp-undo{flex:0 0 auto; padding:6px 0 6px 10px; border:0; background:none; color:var(--accent-ink); font:500 .84rem var(--nf); text-decoration:underline; text-underline-offset:2px;}
+  .sp-lg .q{flex:0 0 auto; font:600 .95rem var(--nf); color:#9DC8A6;}
+  .sp-msg{margin:12px 2px 0; padding:9px 12px; border-radius:6px; background:color-mix(in srgb, #7FB08A 20%, transparent); font-size:.9rem;}
+  .sp-msg.err{background:color-mix(in srgb, #D8584E 22%, transparent);}
+  .sp-dock{position:absolute; left:0; right:0; bottom:0; z-index:4; padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px)); background:linear-gradient(to bottom, rgba(36,22,17,0), var(--bg) 40%);}
+  .sp-dock[hidden]{display:none;}
+  .sp-dock .sp-save{margin:0 auto; max-width:528px;}
+</style>
+<style id="nx-sl">
+  /* ===== Продажи ===== */
+  .sl-file{display:flex; align-items:center; justify-content:center; width:100%; height:44px; margin:0; border-radius:6px; background:var(--accent); color:var(--bg); font:600 .95rem var(--nf); cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  .sl-info{margin:12px 2px 0; font-size:.9rem; line-height:1.45;}
+  .sl-info b{font-weight:700;}
+  .sl-warn{margin:10px 2px 0; padding:9px 12px; border-radius:6px; background:color-mix(in srgb, #E0A458 22%, transparent); font-size:.88rem; line-height:1.4;}
+  .sl-row{display:flex; align-items:center; justify-content:space-between; gap:10px; width:calc(100% + 2 * var(--bleed)); margin:0 calc(-1 * var(--bleed)); padding:10px var(--bleed); border:0; border-bottom:1px solid var(--row-line); border-left:3px solid transparent; background:var(--row); color:var(--ink); text-align:left; font:inherit; -webkit-tap-highlight-color:transparent;}
+  .sl-row:active{background:color-mix(in srgb, var(--accent) 14%, transparent);}
+  .sl-row.s-none{border-left-color:#E0A458;} .sl-row.s-sug{border-left-color:#8FB7D4;} .sl-row.s-ok{border-left-color:#7FB08A;} .sl-row.s-ign{opacity:.6;}
+  .sl-t{min-width:0; display:flex; flex-direction:column; gap:2px; font-weight:600; font-size:.96rem; line-height:1.25;}
+  .sl-t small{font-weight:400; font-size:.78rem; color:var(--muted); line-height:1.3;}
+  .sl-c{flex:0 0 auto; font:600 .95rem var(--nf); color:var(--ink);}
+  .sl-c i{font-style:normal; color:var(--muted); font-weight:400;}
+  .sl-ed{margin:0 calc(-1 * var(--bleed)); padding:14px var(--bleed) 16px; background:var(--row); border-top:1px solid var(--row-line); border-bottom:1px solid var(--row-line);}
+  .sl-comp{display:flex; align-items:center; gap:8px; margin:0 0 8px;}
+  .sl-comp .n{flex:1; min-width:0; font-weight:600; font-size:.92rem; line-height:1.25;}
+  .sl-comp .sp-in{width:84px; height:40px; text-align:right; padding:0 10px; font-size:1rem;}
+  .sl-comp .u{flex:0 0 28px; font-size:.8rem; color:var(--muted);}
+  .sl-btns{display:flex; gap:8px; margin-top:14px;}
+  .sl-btns button{flex:1; height:44px; border-radius:6px; border:1px solid var(--row-line); background:var(--field); color:var(--ink); font:500 .92rem var(--nf);}
+  .sl-btns button.main{background:var(--accent); border-color:transparent; color:var(--bg); font-weight:600;}
+</style>
 </head>
 <body>
 <script>
@@ -677,6 +766,10 @@
 <div class="brand">
 <a class="back-btn" id="backBtn" href="index.html" data-nav="home" aria-label="В меню"><svg viewBox="0 0 11 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5 2 9.5l7.5 8"/></svg></a>
 <h1 class="brand-title" id="ttl">Остатки</h1>
+</div>
+<div class="act-row adm-only" id="actRow">
+<button class="act-btn" id="supOpen" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 8 12 4l8.5 4v9L12 21l-8.5-4z"/><path d="M3.5 8 12 12l8.5-4M12 12v9"/></svg><span>Поставка</span><i>→</i></button>
+<button class="act-btn" id="slOpen" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><span>Продажи</span><i>→</i></button>
 </div>
 <div class="search"><input id="q" type="search" placeholder="Поиск позиции" autocomplete="off" enterkeyhint="search"/></div>
 <nav class="pills scroll" id="pills">
@@ -706,6 +799,30 @@
     <a class="sig-tg" href="https://t.me/wish_adc" target="_blank" rel="noopener">@wish_adc</a>
   </div>
 </footer>
+<div class="sp" id="sp" hidden role="dialog" aria-label="Поставка"><div class="sp-sc" id="spSc">
+  <div class="sp-top"><button class="sp-x" id="spClose" type="button" aria-label="Назад"><svg viewBox="0 0 11 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5 2 9.5l7.5 8"/></svg></button><h2>Поставка</h2><span class="sp-pad"></span></div>
+  <div class="sp-body">
+    <div class="search"><input id="spQ" type="search" placeholder="Найти позицию" autocomplete="off" enterkeyhint="search"/></div>
+    <div id="spRes"></div>
+    <div class="sp-form" id="spForm" hidden></div>
+    <div id="spDraftBox" hidden><p class="sp-h">В поставке</p><div id="spDraft"></div></div>
+    <p class="sp-msg" id="spMsg" hidden></p>
+    <p class="sp-h" id="spLogH" hidden>Последние поставки</p><div id="spLog"></div>
+  </div>
+</div>
+<div class="sp-dock" id="spDock" hidden><button class="sp-save" id="spSave" type="button">Сохранить поставку</button></div></div>
+<div class="sp" id="sl" hidden role="dialog" aria-label="Продажи"><div class="sp-sc" id="slSc">
+  <div class="sp-top"><button class="sp-x" id="slClose" type="button" aria-label="Назад"><svg viewBox="0 0 11 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5 2 9.5l7.5 8"/></svg></button><h2>Продажи</h2><span class="sp-pad"></span></div>
+  <div class="sp-body">
+    <div id="slPick"><label class="sl-file" for="slFile">Выбрать отчёт о продажах (.xlsx)</label><input type="file" id="slFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden/></div>
+    <div id="slInfo"></div>
+    <p class="sp-msg" id="slMsg" hidden></p>
+    <div id="slList"></div>
+    <div class="sl-ed" id="slEdit" hidden></div>
+    <p class="sp-h" id="slLogH" hidden>Загруженные отчёты</p><div id="slLog"></div>
+  </div>
+</div>
+<div class="sp-dock" id="slDock" hidden><button class="sp-save" id="slApply" type="button">Списать продажи</button></div></div>
 <script src="core.js"></script>
 <script>
 (function(){
@@ -884,8 +1001,432 @@
   $('q').addEventListener('input',function(){ if(this.value.trim()!==''&&cat!=='all') setCat('all'); apply(); });
   $('q').addEventListener('focus',function(){ if(this.value){ this.value=''; apply(); } });
   pills.forEach(function(b){ b.addEventListener('click',function(){ setCat(b.getAttribute('data-cat')); $('q').value=''; apply(); window.scrollTo(0,0); }); });
+  // ---------- поставки (только админ) ----------
+  var SP=$('sp'), SPSC=$('spSc'), spQ=$('spQ'), spRes=$('spRes'), spForm=$('spForm'), spDraftBox=$('spDraftBox'), spDraft=$('spDraft'), spDock=$('spDock'), spSave=$('spSave'), spMsg=$('spMsg'), spLog=$('spLog'), spLogH=$('spLogH');
+  var rootEl=document.documentElement; rootEl.appendChild(SP);
+  var VOLS=[0.5,0.7,0.75,1], draft=[], pick=null, pvol=null, pcustom=false, pqty='', saving=false;
+  var spCur=null, spLayer=0, spPushed=0, spSelfPop=false, spAnim=null, SP_MS=520, SP_EASE='cubic-bezier(.32,.08,.24,1)', SP_SHADOW='-14px 0 36px rgba(0,0,0,.18)';
+  function lsg(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lss(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function r3(x){ return Math.round(x*1000)/1000; }
+  function liters(o){ return o&&o.u==='л'; }
+  function nameOf(k){
+    for(var i=0;i<entries.length;i++){ var e=entries[i]; if(e.key===k) return e.n; if(e.subs) for(var j=0;j<e.subs.length;j++) if(e.subs[j].key===k) return e.n+' · '+e.subs[j].n; }
+    return k;
+  }
+  function spOptions(){
+    var out=[]; entries.forEach(function(e){
+      if(hid(e.key)) return;
+      if(e.subs) e.subs.forEach(function(sb){ if(!hid(sb.key)) out.push({key:sb.key,name:e.n+' · '+sb.n,u:e.u,g:e.g,base:sb.base}); });
+      else out.push({key:e.key,name:e.n,u:e.u,g:e.g,base:e.base});
+    });
+    return out;
+  }
+  function when(iso){ var d=new Date(iso); if(isNaN(d)) return ''; function z(n){ return ('0'+n).slice(-2); } return z(d.getDate())+'.'+z(d.getMonth()+1)+' '+z(d.getHours())+':'+z(d.getMinutes()); }
+  function spShowMsg(text,isErr){ spMsg.textContent=text; spMsg.className='sp-msg'+(isErr?' err':''); spMsg.hidden=!text; }
+
+  function spResults(){
+    spRes.innerHTML='';
+    if(pick) return;
+    var t=norm(spQ.value).split(/\s+/).filter(Boolean);
+    if(!st||!st.baseline){ spRes.appendChild(el('p','sp-hint','Данных пока нет: сначала отправь инвенту.')); return; }
+    if(!t.length){ spRes.appendChild(el('p','sp-hint','Начни вводить название позиции.')); return; }
+    var n=0;
+    spOptions().forEach(function(o){
+      if(n>=40) return;
+      var hay=norm(o.name+' '+o.g); if(!t.every(function(x){ return hay.indexOf(x)>-1; })) return;
+      n++; var b=el('button','sp-row'); b.type='button'; b.appendChild(el('span','sp-n',o.name)); b.appendChild(el('span','sp-g',o.g+' · '+o.u));
+      b.addEventListener('click',function(){ choose(o); }); spRes.appendChild(b);
+    });
+    if(!n) spRes.appendChild(el('p','sp-hint','Ничего не найдено.'));
+  }
+  function choose(o){
+    pick=o; pcustom=false; pqty=''; pvol=null;
+    if(liters(o)){ var m=parseFloat(lsg('hip:vol:'+o.key)); if(m>0){ pvol=m; pcustom=VOLS.indexOf(m)<0; } }
+    spRes.innerHTML=''; spForm.hidden=false; buildForm(true); spShowMsg('');
+  }
+  function unpick(){ pick=null; spForm.hidden=true; spForm.innerHTML=''; spQ.value=''; spResults(); }
+  function calc(){
+    var n=pqty.trim()===''?null:P(pqty); if(n===null||n<=0) return null;
+    if(liters(pick)){ if(!(pvol>0)) return null; return {b:n,v:pvol,q:r3(n*pvol)}; }
+    return {b:null,v:null,q:r3(n)};
+  }
+  function preview(){
+    var c=calc(), pv=$('spPrev'), add=$('spAdd'); if(!pv) return;
+    if(!c){ pv.textContent=''; add.disabled=true; return; }
+    pv.textContent=liters(pick)?(fmt(c.b)+' × '+fmt(c.v)+' л = '+fmt(c.q)+' л'):('+ '+fmt(c.q)+' '+pick.u);
+    add.disabled=false;
+  }
+  function buildForm(focusQty){
+    var o=pick; spForm.innerHTML='';
+    var fh=el('div','sp-fh'), l=el('div'); l.appendChild(el('div','sp-fn',o.name)); l.appendChild(el('div','sp-cur','Сейчас: '+fmt(cur(o.key,o.base))+' '+o.u)); fh.appendChild(l);
+    var ch=el('button','sp-link','Другая'); ch.type='button'; ch.addEventListener('click',unpick); fh.appendChild(ch); spForm.appendChild(fh);
+    if(liters(o)){
+      spForm.appendChild(el('span','sp-lbl','Объём бутылки, л'));
+      var cs=el('div','sp-chips');
+      VOLS.forEach(function(v){ var b=el('button','sp-chip'+((!pcustom&&pvol===v)?' on':''),fmt(v)); b.type='button'; b.addEventListener('click',function(){ pvol=v; pcustom=false; lss('hip:vol:'+o.key,String(v)); buildForm(false); }); cs.appendChild(b); });
+      var oc=el('button','sp-chip'+(pcustom?' on':''),'другой'); oc.type='button'; oc.addEventListener('click',function(){ pcustom=true; pvol=null; buildForm(false); var vc=$('spVc'); if(vc) vc.focus(); }); cs.appendChild(oc);
+      spForm.appendChild(cs);
+      if(pcustom){
+        var vc=el('input','sp-in'); vc.id='spVc'; vc.type='text'; vc.setAttribute('inputmode','decimal'); vc.setAttribute('autocomplete','off'); vc.placeholder='Объём, л (например 0,33)'; vc.style.marginTop='8px'; if(pvol) vc.value=fmt(pvol);
+        vc.addEventListener('input',function(){ var x=vc.value.trim()===''?null:P(vc.value); pvol=(x&&x>0)?x:null; if(pvol) lss('hip:vol:'+o.key,String(pvol)); preview(); });
+        spForm.appendChild(vc);
+      }
+    }
+    spForm.appendChild(el('span','sp-lbl',liters(o)?'Бутылок':'Количество, '+o.u));
+    var qi=el('input','sp-in'); qi.id='spN'; qi.type='text'; qi.setAttribute('inputmode','decimal'); qi.setAttribute('autocomplete','off'); qi.placeholder='0'; qi.value=pqty;
+    qi.addEventListener('input',function(){ pqty=qi.value; preview(); }); spForm.appendChild(qi);
+    var pv=el('p','sp-prev'); pv.id='spPrev'; spForm.appendChild(pv);
+    var add=el('button','sp-add','Добавить в список'); add.id='spAdd'; add.type='button'; add.disabled=true;
+    add.addEventListener('click',function(){ var c=calc(); if(!c) return; draft.push({key:o.key,name:o.name,u:o.u,b:c.b,v:c.v,q:c.q}); unpick(); renderDraft(); });
+    spForm.appendChild(add); preview();
+    if(focusQty) setTimeout(function(){ var q=$('spN'); if(q) q.focus(); },60);
+  }
+  function renderDraft(){
+    spDraft.innerHTML=''; spDraftBox.hidden=!draft.length; spDock.hidden=!draft.length;
+    draft.forEach(function(x,i){
+      var r=el('div','sp-dr'), tx=el('div','t'); tx.appendChild(el('span','',x.name)); tx.appendChild(el('small','',x.v?(fmt(x.b)+' × '+fmt(x.v)+' л = '+fmt(x.q)+' л'):('+ '+fmt(x.q)+' '+x.u)));
+      var rm=el('button','sp-rm','×'); rm.type='button'; rm.setAttribute('aria-label','Убрать'); rm.addEventListener('click',function(){ draft.splice(i,1); renderDraft(); });
+      r.appendChild(tx); r.appendChild(rm); spDraft.appendChild(r);
+    });
+    spSave.textContent='Сохранить поставку'+(draft.length?' · '+draft.length+' поз.':'');
+  }
+  function renderLog(){
+    spLog.innerHTML=''; var list=((st&&st.supplies)||[]).slice(-15).reverse(); spLogH.hidden=!list.length;
+    list.forEach(function(x){
+      var r=el('div','sp-lg'), tx=el('div','t'); tx.appendChild(el('span','',x.n||nameOf(x.k)));
+      tx.appendChild(el('small','',when(x.t)+(x.v?(' · '+fmt(x.b)+' × '+fmt(x.v)+' л'):'')));
+      var q=el('span','q','+'+fmt(x.q)); var un=el('button','sp-undo','Отменить'); un.type='button'; un.addEventListener('click',function(){ undoSupply(x); });
+      r.appendChild(tx); r.appendChild(q); r.appendChild(un); spLog.appendChild(r);
+    });
+  }
+  function sameSup(a,b){ return a.id?(a.id===b.id):(a.t===b.t&&a.k===b.k&&a.q===b.q); }
+  function undoSupply(x){
+    var d=HIP.dialog('<h3>Отменить поставку?</h3><p></p><button class="main" id="u-ok">Отменить поставку</button><button id="u-x">Не надо</button>');
+    rootEl.appendChild(d.el.parentNode);   // окно поверх экрана «Поставка» (страница под ним скрыта)
+    d.el.querySelector('p').textContent=(x.n||nameOf(x.k))+': остаток уменьшится на '+fmt(x.q)+'.';
+    d.el.querySelector('#u-x').onclick=d.close;
+    d.el.querySelector('#u-ok').onclick=function(){
+      d.el.querySelector('p').textContent='Отменяю…';
+      HIP.update(function(s){ s.supplies=(s.supplies||[]).filter(function(y){ return !sameSup(y,x); }); return s; })
+        .then(function(res){ st=res; render(); renderLog(); d.close(); spShowMsg('Поставка отменена.'); })
+        .catch(function(e){ d.el.querySelector('p').textContent=(e&&e.message)||'Не получилось.'; });
+    };
+  }
+  spSave.addEventListener('click',function(){
+    if(saving||!draft.length) return;
+    if(!HIP.isAdmin()){ spShowMsg('Нужен админ-режим: вернись назад, нажми на подпись d.b wish и войди по ключу.',true); return; }
+    saving=true; spSave.disabled=true; spSave.textContent='Сохраняю…'; spShowMsg('');
+    var now=new Date().toISOString(), rows=draft.map(function(x,i){ var r={id:'s'+Date.now().toString(36)+i,t:now,k:x.key,n:x.name,q:x.q}; if(x.v){ r.b=x.b; r.v=x.v; } return r; });
+    HIP.update(function(s){ s.supplies=(s.supplies||[]).concat(rows); return s; }).then(function(res){
+      st=res; draft=[]; saving=false; spSave.disabled=false; render(); renderDraft(); renderLog(); spShowMsg('Поставка сохранена, остатки обновлены.'); SPSC.scrollTop=0;
+    }).catch(function(e){ saving=false; spSave.disabled=false; renderDraft(); spShowMsg((e&&e.message)||'Не получилось сохранить.',true); });
+  });
+  spQ.addEventListener('input',function(){ if(pick) return; spResults(); });
+  spQ.addEventListener('focus',function(){ if(!pick&&spQ.value){ spQ.value=''; spResults(); } });
+
+  // слой: лист выезжает справа, как переход между картами; «назад» закрывает
+  function spReduce(){ return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  function spReset(e){ e.style.transition=''; e.style.transform=''; e.style.filter=''; e.style.boxShadow=''; }
+  function spSettle(){ if(spAnim){ var f=spAnim; spAnim=null; clearTimeout(f.t); f.fin(); } }
+  function spSlideIn(){
+    var below=document.body; spSettle(); spCur.hidden=false;
+    if(spReduce()){ below.style.visibility='hidden'; return; }
+    spReset(below); below.style.visibility='';
+    spCur.style.transition='none'; spCur.style.transform='translateX(100%)'; spCur.style.boxShadow=SP_SHADOW; void spCur.offsetHeight;
+    var f={fin:function(){ spReset(SP); spReset(below); below.style.visibility='hidden'; }};
+    spAnim=f; f.t=setTimeout(function(){ if(spAnim===f){ spAnim=null; f.fin(); } },SP_MS+40);
+    requestAnimationFrame(function(){ if(spAnim!==f) return;
+      spCur.style.transition='transform '+SP_MS+'ms '+SP_EASE; below.style.transition='transform '+SP_MS+'ms '+SP_EASE+', filter '+SP_MS+'ms ease';
+      spCur.style.transform='translateX(0)'; below.style.transform='translateX(-20%)'; below.style.filter='brightness(.86)'; });
+  }
+  function spSlideOut(after){
+    var below=document.body; spSettle();
+    function end(){ spCur.hidden=true; spReset(SP); spReset(below); below.style.visibility=''; if(after) after(); }
+    if(spReduce()){ end(); return; }
+    below.style.transition='none'; below.style.visibility=''; below.style.transform='translateX(-20%)'; below.style.filter='brightness(.86)';
+    spCur.style.transition='none'; spCur.style.transform='translateX(0)'; spCur.style.boxShadow=SP_SHADOW; void spCur.offsetHeight;
+    var f={fin:end}; spAnim=f; f.t=setTimeout(function(){ if(spAnim===f){ spAnim=null; f.fin(); } },SP_MS+40);
+    requestAnimationFrame(function(){ if(spAnim!==f) return;
+      spCur.style.transition='transform '+SP_MS+'ms '+SP_EASE; below.style.transition='transform '+SP_MS+'ms '+SP_EASE+', filter '+SP_MS+'ms ease';
+      spCur.style.transform='translateX(100%)'; below.style.transform='translateX(0)'; below.style.filter='brightness(1)'; });
+  }
+  function spLock(){ rootEl.classList.toggle('sp-lock',spLayer>0); }
+  function spUiBack(){ if(spPushed>0){ spPushed--; spSelfPop=true; try{ history.back(); return; }catch(e){ spSelfPop=false; } } spPop(); }
+  function spPop(){ if(spLayer===2){ spLayer=1; if(typeof slEditHide==='function') slEditHide(); } else if(spLayer===1){ spLayer=0; spSlideOut(spLock); } }
+  window.addEventListener('popstate',function(){ if(!spSelfPop&&spPushed>0) spPushed--; spSelfPop=false; spPop(); });
+  $('spClose').addEventListener('click',spUiBack);
+  function spOpen(){
+    if(spLayer) return;
+    if(!HIP.isAdmin()){ HIP.adminDialog(spOpen); return; }
+    pick=null; pqty=''; pvol=null; spQ.value=''; spForm.hidden=true; spForm.innerHTML=''; spShowMsg('');
+    spResults(); renderDraft(); renderLog();
+    spCur=SP; spLayer=1; spLock(); spSlideIn(); SPSC.scrollTop=0;
+    try{ history.pushState({sp:1},''); spPushed++; }catch(e){}
+  }
+  $('supOpen').addEventListener('click',spOpen);
+  // ---------- продажи (только админ) ----------
+  var SL=$('sl'), SLSC=$('slSc'), slFile=$('slFile'), slPick=$('slPick'), slInfo=$('slInfo'), slList=$('slList'), slEdit=$('slEdit'), slDock=$('slDock'), slApply=$('slApply'), slMsg=$('slMsg'), slLog=$('slLog'), slLogH=$('slLogH');
+  rootEl.appendChild(SL);
+  var rep=null, mapDraft={}, slOpts=[], slOptMap={}, ed=null, slBlock='', slBusy=false;
+
+  // --- чтение .xlsx прямо в браузере (zip + xml), без внешних библиотек ---
+  function rd16(a,o){ return a[o]|(a[o+1]<<8); }
+  function rd32(a,o){ return (a[o]|(a[o+1]<<8)|(a[o+2]<<16)|(a[o+3]<<24))>>>0; }
+  async function inflateRaw(bytes){ var ds=new DecompressionStream('deflate-raw'); return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(ds)).arrayBuffer()); }
+  function unzip(buf){
+    var a=new Uint8Array(buf), n=a.length, e=-1;
+    for(var i=n-22;i>=Math.max(0,n-70000);i--){ if(rd32(a,i)===0x06054b50){ e=i; break; } }
+    if(e<0) throw new Error('Это не файл .xlsx.');
+    var cnt=rd16(a,e+10), off=rd32(a,e+16), files={};
+    for(var k=0;k<cnt;k++){
+      if(rd32(a,off)!==0x02014b50) break;
+      var meth=rd16(a,off+10), csz=rd32(a,off+20), nl=rd16(a,off+28), xl=rd16(a,off+30), cl=rd16(a,off+32), lo=rd32(a,off+42);
+      files[new TextDecoder().decode(a.subarray(off+46,off+46+nl))]={meth:meth,csz:csz,lo:lo}; off+=46+nl+xl+cl;
+    }
+    return {files:files,a:a};
+  }
+  async function zget(z,name){
+    var f=z.files[name]; if(!f) return null; var a=z.a, lo=f.lo, s0=lo+30+rd16(a,lo+26)+rd16(a,lo+28), data=a.subarray(s0,s0+f.csz);
+    if(f.meth===0) return new TextDecoder().decode(data);
+    if(f.meth===8) return new TextDecoder().decode(await inflateRaw(data));
+    throw new Error('Неподдерживаемое сжатие в файле.');
+  }
+  function colIdx(ref){ var m=/^([A-Z]+)/.exec(ref); var n=0; for(var i=0;i<m[1].length;i++) n=n*26+(m[1].charCodeAt(i)-64); return n-1; }
+  function xmlText(node){ var ts=node.getElementsByTagName('t'), s=''; for(var i=0;i<ts.length;i++){ var p=ts[i].parentNode; if(p&&p.nodeName==='rPh') continue; s+=ts[i].textContent; } return s; }
+  async function readXlsx(buf){
+    if(typeof DecompressionStream==='undefined') throw new Error('Этот браузер не умеет открывать .xlsx. Открой карту в Safari или Chrome (обнови iOS до 16.4 и новее).');
+    var z=unzip(buf), ss=[], sx=await zget(z,'xl/sharedStrings.xml');
+    if(sx){ var sd=new DOMParser().parseFromString(sx,'application/xml'), sis=sd.getElementsByTagName('si'); for(var i=0;i<sis.length;i++) ss.push(xmlText(sis[i])); }
+    var names=Object.keys(z.files).filter(function(n){ return /^xl\/worksheets\/sheet\d+\.xml$/.test(n); }).sort(function(x,y){ return parseInt(x.match(/(\d+)\.xml/)[1],10)-parseInt(y.match(/(\d+)\.xml/)[1],10); });
+    if(!names.length) throw new Error('В файле нет листов.');
+    var d=new DOMParser().parseFromString(await zget(z,names[0]),'application/xml'), rows=[], rs=d.getElementsByTagName('row');
+    for(var r=0;r<rs.length;r++){
+      var cs=rs[r].getElementsByTagName('c'), row=[];
+      for(var c=0;c<cs.length;c++){
+        var cell=cs[c], ref=cell.getAttribute('r'), ty=cell.getAttribute('t'), v=cell.getElementsByTagName('v')[0], val=null;
+        if(ty==='s'&&v) val=ss[parseInt(v.textContent,10)]; else if(ty==='inlineStr') val=xmlText(cell); else if(v) val=(ty==='str'||ty==='e')?v.textContent:parseFloat(v.textContent);
+        if(ref) row[colIdx(ref)]=val;
+      }
+      rows.push(row);
+    }
+    return rows;
+  }
+  function cellS(x){ return (x===undefined||x===null)?'':String(x).replace(/\s+/g,' ').trim(); }
+  function parseReport(rows){
+    var date=null, hi=-1, gi=-1, di=-1, ci=-1;
+    for(var i=0;i<rows.length&&i<12;i++){
+      var r=rows[i]||[];
+      for(var j=0;j<r.length;j++){
+        var s=cellS(r[j]), m=/(\d{2})\.(\d{2})\.(\d{4})/.exec(s); if(m&&!date&&/дата/i.test(s)) date=m[3]+'-'+m[2]+'-'+m[1];
+        var l=s.toLowerCase();
+        if(l==='блюдо') di=j; else if(l.indexOf('групп')===0) gi=j; else if(l.indexOf('количество')===0) ci=j;
+      }
+      if(di>-1&&ci>-1){ hi=i; break; }
+    }
+    if(hi<0) throw new Error('Не нашёл таблицу с колонками «Блюдо» и «Количество». Это отчёт по продажам бара?');
+    if(!date){ for(var q=hi+1;q<rows.length&&!date;q++){ var a0=(rows[q]||[])[0]; if(typeof a0==='number'&&a0>40000){ var dd=new Date(Math.round((a0-25569)*86400000)); date=dd.getUTCFullYear()+'-'+('0'+(dd.getUTCMonth()+1)).slice(-2)+'-'+('0'+dd.getUTCDate()).slice(-2); } } }
+    var out=[], carry='', total=0;
+    for(var k=hi+1;k<rows.length;k++){
+      var rr=rows[k]||[], g=gi>-1?cellS(rr[gi]):'', dish=cellS(rr[di]), cnt=rr[ci], a=cellS(rr[0]);
+      if(/всего\s*$/i.test(g)||/всего\s*$/i.test(dish)||/всего\s*$/i.test(a)) continue;
+      if(g) carry=g;
+      if(!dish||typeof cnt!=='number'||!(cnt>0)) continue;
+      out.push({g:carry,d:dish,c:cnt,key:rkey(carry,dish)}); total+=cnt;
+    }
+    if(!out.length) throw new Error('В отчёте не нашлось строк с блюдами.');
+    return {date:date,rows:out,total:total};
+  }
+
+  // --- сопоставление блюд с позициями остатков ---
+  function nrm(s){ return norm(String(s||'')).replace(/[«»"“”]/g,'').replace(/\s+/g,' ').replace(/[.\s]+$/,'').trim(); }
+  function rkey(g,d){ return nrm(g)+' | '+nrm(d); }
+  var STOPW={'вино':1,'бел':1,'кр':1,'роз':1,'сух':1,'сл':1,'пэт':1,'бут':1,'стекло':1,'игр':1,'асс':1,'оригинал':1,'original':1,'ориджинал':1,'виски':1,'водка':1,'джин':1,'ром':1,'чача':1,'текила':1,'коньяк':1,'пиво':1,'ликер':1,'лет':1,'для':1,'без':1,'газ':1,'вода':1,'год':1};
+  function toks(s){
+    var w=norm(s).replace(/\d+[.,]?\d*\s*(мл|л|г|кг|шт)(?![а-яa-z])/g,' ').replace(/[^a-zа-я0-9]+/g,' ').split(' '), out=[];
+    w.forEach(function(x){ if(x.length<3||STOPW[x]||/^\d+$/.test(x)) return; var s5=x.slice(0,5); if(out.indexOf(s5)<0) out.push(s5); });
+    return out;
+  }
+  var GMAP=[[/^виски/,['Виски']],[/^водка/,['Водка']],[/^джин/,['Джин']],[/^коньяк/,['Коньяк']],[/^ром/,['Ром']],[/^текила/,['Текила']],[/^чача/,['Чача']],[/^белое вино/,['Вино Белое','Вино Российские','Вино Десертное']],[/^красное вино/,['Вино Красное','Вино Российские','Вино в керамике']],[/^игристое/,['Вино Игристое']],[/^пиво бутылочное|^пиво вместо крана/,['Пиво бутылочное']],[/^пиво разливное/,['Пиво разливное']],[/^минеральная вода|^лимонад|^б\/а|^морс/,['Напитки б/а']],[/^аперитив/,['Аперитив']],[/^ликер/,['Ликер']],[/^настойка/,['Настойка']]];
+  function groupsFor(g){ var n=nrm(g); for(var i=0;i<GMAP.length;i++) if(GMAP[i][0].test(n)) return GMAP[i][1].map(norm); return null; }
+  function volL(s){
+    var n=String(s), m=/(\d+[.,]?\d*)\s*мл/i.exec(n); if(m) return parseFloat(m[1].replace(',','.'))/1000;
+    m=/(\d+[.,]?\d*)\s*л(?![а-яa-z])/i.exec(n); if(m) return parseFloat(m[1].replace(',','.'));
+    m=/(?:^|\s)(0[.,]\d{1,3})(?=[\s.,]|$)/.exec(n); if(m) return parseFloat(m[1].replace(',','.'));
+    return null;
+  }
+  function portionFor(o,dish){ if(o.u==='л') return volL(dish); if(o.u==='шт') return 1; return null; }
+  function buildOpts(){ slOpts=spOptions().map(function(o){ o.tk=toks(o.name); return o; }); slOptMap={}; slOpts.forEach(function(o){ slOptMap[o.key]=o; }); }
+  function presetIgn(r){ return /^сок в асс/.test(nrm(r.g))||/клюквенно-брусничный морс/.test(nrm(r.d)); }   // дубли: тот же расход уже в строках «Сок в ассортименте» и «Морс»
+  function suggest(r){
+    var dt=toks(r.d); if(!dt.length) return null;
+    var gr=groupsFor(r.g), exact=[], inDish=[], container=[];
+    if(!gr) return null;   // для групп вроде коктейлей, кофе, лимонадов подсказок нет: там нужен состав
+    slOpts.forEach(function(o){
+      if(gr&&gr.indexOf(norm(o.g))<0) return;
+      var it=o.tk; if(!it.length) return;
+      var allDish=dt.every(function(x){ return it.indexOf(x)>-1; }), allItem=it.every(function(x){ return dt.indexOf(x)>-1; });
+      if(allDish&&allItem) exact.push(o); else if(allItem){ if(it.length>=2||dt.length<=2) inDish.push(o); } else if(allDish) container.push(o);
+    });
+    var best=exact.length===1?exact[0]:(!exact.length&&inDish.length===1?inDish[0]:(!exact.length&&!inDish.length&&container.length===1?container[0]:null));
+    if(!best) return null;
+    var q=portionFor(best,r.d);
+    return [{k:best.key,q:(q>0?q:null)}];
+  }
+  function effective(r){
+    var m=mapDraft[r.key]||((st.salesMap||{})[r.key]);
+    if(m){ if(m.ign) return {s:'ign',m:m}; if(m.c&&m.c.length&&m.c.every(function(c){ return slOptMap[c.k]; })) return {s:'ok',m:m}; }
+    if(presetIgn(r)) return {s:'ign',m:{ign:1}};
+    var sg=suggest(r); if(sg){ if(sg[0].q>0) return {s:'sug',m:{c:sg}}; return {s:'none',pre:sg}; }
+    return {s:'none'};
+  }
+  function fmtQ(k,q){ var o=slOptMap[k]; if(!o) return fmt(q); if(o.u==='л') return q<1?fmt(Math.round(q*1000))+' мл':fmt(r3(q))+' л'; if(o.u==='кг') return q<1?fmt(Math.round(q*1000))+' г':fmt(r3(q))+' кг'; return fmt(r3(q))+' '+o.u; }
+  function dispUnit(o){ return o.u==='л'?'мл':(o.u==='кг'?'г':o.u); }
+  function toDisp(o,q){ return (o.u==='л'||o.u==='кг')?Math.round(q*1000*100)/100:q; }
+  function fromDisp(o,v){ return (o.u==='л'||o.u==='кг')?v/1000:v; }
+  function dateRu(iso){ return iso?iso.split('-').reverse().join('.'):'—'; }
+  function slShow(text,kind){ slMsg.textContent=text; slMsg.className='sp-msg'+(kind==='err'?' err':''); slMsg.hidden=!text; }
+
+  // --- список блюд ---
+  function secHead(text,n){ var h=el('p','sp-h',text+' · '+n); return h; }
+  function rowEl(r){
+    var b=el('button','sl-row s-'+r.eff.s); b.type='button';
+    var tx=el('div','sl-t'); tx.appendChild(el('span','',r.d));
+    var sub=r.g.replace(/\.$/,'');
+    if(r.eff.s==='ok'||r.eff.s==='sug') sub+=' · '+r.eff.m.c.map(function(c){ var o=slOptMap[c.k]; return '−'+fmtQ(c.k,c.q*r.c)+' '+(o?o.name:c.k); }).join(', ');
+    else if(r.eff.s==='ign') sub+=' · не списывается';
+    else if(r.eff.pre) sub+=' · '+(slOptMap[r.eff.pre[0].k]?slOptMap[r.eff.pre[0].k].name:'')+': укажи, сколько на порцию';
+    else sub+=' · нужно выбрать, что списывать';
+    tx.appendChild(el('small','',sub));
+    var c=el('span','sl-c'); c.appendChild(document.createTextNode('× '+fmt(r.c))); b.appendChild(tx); b.appendChild(c);
+    b.addEventListener('click',function(){ slEditOpen(r); }); return b;
+  }
+  function renderRep(){
+    slList.innerHTML=''; slInfo.innerHTML=''; slDock.hidden=true;
+    if(!rep) return;
+    var gp={none:[],sug:[],ok:[],ign:[]}; rep.rows.forEach(function(r){ r.eff=effective(r); gp[r.eff.s].push(r); });
+    var info=el('p','sl-info'); info.innerHTML='Отчёт за <b></b> · блюд: <b></b> · порций: <b></b>'; var bs=info.querySelectorAll('b'); bs[0].textContent=dateRu(rep.date); bs[1].textContent=rep.rows.length; bs[2].textContent=fmt(rep.total); slInfo.appendChild(info);
+    if(slBlock){ slInfo.appendChild(el('p','sl-warn',slBlock)); }
+    [['none','Нужно настроить'],['sug','Предложено — проверь'],['ok','Спишется'],['ign','Не списывается']].forEach(function(sx){
+      var arr=gp[sx[0]]; if(!arr.length) return; slList.appendChild(secHead(sx[1],arr.length)); arr.forEach(function(r){ slList.appendChild(rowEl(r)); });
+    });
+    var n=gp.ok.length+gp.sug.length; slApply.textContent='Списать продажи · '+n+' блюд'; slApply.disabled=!!slBlock||!n; slDock.hidden=false;
+    rep.cnt={none:gp.none.length,n:n};
+  }
+
+  // --- настройка одного блюда ---
+  function slEditOpen(r){
+    var m=(r.eff.s==='ok'||r.eff.s==='sug')?r.eff.m:(r.eff.pre?{c:r.eff.pre}:null);
+    ed={row:r,comps:(m?m.c:[]).map(function(c){ return {k:c.k,val:c.q>0?String(toDisp(slOptMap[c.k],c.q)).replace('.',','):''}; })};
+    spLayer=2; try{ history.pushState({sp:2},''); spPushed++; }catch(e){}
+    slEditBuild(); slEdit.hidden=false; slPick.hidden=true; slList.hidden=true; slInfo.hidden=true; slDock.hidden=true; SLSC.scrollTop=0;
+  }
+  function slEditHide(){ ed=null; slEdit.hidden=true; slPick.hidden=false; slList.hidden=false; slInfo.hidden=false; renderRep(); }
+  function slEditBuild(){
+    slEdit.innerHTML=''; var r=ed.row;
+    var fh=el('div','sp-fh'), l=el('div'); l.appendChild(el('div','sp-fn',r.d)); l.appendChild(el('div','sp-cur',r.g.replace(/\.$/,'')+' · в отчёте: '+fmt(r.c))); fh.appendChild(l); slEdit.appendChild(fh);
+    slEdit.appendChild(el('span','sp-lbl','Что списывать на одну порцию'));
+    if(!ed.comps.length) slEdit.appendChild(el('p','sp-hint','Пока ничего. Найди позицию ниже.'));
+    ed.comps.forEach(function(c,i){
+      var o=slOptMap[c.k], row=el('div','sl-comp'); row.appendChild(el('span','n',o?o.name:c.k));
+      var inp=el('input','sp-in'); inp.type='text'; inp.setAttribute('inputmode','decimal'); inp.setAttribute('autocomplete','off'); inp.value=c.val; inp.addEventListener('input',function(){ c.val=inp.value; });
+      row.appendChild(inp); row.appendChild(el('span','u',o?dispUnit(o):'')); var rm=el('button','sp-rm','×'); rm.type='button'; rm.addEventListener('click',function(){ ed.comps.splice(i,1); slEditBuild(); }); row.appendChild(rm); slEdit.appendChild(row);
+    });
+    slEdit.appendChild(el('span','sp-lbl','Добавить позицию'));
+    var wrap=el('div','search'), q=el('input'); q.type='search'; q.placeholder='Найти позицию'; q.setAttribute('autocomplete','off'); wrap.appendChild(q); slEdit.appendChild(wrap);
+    var res=el('div'); slEdit.appendChild(res);
+    q.addEventListener('input',function(){
+      res.innerHTML=''; var tk=norm(q.value).split(/\s+/).filter(Boolean); if(!tk.length) return; var n=0;
+      slOpts.forEach(function(o){ if(n>=25) return; var hay=norm(o.name+' '+o.g); if(!tk.every(function(x){ return hay.indexOf(x)>-1; })) return; n++;
+        var b=el('button','sp-row'); b.type='button'; b.appendChild(el('span','sp-n',o.name)); b.appendChild(el('span','sp-g',o.g+' · '+o.u));
+        b.addEventListener('click',function(){ var pq=portionFor(o,ed.row.d); ed.comps.push({k:o.key,val:pq>0?String(toDisp(o,pq)).replace('.',','):''}); slEditBuild(); }); res.appendChild(b); });
+      if(!n) res.appendChild(el('p','sp-hint','Ничего не найдено.'));
+    });
+    var btns=el('div','sl-btns'), ok=el('button','main','Сохранить'), ig=el('button','','Не списывать'), cn=el('button','','Отмена'); ok.type=ig.type=cn.type='button';
+    ok.addEventListener('click',function(){
+      var comps=[]; for(var i=0;i<ed.comps.length;i++){ var c=ed.comps[i], o=slOptMap[c.k], v=P(c.val); if(v===null||!(v>0)){ slShow('Укажи число у позиции «'+(o?o.name:c.k)+'».','err'); return; } comps.push({k:c.k,q:Math.round(fromDisp(o,v)*10000)/10000}); }
+      if(!comps.length){ slShow('Добавь позицию или нажми «Не списывать».','err'); return; }
+      slShow(''); mapDraft[ed.row.key]={c:comps}; spUiBack();
+    });
+    ig.addEventListener('click',function(){ slShow(''); mapDraft[ed.row.key]={ign:1}; spUiBack(); });
+    cn.addEventListener('click',function(){ slShow(''); spUiBack(); });
+    btns.appendChild(ok); btns.appendChild(ig); btns.appendChild(cn); slEdit.appendChild(btns);
+  }
+
+  // --- загрузка файла ---
+  slFile.addEventListener('change',async function(){
+    var f=slFile.files&&slFile.files[0]; if(!f) return; slShow('Читаю отчёт…'); 
+    try{
+      var parsed=parseReport(await readXlsx(await f.arrayBuffer()));
+      buildOpts(); rep=parsed; mapDraft={}; slBlock='';
+      if(!rep.date) slBlock='Не нашёл дату отчёта, списывать нельзя.';
+      else if(st&&st.baseline&&st.baseline.date&&rep.date<=st.baseline.date) slBlock='Инвента сделана '+dateRu(st.baseline.date)+'. Отчёт за '+dateRu(rep.date)+' не позже неё, эти продажи уже учтены в остатках.';
+      else if(((st&&st.sales)||[]).some(function(x){ return x.date===rep.date; })) slBlock='Отчёт за '+dateRu(rep.date)+' уже загружен. Чтобы загрузить заново, отмени прежнюю загрузку внизу, иначе остатки спишутся дважды.';
+      slShow(''); renderRep();
+    }catch(e){ rep=null; renderRep(); slShow((e&&e.message)||'Не получилось прочитать файл.','err'); }
+    slFile.value='';
+  });
+
+  // --- списание ---
+  function moveDlg(d){ rootEl.appendChild(d.el.parentNode); return d; }
+  function doApply(){
+    var agg={}, newMap={}, dishes=0, portions=0;
+    rep.rows.forEach(function(r){ var e=r.eff; if(e.s==='ign'){ newMap[r.key]={ign:1}; return; } if(e.s==='none') return; newMap[r.key]={c:e.m.c.map(function(c){ return {k:c.k,q:c.q}; })}; dishes++; portions+=r.c; e.m.c.forEach(function(c){ agg[c.k]=(agg[c.k]||0)+c.q*r.c; }); });
+    var id='i'+Date.now().toString(36), now=new Date().toISOString(), date=rep.date, skipped=rep.cnt.none;
+    var deds=Object.keys(agg).map(function(k,i){ return {id:id+'-'+i,imp:id,t:now,k:k,q:Math.round(agg[k]*10000)/10000,d:date}; });
+    slBusy=true; slApply.disabled=true; slApply.textContent='Списываю…'; slShow('');
+    HIP.update(function(s){
+      if((s.sales||[]).some(function(x){ return x.date===date; })) throw new Error('Отчёт за '+dateRu(date)+' уже загружен.');
+      s.deductions=(s.deductions||[]).concat(deds); s.salesMap=Object.assign({},s.salesMap||{},newMap);
+      s.sales=(s.sales||[]).concat([{id:id,date:date,t:now,dishes:dishes,portions:portions,skipped:skipped}]); return s;
+    }).then(function(res){
+      st=res; slBusy=false; rep=null; mapDraft={}; render(); renderRep(); renderSlLog(); slShow('Продажи за '+dateRu(date)+' списаны: блюд '+dishes+', порций '+fmt(portions)+(skipped?'. Не настроено и не списано: '+skipped+'.':'.')); SLSC.scrollTop=0;
+    }).catch(function(e){ slBusy=false; renderRep(); slShow((e&&e.message)||'Не получилось сохранить.','err'); });
+  }
+  slApply.addEventListener('click',function(){
+    if(slBusy||!rep||slBlock) return;
+    if(!HIP.isAdmin()){ slShow('Нужен админ-режим: вернись назад, нажми на подпись d.b wish и войди по ключу.','err'); return; }
+    if(rep.cnt.none>0){
+      var d=moveDlg(HIP.dialog('<h3>Не всё настроено</h3><p></p><button class="main" id="a-ok">Списать без них</button><button id="a-x">Вернуться</button>'));
+      d.el.querySelector('p').textContent='Блюд без настройки: '+rep.cnt.none+'. Они не спишутся из остатков. Продолжить?';
+      d.el.querySelector('#a-x').onclick=d.close; d.el.querySelector('#a-ok').onclick=function(){ d.close(); doApply(); };
+    } else doApply();
+  });
+  function renderSlLog(){
+    slLog.innerHTML=''; var list=((st&&st.sales)||[]).slice(-10).reverse(); slLogH.hidden=!list.length;
+    list.forEach(function(x){
+      var r=el('div','sp-lg'), tx=el('div','t'); tx.appendChild(el('span','','Продажи за '+dateRu(x.date))); tx.appendChild(el('small','','загружено '+when(x.t)+' · блюд '+x.dishes+', порций '+fmt(x.portions)));
+      var un=el('button','sp-undo','Отменить'); un.type='button'; un.addEventListener('click',function(){ undoSales(x); }); r.appendChild(tx); r.appendChild(un); slLog.appendChild(r);
+    });
+  }
+  function undoSales(x){
+    var d=moveDlg(HIP.dialog('<h3>Отменить загрузку?</h3><p></p><button class="main" id="u-ok">Отменить загрузку</button><button id="u-x">Не надо</button>'));
+    d.el.querySelector('p').textContent='Продажи за '+dateRu(x.date)+' вернутся в остатки.'; d.el.querySelector('#u-x').onclick=d.close;
+    d.el.querySelector('#u-ok').onclick=function(){
+      d.el.querySelector('p').textContent='Отменяю…';
+      HIP.update(function(s){ s.deductions=(s.deductions||[]).filter(function(y){ return y.imp!==x.id; }); s.sales=(s.sales||[]).filter(function(y){ return y.id!==x.id; }); return s; })
+        .then(function(res){ st=res; render(); renderSlLog(); if(rep) { /* пересчитать блок */ } d.close(); slShow('Загрузка отменена.'); })
+        .catch(function(e){ d.el.querySelector('p').textContent=(e&&e.message)||'Не получилось.'; });
+    };
+  }
+  $('slClose').addEventListener('click',spUiBack);
+  function slOpen(){
+    if(spLayer) return;
+    if(!HIP.isAdmin()){ HIP.adminDialog(slOpen); return; }
+    if(!st||!st.baseline){ HIP.dialog('<h3>Данных пока нет</h3><p>Сначала отправь инвенту, потом можно загружать продажи.</p>'); return; }
+    rep=null; mapDraft={}; ed=null; slBlock=''; slShow(''); slEdit.hidden=true; slPick.hidden=false; slList.hidden=false; slInfo.hidden=false; buildOpts(); renderRep(); renderSlLog();
+    spCur=SL; spLayer=1; spLock(); spSlideIn(); SLSC.scrollTop=0;
+    try{ history.pushState({sp:1},''); spPushed++; }catch(e){}
+  }
+  $('slOpen').addEventListener('click',slOpen);
   window._stock={cur:cur,orderLines:orderLines};
-  HIP.read().then(function(d){ st=d; setMode(); if(!st) $('meta').textContent='Данных пока нет. Админ отправляет остатки кнопкой «Отправить в общие остатки» на странице «Инвента бар».'; }).catch(function(){ $('meta').textContent='Не удалось загрузить данные. Проверь интернет.'; });
+  // сначала показываем сохранённую копию (список появляется сразу, без прыжка), потом тихо обновляем свежими данными
+  var cs0=null; try{ cs0=JSON.parse(localStorage.getItem('hip:cache:'+HIP.cfg.repo)||'null'); }catch(e){}
+  if(cs0&&cs0.baseline){ st=cs0; setMode(); }
+  HIP.read().then(function(d){
+    if(d&&st&&d.updated===st.updated&&!d.__cached) return;
+    st=d; setMode(); if(!st) $('meta').textContent='Данных пока нет. Админ отправляет остатки кнопкой «Отправить в общие остатки» на странице «Инвента бар».';
+  }).catch(function(){ if(!st) $('meta').textContent='Не удалось загрузить данные. Проверь интернет.'; });
 })();
 </script>
 <script>
