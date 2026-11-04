@@ -1,7 +1,7 @@
 /* Общий модуль: чтение и запись общих данных (data/state.json в репозитории) и админ-режим. */
 (function(){
   var CFG={owner:'dimonbaranov2003-sudo', repo:'bar_HiP_001', path:'data/state.json'};
-  var TK='hip:token', CK='hip:cache';
+  var TK='hip:token:'+CFG.repo, CK='hip:cache:'+CFG.repo;   // ключ и кэш привязаны к репозиторию: на одном github.io они не смешиваются между репозиториями
   var HIP=window.HIP={cfg:CFG};
   function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} return null; }
   function token(){ return ls(TK)||''; }
@@ -32,46 +32,83 @@
   HIP.fmt=function(n){ return String(Math.round(n*1000)/1000).replace('.',','); };
 
   // ---------- чтение: для всех, без пароля ----------
-  HIP.read=function(){
-    function cached(){ try{ return JSON.parse(ls(CK)||'null'); }catch(x){ return null; } }
-    return fetch(CFG.path+'?t='+Date.now(),{cache:'no-store'}).then(function(r){
+  HIP.read=function(path){
+    path=path||CFG.path; var CKP=path===CFG.path?CK:CK+':'+path;
+    function cached(){ try{ return JSON.parse(ls(CKP)||'null'); }catch(x){ return null; } }
+    return fetch(path+'?t='+Date.now(),{cache:'no-store'}).then(function(r){
       if(r.status===404) return null; if(!r.ok) throw new Error('HTTP '+r.status); return r.json();
     }).then(function(d){
       var c=cached();
       if(c&&(!d||(c.updated&&d.updated&&c.updated>d.updated))) return c;   // свою свежую запись показываем сразу, пока Pages обновляется
-      if(d) ls(CK,JSON.stringify(d));
+      if(d) ls(CKP,JSON.stringify(d));
       return d;
     }).catch(function(e){ var c=cached(); if(c){ c.__cached=true; return c; } throw e; });
   };
 
   // ---------- запись: только с токеном (проверяет сам GitHub) ----------
   function api(method,url,body){
-    return fetch('https://api.github.com'+url,{method:method,headers:{'Authorization':'Bearer '+token(),'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+    return fetch('https://api.github.com'+url,{method:method,headers:{'Authorization':'Bearer '+token(),'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).catch(function(e){
+      // запрос вообще не дошёл до GitHub (сеть, блокировка, режим экономии трафика) — это не ошибка ключа
+      var er=new Error('Запрос не дошёл до GitHub ('+((e&&e.message)||'ошибка сети')+'). Это сеть или блокировка, не ключ. Попробуй другой интернет (Wi-Fi или мобильный) или открой карту в Safari или Chrome, не из Telegram.'); er.net=true; throw er;
+    });
   }
   function b64(s){ return btoa(unescape(encodeURIComponent(s))); }
   function unb64(b){ return decodeURIComponent(escape(atob(String(b).replace(/\n/g,'')))); }
   function explain(status){
     if(status===401) return 'GitHub не принял ключ (неверный или истёк срок).';
-    if(status===403||status===404) return 'У ключа нет прав записи в репозиторий (нужно Contents: Read and write).';
+    if(status===403||status===404) return 'GitHub не пустил запись в '+CFG.owner+'/'+CFG.repo+'. Скорее всего, в этом браузере сохранён старый ключ без прав записи. Нажми на подпись d.b wish, выйди из админ-режима и войди заново свежим ключом (Repository access: '+CFG.repo+', Contents: Read and write).';
     return 'GitHub ответил ошибкой '+status+'.';
   }
   HIP.check=function(){
     return api('GET','/repos/'+CFG.owner+'/'+CFG.repo).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok,status:r.status,branch:j.default_branch}; }); });
   };
-  var CONTENTS='/repos/'+CFG.owner+'/'+CFG.repo+'/contents/'+CFG.path;
-  HIP.update=async function(mutate){
+  HIP.update=async function(mutate,path){
     if(!HIP.isAdmin()) throw new Error('Нужен админ-режим.');
+    path=path||CFG.path; var CKP=path===CFG.path?CK:CK+':'+path, CONTENTS='/repos/'+CFG.owner+'/'+CFG.repo+'/contents/'+path;
     for(var tries=0;tries<3;tries++){
       var r=await api('GET',CONTENTS), st={v:1}, sha;
       if(r.status===200){ var j=await r.json(); sha=j.sha; st=JSON.parse(unb64(j.content)); }
-      else if(r.status!==404) throw new Error(explain(r.status));
+      else if(r.status===404){
+        // 404 бывает и когда файла ещё нет, и когда ключ вообще не видит репозиторий — различаем
+        var rr=await api('GET','/repos/'+CFG.owner+'/'+CFG.repo);
+        if(!rr.ok) throw new Error(rr.status===401?explain(401):'Ключ не видит репозиторий '+CFG.owner+'/'+CFG.repo+'. Либо ключ выдан на другой репозиторий, либо на сайте лежит старый core.js с другим именем репозитория.');
+      }
+      else throw new Error(explain(r.status));
       st=mutate(st)||st; st.updated=new Date().toISOString();
-      var body={message:'Остатки: '+st.updated, content:b64(JSON.stringify(st))}; if(sha) body.sha=sha;
+      var body={message:(path===CFG.path?'Остатки: ':'Данные ('+path+'): ')+st.updated, content:b64(JSON.stringify(st))}; if(sha) body.sha=sha;
       var put=await api('PUT',CONTENTS,body);
-      if(put.ok){ ls(CK,JSON.stringify(st)); return st; }
+      if(put.ok){ ls(CKP,JSON.stringify(st)); return st; }
       if(put.status!==409&&put.status!==422) throw new Error(explain(put.status));
     }
     throw new Error('Не удалось сохранить: файл менялся одновременно. Попробуй ещё раз.');
+  };
+
+  // ---------- ТТК: кэш и разворот рецепта в сырьё (премиксы раскладываются пропорционально) ----------
+  HIP.cached=function(path){ path=path||CFG.path; var CKP=path===CFG.path?CK:CK+':'+path; try{ return JSON.parse(ls(CKP)||'null'); }catch(x){ return null; } };
+  HIP.ttkPath='data/ttk.json';
+  function ttkCard(t,id){ var a=(t&&t.cards)||[]; for(var i=0;i<a.length;i++) if(a[i].id===id) return a[i]; return null; }
+  // объём премикса: заявленный выход, иначе сумма жидких частей
+  HIP.ttkVol=function(c){
+    if(c&&c.vol>0) return c.vol; var s=0;
+    ((c&&c.ings)||[]).forEach(function(x){ if(x.q>0&&(x.p||x.u==='мл')) s+=x.q; });
+    return s;
+  };
+  // Развернуть карточку: всё, что входит в 1 порцию (mult=1) или в mult порций, до сырья.
+  // Возвращает [{k,n,q,u,sq,free}] — k есть у позиций из остатков; sq — количество в единицах остатков (л/кг/шт).
+  HIP.ttkExpand=function(t,id,mult,_seen){
+    var c=ttkCard(t,id), out=[]; if(!c) return out; mult=mult==null?1:mult; _seen=(_seen||[]).concat([id]);
+    (c.ings||[]).forEach(function(x){
+      if(x.p){
+        if(_seen.indexOf(x.p)>-1) return; var sub=ttkCard(t,x.p); if(!sub) return;
+        var v=HIP.ttkVol(sub); if(!(v>0)||!(x.q>0)) return;
+        HIP.ttkExpand(t,x.p,mult*x.q/v,_seen).forEach(function(r){ out.push(r); });
+      } else if(x.q>0){
+        var q=x.q*mult, u=x.u||'', sq=q;
+        if(x.k&&(u==='мл'||u==='г')) sq=q/1000;
+        out.push({k:x.k||null,n:x.n,q:Math.round(q*1000)/1000,u:u,sq:Math.round(sq*100000)/100000,free:!x.k});
+      }
+    });
+    return out;
   };
 
   // ---------- окна ----------
