@@ -598,7 +598,7 @@
   .sp-top h2{font-size:.9rem;}
   textarea.sp-in{height:auto; padding:10px 12px; font-weight:400; font-size:.95rem; line-height:1.4; resize:vertical;}
   .tk-f{margin:0;}
-  .tk-st{margin:0 calc(-1 * var(--bleed)); padding:12px var(--bleed); background:var(--row); border-top:1px solid var(--row-line); border-bottom:1px solid var(--row-line); font-size:.9rem; line-height:1.45;}
+  .tk-st{margin:-14px calc(-1 * var(--bleed)) 0; padding:12px var(--bleed); background:var(--row); border-top:1px solid var(--row-line); border-bottom:1px solid var(--row-line); font-size:.9rem; line-height:1.45;}
   .tk-add{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 0;}
   .tk-sw{display:flex; flex-wrap:wrap; gap:12px;}
   .tk-sw button{width:30px; height:30px; padding:0; border-radius:50%; border:2px solid transparent; -webkit-tap-highlight-color:transparent;}
@@ -619,6 +619,11 @@
   .tk-pl b{font-weight:600; color:var(--accent-ink); white-space:nowrap;}
   .tk-acts{display:flex; gap:8px; margin:18px 0 0; flex-wrap:wrap;}
   .tk-sub{display:none;}
+  /* вкладки в один ряд, без «съехавшей» последней; кнопка редактора с отступом */
+  .pills{flex-wrap:wrap; gap:5px;}
+  .pill, button.pill{flex:1 1 auto; justify-content:center; height:34px; padding:0 6px; font-size:.76rem;}
+  .pills + .act-row{margin:12px 0 0;}
+  header.topbar{padding-bottom:16px;}
   /* ТТК у персонала */
   body.ttk-live details.card:not(.ttk), body.ttk-live .demo-panel > .cat-note:not(.ttk-empty){display:none !important;}
   body.ttk-live .demo-panel.ttk-none .scale-btn{display:none;}
@@ -1304,7 +1309,7 @@
     html+='</div></div>';
     d.innerHTML=html; return d;
   }
-  function isLive(){ return !!(((ttk.published)&&ttk.cards&&ttk.cards.length)||(HIP.isAdmin()&&preview&&ttk.cards&&ttk.cards.length)); }
+  function isLive(){ return !!(ttk.published||(HIP.isAdmin()&&preview)); }
   function renderLive(){
     Array.prototype.forEach.call(document.querySelectorAll('details.card.ttk, .ttk-empty, #tkPrev'),function(n){ n.parentNode.removeChild(n); });
     var live=isLive(); document.body.classList.toggle('ttk-live',live);
@@ -1318,9 +1323,10 @@
       if(!list.length){ panel.classList.add('ttk-none'); var p=el('p','cat-note ttk-empty','Пока нет карточек.'); if(ref) panel.insertBefore(p,ref); else panel.appendChild(p); }
       if(n) n.textContent=list.length;
     });
-    if(live&&preview&&!ttk.published&&HIP.isAdmin()){
-      var b=el('div','scale-banner'); b.id='tkPrev'; b.appendChild(el('span','','Предпросмотр: так карточки увидит персонал после публикации.'));
-      var x=el('button','','Выйти'); x.type='button'; x.addEventListener('click',function(){ preview=false; renderLive(); }); b.appendChild(x);
+    if(HIP.isAdmin()&&!ttk.published){
+      var b=el('div','scale-banner'); b.id='tkPrev';
+      if(live){ b.appendChild(el('span','','Предпросмотр: так карточки увидит персонал после публикации.')); var x=el('button','','Выйти'); x.type='button'; x.addEventListener('click',function(){ preview=false; renderLive(); }); b.appendChild(x); }
+      else { b.appendChild(el('span','','Только для админа: персонал пока видит старые карточки. Новые не опубликованы.')); var y=el('button','','Редактор'); y.type='button'; y.addEventListener('click',function(){ var o=$('tkOpen'); if(o) o.click(); }); b.appendChild(y); }
       var m=$('app'); m.insertBefore(b,m.firstChild);
     }
     if(window.__tkAcc) window.__tkAcc(); if(window.__tkScale) window.__tkScale(); if(window.__tkSearch) window.__tkSearch();
@@ -1383,19 +1389,17 @@
     layer=1; draft=null; DOCK.hidden=true; TITLE.textContent='Редактор ТТК'; BODY.innerHTML='';
     var smap=st?stockMap():null, n=ttk.cards.length;
     var box=el('div','tk-st'); BODY.appendChild(box);
-    if(ttk.published&&n){
-      box.appendChild(el('div','','Сейчас персонал видит новые карточки ('+n+'). Старые скрыты.'));
+    if(ttk.published){
+      box.appendChild(el('div','',n?'Сейчас персонал видит новые карточки ('+n+'). Старые скрыты.':'Старые карточки скрыты. Новых пока нет, поэтому у персонала разделы пустые.'));
       var off=el('button','sp-chip','Снять с публикации'); off.type='button'; off.style.marginTop='10px';
       off.addEventListener('click',function(){ setPub(false,off); }); box.appendChild(off);
     } else {
-      box.appendChild(el('div','',n?'Пока персонал видит старые карточки. Новые — только у тебя. Когда всё заполнишь, нажми «Опубликовать»: старые скроются.':'Здесь пока пусто. Начни с премиксов, потом коктейли смогут на них ссылаться. Пока ты ничего не опубликуешь, персонал видит прежние карточки.'));
-      if(n){
-        var row=el('div','sp-chips'); row.style.marginTop='10px';
-        var pv=el('button','sp-chip','Посмотреть как у персонала'); pv.type='button'; pv.addEventListener('click',function(){ preview=true; renderLive(); uiBack(); });
-        var pub=el('button','sp-chip on','Опубликовать'); pub.type='button'; var armed=false;
-        pub.addEventListener('click',function(){ if(!armed){ armed=true; pub.textContent='Точно? Старые карточки скроются'; return; } setPub(true,pub); });
-        row.appendChild(pv); row.appendChild(pub); box.appendChild(row);
-      }
+      box.appendChild(el('div','',(n?'Пока персонал видит старые карточки. Новые — только у тебя. ':'Здесь пока пусто. Начни с премиксов, потом коктейли смогут на них ссылаться. Персонал пока видит старые карточки. ')+'Нажми «Опубликовать» — старые скроются у всех'+(n?'.':', даже если новых ещё нет (разделы будут пустыми).')));
+      var row=el('div','sp-chips'); row.style.marginTop='10px';
+      if(n){ var pv=el('button','sp-chip','Посмотреть как у персонала'); pv.type='button'; pv.addEventListener('click',function(){ preview=true; renderLive(); uiBack(); }); row.appendChild(pv); }
+      var pub=el('button','sp-chip on','Опубликовать'); pub.type='button'; var armed=false;
+      pub.addEventListener('click',function(){ if(!armed){ armed=true; pub.textContent='Точно? Старые карточки скроются'; return; } setPub(true,pub); });
+      row.appendChild(pub); box.appendChild(row);
     }
     var add=el('div','tk-add'); BODY.appendChild(add);
     TYPES.forEach(function(t){ var b=el('button','sp-chip','+ '+t[1]); b.type='button'; b.addEventListener('click',function(){ showEdit({id:uid(),type:t[0],name:'',color:COLORS[(ttk.cards.length)%COLORS.length],ings:[],tags:[],note:''},true); }); add.appendChild(b); });
