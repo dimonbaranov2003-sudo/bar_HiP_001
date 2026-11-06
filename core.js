@@ -88,6 +88,38 @@
   HIP.ttkPath='data/ttk.json';
   function ttkCard(t,id){ var a=(t&&t.cards)||[]; for(var i=0;i<a.length;i++) if(a[i].id===id) return a[i]; return null; }
   // объём премикса: заявленный выход, иначе сумма жидких частей
+  // Премикс «как есть» → готовый рецепт партии:
+  //  • из коктейля (c.src): состав коктейля × число порций + вода на порцию (c.water);
+  //  • вручную с c.fill: недостающий до выхода объём добавляется водой.
+  // источники «из коктейля»: [{c:id коктейля, x:порций, w:воды на порцию, мл}] или null для ручного премикса
+  HIP.ttkSrcs=function(c){
+    if(c&&Array.isArray(c.srcs)) return c.srcs;
+    if(c&&typeof c.src==='string') return c.src?[{c:c.src,x:(c.make&&c.make.by==='n')?c.make.x:1,w:c.water||0}]:[];
+    return null;
+  };
+  HIP.ttkRes=function(t,c){
+    if(!c||c.type!=='premix') return c;
+    var r={}, k; for(k in c) r[k]=c[k];
+    function mlSum(a){ var s=0; (a||[]).forEach(function(x){ if(x.q>0&&(x.p||x.u==='мл')) s+=x.q; }); return s; }
+    function rd(v,m){ return Math.round(v*m)/m; }
+    var rows=HIP.ttkSrcs(c);
+    if(rows){
+      var mk=c.make||{}, tot=0, base=[];
+      rows.forEach(function(r){ var s0=ttkCard(t,r.c); if(!s0||!(r.x>0)) return; var per=(s0.ings||[]).filter(function(x){ return x.q>0; }), w=r.w>0?r.w:0; base.push({per:per,w:w,x:r.x}); tot+=(mlSum(per)+w)*r.x; });
+      var kf=(mk.by==='v'&&mk.x>0&&tot>0)?mk.x/tot:1, map={}, out=[], water=0, np=0;
+      base.forEach(function(b){
+        np+=b.x*kf; water+=b.w*b.x*kf;
+        b.per.forEach(function(x){ var key=x.k?'k:'+x.k:(x.p?'p:'+x.p:'n:'+x.n+'|'+x.u), q=x.q*b.x*kf;
+          if(map[key]) map[key].q+=q; else { var o={}, kk; for(kk in x) o[kk]=x[kk]; o.q=q; map[key]=o; out.push(o); } });
+      });
+      out.forEach(function(o){ o.q=rd(o.q,1000); });
+      if(water>0) out.push({n:'Вода',u:'мл',q:rd(water,1000)});
+      r.ings=out; r.vol=tot>0?rd(tot*kf,10):0; r.portions=tot>0?rd(np,100):0;
+      return r;
+    }
+    if(c.fill&&c.vol>0){ var sm=mlSum(c.ings); if(c.vol>sm+0.5) r.ings=(c.ings||[]).concat([{n:'Вода',u:'мл',q:rd(c.vol-sm,10)}]); }
+    return r;
+  };
   HIP.ttkVol=function(c){
     if(c&&c.vol>0) return c.vol; var s=0;
     ((c&&c.ings)||[]).forEach(function(x){ if(x.q>0&&(x.p||x.u==='мл')) s+=x.q; });
@@ -96,10 +128,10 @@
   // Развернуть карточку: всё, что входит в 1 порцию (mult=1) или в mult порций, до сырья.
   // Возвращает [{k,n,q,u,sq,free}] — k есть у позиций из остатков; sq — количество в единицах остатков (л/кг/шт).
   HIP.ttkExpand=function(t,id,mult,_seen){
-    var c=ttkCard(t,id), out=[]; if(!c) return out; mult=mult==null?1:mult; _seen=(_seen||[]).concat([id]);
+    var c=HIP.ttkRes(t,ttkCard(t,id)), out=[]; if(!c) return out; mult=mult==null?1:mult; _seen=(_seen||[]).concat([id]);
     (c.ings||[]).forEach(function(x){
       if(x.p){
-        if(_seen.indexOf(x.p)>-1) return; var sub=ttkCard(t,x.p); if(!sub) return;
+        if(_seen.indexOf(x.p)>-1) return; var sub=HIP.ttkRes(t,ttkCard(t,x.p)); if(!sub) return;
         var v=HIP.ttkVol(sub); if(!(v>0)||!(x.q>0)) return;
         HIP.ttkExpand(t,x.p,mult*x.q/v,_seen).forEach(function(r){ out.push(r); });
       } else if(x.q>0){
