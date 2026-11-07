@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="ХиП Бар"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 <meta content="#B39B85" name="theme-color"/>
 <title>Wish Ember · Хачо и Пури / Пхали-Хинкали</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -1030,6 +1036,9 @@
   window.addEventListener('pageshow',center);
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(center);
 })();
+</script>
+<script>
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){ window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
 </script>
 </body>
 </html>
