@@ -497,7 +497,8 @@
   .inv-fld label{text-transform:none; letter-spacing:0;}
   .inv-tare{border-top:1px solid var(--row-line);}
   .inv-tare-btn{border-width:1px; border-color:var(--row-line); border-radius:4px;}
-  .inv-dock, .inv-kp{border-top:1px solid var(--row-line);}
+  .inv-kp{border-top:1px solid var(--row-line);}
+  .inv-dock{border-top:0;}
   .inv-send{border-radius:6px; background:var(--accent); font-weight:600;}
   .inv-sheet{border-radius:12px 12px 0 0; border-top:1px solid var(--row-line);}
   .inv-sheet button{border-radius:6px; border-width:1px; border-color:var(--row-line); font-weight:500;}
@@ -627,6 +628,13 @@
   .send-stock{height:40px; border:1px solid var(--row-line); border-radius:6px; background:var(--field); color:var(--accent-ink); font-weight:600; font-size:.9rem; margin:16px 0 0; box-shadow:none;}
   .send-stock:active{background:color-mix(in srgb, var(--accent) 16%, transparent);}
 </style>
+  <style id="nx-dock">
+  /* нижняя кнопка без панели: по центру, прогресс — в конце списка */
+  .inv-dock{background:none !important; border:0 !important; justify-content:center; padding:0 16px calc(14px + env(safe-area-inset-bottom,0px)); pointer-events:none;}
+  .inv-dock .inv-send{pointer-events:auto; min-width:180px; box-shadow:0 6px 18px rgba(0,0,0,.45);}
+  body{padding-bottom:64px;}
+  p.inv-prog{margin:14px 0 0; text-align:center; font:400 .72rem 'IBM Plex Mono',monospace; color:var(--muted);}
+  </style>
 </head>
 <body>
 <script>
@@ -673,8 +681,9 @@
 <button class="send-stock" id="sendStock" type="button">Отправить в общие остатки</button>
 <button class="clear-all" id="clearAll" type="button">Очистить всё</button>
 <datalist id="ttk-names"></datalist>
+<p class="inv-prog" id="prog"></p>
 </main>
-<div class="inv-dock"><span class="inv-prog" id="prog"></span><button class="inv-send" id="send" type="button">Собрать бланк</button></div>
+<div class="inv-dock"><button class="inv-send" id="send" type="button">Собрать бланк</button></div>
 <div class="inv-modal" id="modal" hidden><div class="inv-sheet" id="sheet"></div></div>
 <footer class="sig">
   <input type="checkbox" id="sig-toggle" class="sig-input"/>

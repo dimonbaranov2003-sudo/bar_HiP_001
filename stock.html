@@ -739,6 +739,57 @@
   .sl-btns button{flex:1; height:44px; border-radius:6px; border:1px solid var(--row-line); background:var(--field); color:var(--ink); font:500 .92rem var(--nf);}
   .sl-btns button.main{background:var(--accent); border-color:transparent; color:var(--bg); font-weight:600;}
 </style>
+<style id="nx-adm">
+  /* ===== админ-экраны: темнее фон, мельче и спокойнее ===== */
+  .sp{--row:rgba(255,255,255,.03); --row-line:rgba(255,255,255,.085); --field:rgba(255,255,255,.055);
+    background-image:linear-gradient(rgba(14,9,7,.93), rgba(14,9,7,.93)), url("bg-bar.jpg");}
+  .sp-top{padding:4px 16px; background:color-mix(in srgb, #0E0907 90%, transparent);}
+  .sp-top h2{font:700 .74rem/1.2 var(--nf); letter-spacing:.1em; color:var(--muted);}
+  .sp-x{width:40px; height:40px;}
+  .sp-x svg{width:9px; height:16px;}
+  .sp-body{padding:10px 16px 120px; font-size:.92rem;}
+  .sp-hint{margin:6px 2px; font-size:.76rem; line-height:1.4; color:var(--muted);}
+  .sp-h{margin:18px 2px 6px; font:600 .68rem var(--nf); letter-spacing:.09em;}
+  .sp-row{padding:9px var(--bleed); font:500 .92rem var(--nf);}
+  .sp-g{font-size:.74rem;}
+  .sp-lbl{margin:12px 0 5px; font-size:.74rem;}
+  .sp-chips{gap:6px;}
+  .sp-chip{height:32px; padding:0 12px; border-radius:6px; background:var(--field); color:var(--ink); font:500 .84rem var(--nf);}
+  .sp-chip.on{background:color-mix(in srgb, var(--accent) 22%, transparent); color:var(--accent-ink); font-weight:600; box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);}
+  .sp-in{height:38px; padding:0 11px; font:500 .95rem var(--nf); border-radius:6px;}
+  textarea.sp-in{padding:8px 11px; font-size:.9rem;}
+  select.sp-in{padding-right:28px;}
+  .sp-add{height:36px; margin-top:6px; padding:0; border:0; border-radius:0; background:none; color:var(--accent-ink); font:600 .86rem var(--nf); text-align:left;}
+  .sp-save{height:42px; margin-top:10px; border-radius:6px; font:600 .9rem var(--nf);}
+  .sp-dock{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); background:linear-gradient(to bottom, rgba(14,9,7,0), #0E0907 45%);}
+  .sp-msg{font-size:.84rem;}
+  .sp-dr, .sp-lg{padding:8px var(--bleed);}
+  .sp-dr .t, .sp-lg .t{font-size:.9rem;}
+  .sp-form{padding:12px var(--bleed) 14px;}
+  /* редактор ТТК */
+  .tk-st{padding:10px var(--bleed); font-size:.84rem; background:var(--row);}
+  .tk-add{gap:6px; margin-top:12px;}
+  .tk-sw{gap:10px;}
+  .tk-sw button{width:26px; height:26px;}
+  .tk-ing{gap:6px; padding:6px var(--bleed);}
+  .tk-ing .t{font:500 .9rem/1.25 var(--nf);}
+  .tk-ing .t small{font-size:.7rem;}
+  .tk-ing input{flex-basis:66px; width:66px; height:34px; font:500 .92rem var(--nf);}
+  .tk-ing button.u{height:30px; font-size:.8rem;}
+  .tk-ing .u{font-size:.8rem;}
+  .tk-ing .mv{width:28px; height:32px; font-size:1.1rem; opacity:.7;}
+  .tk-pm{margin-top:3px; font:500 .7rem var(--nf); color:var(--muted);}
+  .tk-pm.off{color:#D9A15A;}
+  .tk-pl{padding:7px var(--bleed); font-size:.86rem;}
+  .tk-wl{font-size:.72rem; margin:8px 0 5px;}
+  .tk-wi, .tk-src-r input{height:36px; font:500 .92rem var(--nf);}
+  .tk-src-r label{font-size:.7rem;}
+  .tk-acts{margin-top:16px; gap:6px;}
+  .tk-src{margin-bottom:10px;}
+  /* кнопка редактора на главной */
+  .act-btn{height:36px; padding:0 12px; font:500 .86rem var(--nf); background:rgba(255,255,255,.04);}
+  .act-btn svg{width:18px; height:18px;}
+</style>
 </head>
 <body>
 <script>

@@ -617,6 +617,10 @@
   .tk-pv .sp-h{margin-top:16px;}
   .tk-pl{display:flex; justify-content:space-between; gap:10px; margin:0 calc(-1 * var(--bleed)); padding:8px var(--bleed); border-bottom:1px solid var(--row-line); background:var(--row); font-size:.9rem;}
   .tk-tot{font-weight:600;}
+  .tk-pm{display:block; margin-top:4px; padding:0; border:0; background:none; color:var(--accent-ink); font:600 .74rem var(--nf); text-align:left;}
+  .tk-pm.off{color:#E0A458;}
+  .tk-wl{margin:10px 0 6px; font-size:.78rem; color:var(--muted);}
+  .tk-wi{width:100%; height:40px; margin-top:8px; padding:0 10px; border:1px solid var(--row-line); border-radius:6px; background:var(--field); color:var(--ink); font:600 1rem var(--nf); outline:none; -webkit-appearance:none; appearance:none;}
   .tk-src{margin:0 0 12px; padding:10px 0 0; border-top:1px solid var(--row-line);}
   .tk-src:first-child{border-top:0; padding-top:0;}
   .tk-src-r{display:flex; align-items:flex-end; gap:10px; margin-top:8px;}
@@ -638,6 +642,58 @@
   body.ttk-live .demo-panel.ttk-none .scale-btn{display:none;}
   details.card.ttk-first{border-top:1px solid var(--row-line); border-top-left-radius:6px;}
   body.ing-on details.card.ttk-first{border-top:1px solid var(--row-line);}
+</style>
+<style id="nx-adm">
+  /* ===== админ-экраны: темнее фон, мельче и спокойнее ===== */
+  .sp{--row:rgba(255,255,255,.03); --row-line:rgba(255,255,255,.085); --field:rgba(255,255,255,.055);
+    background-image:linear-gradient(rgba(14,9,7,.93), rgba(14,9,7,.93)), url("bg-bar.jpg");}
+  .sp-top{padding:4px 16px; background:color-mix(in srgb, #0E0907 90%, transparent);}
+  .sp-top h2{font:700 .74rem/1.2 var(--nf); letter-spacing:.1em; color:var(--muted);}
+  .sp-x{width:40px; height:40px;}
+  .sp-x svg{width:9px; height:16px;}
+  .sp-body{padding:10px 16px 120px; font-size:.92rem;}
+  .sp-hint{margin:6px 2px; font-size:.76rem; line-height:1.4; color:var(--muted);}
+  .sp-h{margin:18px 2px 6px; font:600 .68rem var(--nf); letter-spacing:.09em;}
+  .sp-row{padding:9px var(--bleed); font:500 .92rem var(--nf);}
+  .sp-g{font-size:.74rem;}
+  .sp-lbl{margin:12px 0 5px; font-size:.74rem;}
+  .sp-chips{gap:6px;}
+  .sp-chip{height:32px; padding:0 12px; border-radius:6px; background:var(--field); color:var(--ink); font:500 .84rem var(--nf);}
+  .sp-chip.on{background:color-mix(in srgb, var(--accent) 22%, transparent); color:var(--accent-ink); font-weight:600; box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);}
+  .sp-in{height:38px; padding:0 11px; font:500 .95rem var(--nf); border-radius:6px;}
+  textarea.sp-in{padding:8px 11px; font-size:.9rem;}
+  select.sp-in{padding-right:28px;}
+  .sp-add{height:36px; margin-top:6px; padding:0; border:0; border-radius:0; background:none; color:var(--accent-ink); font:600 .86rem var(--nf); text-align:left;}
+  .sp-save{height:42px; margin-top:10px; border-radius:6px; font:600 .9rem var(--nf);}
+  .sp-dock{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); background:linear-gradient(to bottom, rgba(14,9,7,0), #0E0907 45%);}
+  .sp-msg{font-size:.84rem;}
+  .sp-dr, .sp-lg{padding:8px var(--bleed);}
+  .sp-dr .t, .sp-lg .t{font-size:.9rem;}
+  .sp-form{padding:12px var(--bleed) 14px;}
+  /* редактор ТТК */
+  .tk-st{padding:10px var(--bleed); font-size:.84rem; background:var(--row);}
+  .tk-add{gap:6px; margin-top:12px;}
+  .tk-sw{gap:10px;}
+  .tk-sw button{width:26px; height:26px;}
+  .tk-ing{gap:6px; padding:6px var(--bleed);}
+  .tk-ing .t{font:500 .9rem/1.25 var(--nf);}
+  .tk-ing .t small{font-size:.7rem;}
+  .tk-ing input{flex-basis:66px; width:66px; height:34px; font:500 .92rem var(--nf);}
+  .tk-ing button.u{height:30px; font-size:.8rem;}
+  .tk-ing .u{font-size:.8rem;}
+  .tk-ing .mv{width:28px; height:32px; font-size:1.1rem; opacity:.7;}
+  .tk-pm{margin-top:3px; font:500 .7rem var(--nf); color:var(--muted);}
+  .tk-pm.off{color:#D9A15A;}
+  .tk-pl{padding:7px var(--bleed); font-size:.86rem;}
+  .tk-wl{font-size:.72rem; margin:8px 0 5px;}
+  .tk-wi, .tk-src-r input{height:36px; font:500 .92rem var(--nf);}
+  .tk-src-r label{font-size:.7rem;}
+  .tk-acts{margin-top:16px; gap:6px;}
+  .tk-f + .sp-chips{margin-top:10px;}
+  .tk-src{margin-bottom:10px;}
+  /* кнопка редактора на главной */
+  .act-btn{height:36px; padding:0 12px; font:500 .86rem var(--nf); background:rgba(255,255,255,.04);}
+  .act-btn svg{width:18px; height:18px;}
 </style>
 </head>
 <body>
@@ -1307,7 +1363,7 @@
     var prem=c.type==='premix', v=HIP.ttkVol(c), pn='';
     if(prem&&v>0){ pn=' · '+volText(v)+(c.portions>0?' = '+portTxt(c.portions):''); d.setAttribute('data-base',Math.round(v)); }
     var html='<summary class="card-head"><span class="card-name">'+esc(c.name)+(pn?'<span class="prep-note">'+esc(pn)+'</span>':'')+'</span>'+(c.season?'<span class="season-tag">Сезонный</span>':'')+'<span class="chev">⌄</span></summary><div class="card-content"><div class="card-content-inner">';
-    var badges=[]; if(prem&&v>0) badges.push('Объём '+fmt(Math.round(v))+'мл'); (c.tags||[]).forEach(function(t){ badges.push(t); }); if(c.season) badges.push('Сезонный');
+    var badges=[]; if(prem&&v>0) badges.push('Объём '+fmt(Math.round(v))+'мл'); if(!prem&&c.out>0) badges.push('Выход '+fmt(c.out)+'мл'); (c.tags||[]).forEach(function(t){ badges.push(t); }); if(c.season) badges.push('Сезонный');
     if(badges.length){ html+='<div class="badges">'+badges.map(function(b,i){ return '<span class="badge'+(c.season&&b==='Сезонный'?' season':'')+'">'+esc(b)+'</span>'; }).join('')+'</div>'; }
     html+='<table class="ing-table"><thead><tr><th>Ингредиент</th><th>'+(prem?'На партию':'На порцию')+'</th></tr></thead><tbody>';
     (c.ings||[]).forEach(function(x){
@@ -1317,6 +1373,7 @@
       } else html+='<tr><td class="ing-name">'+esc(x.n)+'</td><td class="ing-amt">'+amt(x.q,x.u)+'</td></tr>';
     });
     html+='</tbody></table>';
+    if(prem&&c.sep&&c.sep.length) html+='<p class="card-note">Подают отдельно (на 1 порцию): '+c.sep.map(function(g){ return esc(g.n)+' — '+g.items.map(function(x){ return esc(x.n)+' '+amt(x.q,x.u); }).join(', '); }).join('; ')+'.</p>';
     if(c.note) html+='<p class="card-note">'+esc(c.note).replace(/\n/g,'<br>')+'</p>';
     html+='</div></div>';
     d.innerHTML=html; return d;
@@ -1456,7 +1513,7 @@
     var premBox=el('div','tk-f');
     var md=el('div','sp-chips'), mb1=el('button','sp-chip','Вручную'), mb2=el('button','sp-chip','Из коктейля'); mb1.type=mb2.type='button'; md.appendChild(mb1); md.appendChild(mb2);
     premBox.appendChild(field('Как считаем премикс',md));
-    function setMode(der){ if(der){ if(!Array.isArray(draft.srcs)) draft.srcs=[{c:'',x:1,w:0}]; if(!draft.make) draft.make={by:'v',x:draft.vol||1000}; } else delete draft.srcs; syncMode(); renderPrev(); }
+    function setMode(der){ if(der){ if(!Array.isArray(draft.srcs)) draft.srcs=[{c:'',x:1,wm:'none'}]; if(!draft.make) draft.make={by:'v',x:draft.vol||1000}; } else delete draft.srcs; syncMode(); renderPrev(); }
     mb1.addEventListener('click',function(){ setMode(false); }); mb2.addEventListener('click',function(){ setMode(true); });
     // вручную
     var manBox=el('div','tk-f');
@@ -1469,21 +1526,32 @@
     // из коктейля (можно несколько версий: например 350 и 1000 мл)
     var derBox=el('div','tk-f');
     var srcBox=el('div','tk-srcs'); derBox.appendChild(field('Из каких ТТК считаем (на 1 порцию)',srcBox));
-    var addSrc=el('button','sp-add','+ Ещё версия (например 1000 мл)'); addSrc.type='button'; addSrc.addEventListener('click',function(){ keep(function(){ draft.srcs.push({c:'',x:1,w:0}); renderSrcs(); }); renderPrev(); }); derBox.appendChild(addSrc);
+    var addSrc=el('button','sp-add','+ Ещё версия (например 1000 мл)'); addSrc.type='button'; addSrc.addEventListener('click',function(){ keep(function(){ draft.srcs.push({c:'',x:1,wm:'none'}); renderSrcs(); }); renderPrev(); }); derBox.appendChild(addSrc);
     function fillSel(sel,val){ sel.innerHTML=''; var o0=el('option','','— выбери коктейль или сет —'); o0.value=''; sel.appendChild(o0);
       ttk.cards.forEach(function(c){ if(c.type==='premix'||c.id===draft.id||dependsOn(c.id,draft.id)) return; var o=el('option','',(c.type==='set'?'Сет · ':'')+c.name); o.value=c.id; sel.appendChild(o); });
       sel.value=val||''; }
     function numIn(val,ph,fn){ var i=el('input'); i.type='text'; i.inputMode='decimal'; i.autocomplete='off'; i.placeholder=ph; i.value=val>0?fmt(val):''; i.addEventListener('input',function(){ var x=HIP.parse(i.value); fn(x>0?x:0); renderPrev(); }); return i; }
     function renderSrcs(){
-      srcBox.innerHTML=''; var by=(draft.make&&draft.make.by)||'v';
+      srcBox.innerHTML=''; var by=(draft.make&&draft.make.by)||'v', tt={cards:ttk.cards.filter(function(c){ return c.id!==draft.id; }).concat([draft])};
       draft.srcs.forEach(function(r,idx){
-        var w=el('div','tk-src'), sel=el('select','sp-in'); sel.setAttribute('aria-label','ТТК-основа'); fillSel(sel,r.c); sel.addEventListener('change',function(){ r.c=sel.value; renderPrev(); }); w.appendChild(sel);
+        if(!r.wm) r.wm=r.w>0?'own':'none';
+        var w=el('div','tk-src'), sel=el('select','sp-in'); sel.setAttribute('aria-label','ТТК-основа'); fillSel(sel,r.c);
+        sel.addEventListener('change',function(){ r.c=sel.value; var sc=card(r.c), pt1=sc?HIP.ttkPortion({cards:ttk.cards},{c:r.c}):null; if(pt1&&sc.out>0&&r.wm==='none'&&!pt1.sep.some(function(x){ return x.p||x.u==='мл'; })) r.wm='out'; keep(renderSrcs); renderPrev(); }); w.appendChild(sel);
         var ln=el('div','tk-src-r');
-        var a=el('label','',by==='n'?'порций':'доля'), xi=numIn(r.x,'1',function(v){ r.x=v; }); a.appendChild(xi);
-        var b=el('label','','воды, мл на порцию'), wi=numIn(r.w,'0',function(v){ r.w=v; }); b.appendChild(wi);
-        ln.appendChild(a); ln.appendChild(b);
+        var a=el('label','',by==='n'?'порций':'доля'), xi=numIn(r.x,'1',function(v){ r.x=v; }); a.appendChild(xi); ln.appendChild(a);
         if(draft.srcs.length>1){ var rm=el('button','mv','×'); rm.type='button'; rm.setAttribute('aria-label','Убрать версию'); rm.addEventListener('click',function(){ keep(function(){ draft.srcs.splice(idx,1); renderSrcs(); }); renderPrev(); }); ln.appendChild(rm); }
-        w.appendChild(ln); srcBox.appendChild(w);
+        w.appendChild(ln);
+        // вода
+        var wl=el('div','tk-wl','Вода вместо растаявшего льда'); w.appendChild(wl);
+        var wc=el('div','sp-chips'); [['out','по выходу ТТК'],['none','без воды'],['own','своя, мл']].forEach(function(m){ var b=el('button','sp-chip'+(r.wm===m[0]?' on':''),m[1]); b.type='button'; b.addEventListener('click',function(){ r.wm=m[0]; keep(renderSrcs); renderPrev(); }); wc.appendChild(b); }); w.appendChild(wc);
+        if(r.wm==='own'){ var wi=numIn(r.w,'мл на порцию',function(v){ r.w=v; }); wi.className='tk-wi'; w.appendChild(wi); }
+        var pt=r.c?HIP.ttkPortion(tt,r):null, h='';
+        if(pt){
+          if(r.wm==='out'){ h=pt.card.out>0?(pt.w>0?'Вода: '+fmt(pt.w)+' мл на порцию (выход ТТК '+fmt(pt.card.out)+' − ингредиенты '+fmt(Math.round(pt.mlAll*10)/10)+').':'Выход ТТК не больше суммы ингредиентов, воды не будет.'):'В этой ТТК не указан выход: открой её и впиши «Выход после шейка».'; }
+          if(pt.sep.length) h+=(h?' ':'')+'Отдельно, не в бутылку: '+pt.sep.map(function(x){ return x.n; }).join(', ')+'.';
+        }
+        if(h) w.appendChild(el('p','sp-hint',h));
+        srcBox.appendChild(w);
       });
     }
     var mk=el('div','sp-chips'), m1=el('button','sp-chip','по порциям'), m2=el('button','sp-chip','по объёму, мл'); mk.type='button'; m1.type=m2.type='button'; mk.appendChild(m1); mk.appendChild(m2);
@@ -1492,15 +1560,19 @@
     function setBy(by){ draft.make=draft.make||{x:0}; draft.make.by=by; mkSync(); keep(renderSrcs); renderPrev(); }
     m1.addEventListener('click',function(){ setBy('n'); }); m2.addEventListener('click',function(){ setBy('v'); });
     derBox.appendChild(field('Сколько делаем',mk)); derBox.appendChild(xi);
-    derBox.appendChild(el('p','sp-hint','«По порциям»: делаем ровно столько порций каждой версии. «По объёму»: общий объём партии, версии делят его в указанной пропорции. Состав берётся из ТТК и обновляется сам, если ТТК поменяешь.'));
+    derBox.appendChild(el('p','sp-hint','По порциям: ровно столько порций каждой версии. По объёму: версии делят общий объём по долям. Состав обновляется вместе с ТТК.'));
     premBox.appendChild(derBox); BODY.appendChild(premBox);
     function syncMode(){
       var prem=draft.type==='premix', der=prem&&Array.isArray(draft.srcs);
-      premBox.hidden=!prem; manBox.hidden=der; derBox.hidden=!der; mb1.classList.toggle('on',!der); mb2.classList.toggle('on',der);
+      outBox.hidden=prem; premBox.hidden=!prem; manBox.hidden=der; derBox.hidden=!der; mb1.classList.toggle('on',!der); mb2.classList.toggle('on',der);
       if(compBox) compBox.hidden=der;
       if(der){ mkSync(); renderSrcs(); if(document.activeElement!==xi) xi.value=(draft.make&&draft.make.x)?fmt(draft.make.x):''; }
     }
     var compBox=null;
+    // выход готового напитка (коктейль/сет)
+    var outBox=el('div','tk-f'); outBox.hidden=draft.type==='premix';
+    var oi=textIn(draft.out?fmt(draft.out):'','например 150',function(v){ var x=HIP.parse(v); draft.out=x>0?x:null; renderPrev(); }); oi.inputMode='decimal';
+    outBox.appendChild(field('Готовый выход после шейка, мл (необязательно)',oi)); outBox.appendChild(el('p','sp-hint','Нужен для премикса: вода = выход − жидкие ингредиенты. Лёд и газ-воду отмечай «отдельно».')); BODY.appendChild(outBox);
     // цвет
     var sw=el('div','tk-sw'); COLORS.forEach(function(col){ var b=el('button',draft.color===col?'on':''); b.type='button'; b.style.background=col; b.setAttribute('aria-label','Цвет'); b.addEventListener('click',function(){ draft.color=col; Array.prototype.forEach.call(sw.children,function(x){ x.classList.toggle('on',x===b); }); }); sw.appendChild(b); }); BODY.appendChild(field('Цвет метки',sw));
     // состав
@@ -1543,7 +1615,9 @@
       var r=el('div','tk-ing'), t=el('div','t'); t.appendChild(document.createTextNode(x.p?'Премикс «'+((card(x.p)||{}).name||x.n)+'»':x.n));
       var sm=el('small'); if(x.k){ var o=smap&&smap[x.k]; sm.textContent=smap?(o?o.g+' · из остатков':'⚠ нет в остатках, спишется только после отправки инвенты'):'из остатков'; if(smap&&!o) sm.style.color='#E0A458'; }
       else if(x.p){ sm.textContent=card(x.p)?'премикс · списывает его состав пропорционально':'⚠ премикс удалён'; if(!card(x.p)) sm.style.color='#E0A458'; }
-      else sm.textContent='без привязки · на остатки не влияет'; t.appendChild(sm); r.appendChild(t);
+      else sm.textContent='без привязки · на остатки не влияет'; t.appendChild(sm);
+      if(draft.type!=='premix'){ var pm=el('button','tk-pm'+(x.nop?' off':''),x.nop?'✕ отдельно, не в премикс':'✓ идёт в премикс'); pm.type='button'; pm.addEventListener('click',function(){ x.nop=x.nop?0:1; pm.textContent=x.nop?'✕ отдельно, не в премикс':'✓ идёт в премикс'; pm.classList.toggle('off',!!x.nop); renderPrev(); }); t.appendChild(pm); }
+      r.appendChild(t);
       var inp=el('input'); inp.type='text'; inp.inputMode='decimal'; inp.autocomplete='off'; inp.placeholder='0'; inp.value=x.q==null?'':fmt(x.q); inp.setAttribute('aria-label','Количество');
       inp.addEventListener('input',function(){ var v=HIP.parse(inp.value); x.q=(v!=null&&v>=0)?v:null; inp.classList.toggle('bad',inp.value.trim()!==''&&v==null); renderPrev(); }); r.appendChild(inp);
       if(!x.k&&!x.p){ var ub=el('button','u',x.u||'мл'); ub.type='button'; ub.addEventListener('click',function(){ x.u=UNITS[(UNITS.indexOf(x.u||'мл')+1)%UNITS.length]; ub.textContent=x.u; }); r.appendChild(ub); }
@@ -1569,7 +1643,7 @@
       if(der&&draft.srcs.filter(function(r){ return r.c&&r.x>0; }).length>1&&v>0){
         // насколько общий состав «врёт» для каждой версии, если брать из общей бутылки
         var shares={}; (rc.ings||[]).forEach(function(x){ if(x.q>0&&!(x.n==='Вода'&&!x.k&&!x.p)) shares[x.k?'k:'+x.k:(x.p?'p:'+x.p:'n:'+x.n+'|'+x.u)]=x.q/v; });
-        var info=[]; draft.srcs.forEach(function(r){ var sc=card(r.c); if(!sc||!(r.x>0)) return; var per=(sc.ings||[]).filter(function(x){ return x.q>0; }), unit=0; per.forEach(function(x){ if(x.p||x.u==='мл') unit+=x.q; }); unit+=(r.w>0?r.w:0);
+        var info=[]; draft.srcs.forEach(function(r){ var sc=card(r.c); if(!sc||!(r.x>0)) return; var pt0=HIP.ttkPortion(t,r), per=pt0?pt0.per:[], unit=pt0?pt0.unit:0;
           var bad=[]; per.forEach(function(x){ var key=x.k?'k:'+x.k:(x.p?'p:'+x.p:'n:'+x.n+'|'+x.u), got=(shares[key]||0)*unit, d=(got-x.q)/x.q*100; if(Math.abs(d)>=1) bad.push(x.n+' '+(d>0?'+':'−')+Math.round(Math.abs(d))+'%'); });
           info.push('«'+sc.name+'»: '+(bad.length?bad.join(', '):'совпадает с ТТК')); });
         prevBox.appendChild(el('p','sp-hint','Если наливать из общей бутылки, состав порции отличается от её ТТК так: '+info.join('; ')+'.'));
@@ -1595,7 +1669,7 @@
     });
     if(st&&st.baseline){ var c2=0; stockOpts().forEach(function(o){ if(c2>=30) return; var hay=norm(o.n+' '+o.g); if(!q.every(function(x){ return hay.indexOf(x)>-1; })) return; c2++; row(o.n,o.g+' · '+o.u,function(){ addIng({k:o.k,n:o.n,u:runit(o.u),q:null}); }); }); }
     else pickRes.appendChild(el('p','sp-hint',st?'Остатки ещё не отправлены — можно добавить только свой ингредиент или премикс.':'Загружаю остатки…'));
-    var fb=el('button','sp-row'); fb.type='button'; fb.appendChild(el('span','sp-n','Без привязки: «'+raw+'»')); fb.appendChild(el('span','sp-g','не списывается')); fb.addEventListener('click',function(){ addIng({n:raw,u:'мл',q:null}); }); pickRes.appendChild(fb);
+    var fb=el('button','sp-row'); fb.type='button'; fb.appendChild(el('span','sp-n','Без привязки: «'+raw+'»')); fb.appendChild(el('span','sp-g','не списывается')); fb.addEventListener('click',function(){ addIng({n:raw,u:/л[её]д|ice/i.test(raw)?'г':'мл',q:null,nop:1}); }); pickRes.appendChild(fb);
   }
   // фокус без прыжка страницы: сдвигаем прокрутку только если поле не видно (с запасом под кнопку «Сохранить»)
   function focusNoJump(inp){
@@ -1620,9 +1694,10 @@
   }
   SAVE.addEventListener('click',function(){
     if(saving||layer!==2) return; var er=validate(); if(er){ showMsg(er,true); return; }
-    var c={id:draft.id,type:draft.type,name:draft.name.trim(),color:draft.color||COLORS[0],ings:draft.ings.map(function(x){ var o={n:x.n,u:x.u,q:x.q}; if(x.k) o.k=x.k; if(x.p) o.p=x.p; return o; })};
+    var c={id:draft.id,type:draft.type,name:draft.name.trim(),color:draft.color||COLORS[0],ings:draft.ings.map(function(x){ var o={n:x.n,u:x.u,q:x.q}; if(x.k) o.k=x.k; if(x.p) o.p=x.p; if(x.nop&&draft.type!=='premix') o.nop=1; return o; })};
+    if(draft.type!=='premix'&&draft.out>0) c.out=draft.out;
     if(draft.type==='premix'){
-      if(Array.isArray(draft.srcs)){ c.srcs=draft.srcs.filter(function(r){ return r.c&&r.x>0; }).map(function(r){ return {c:r.c,x:r.x,w:r.w>0?r.w:0}; }); c.ings=[]; c.make=(draft.make&&draft.make.by==='n')?{by:'n'}:{by:'v',x:(draft.make&&draft.make.x)||0}; }
+      if(Array.isArray(draft.srcs)){ c.srcs=draft.srcs.filter(function(r){ return r.c&&r.x>0; }).map(function(r){ var o={c:r.c,x:r.x,wm:r.wm||'none'}; if(o.wm==='own') o.w=r.w>0?r.w:0; return o; }); c.ings=[]; c.make=(draft.make&&draft.make.by==='n')?{by:'n'}:{by:'v',x:(draft.make&&draft.make.x)||0}; }
       else { if(draft.vol>0) c.vol=draft.vol; if(draft.portions>0) c.portions=draft.portions; if(draft.fill) c.fill=true; }
     }
     if(draft.tags&&draft.tags.length) c.tags=draft.tags; if(draft.season) c.season=true; if((draft.note||'').trim()) c.note=draft.note.trim();

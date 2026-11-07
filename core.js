@@ -97,24 +97,34 @@
     if(c&&typeof c.src==='string') return c.src?[{c:c.src,x:(c.make&&c.make.by==='n')?c.make.x:1,w:c.water||0}]:[];
     return null;
   };
+  function mlSum(a){ var s=0; (a||[]).forEach(function(x){ if(x.q>0&&(x.p||x.u==='мл')) s+=x.q; }); return s; }
+  // Одна порция коктейля для премикса: что идёт в бутылку, что подают отдельно, сколько воды заменяет лёд.
+  // Режимы воды (r.wm): 'out' — до готового выхода ТТК (выход − все жидкие ингредиенты), 'own' — своё число (r.w), 'none' — без воды.
+  HIP.ttkPortion=function(t,r){
+    var s0=ttkCard(t,r.c); if(!s0) return null;
+    var all=(s0.ings||[]).filter(function(x){ return x.q>0; }), per=all.filter(function(x){ return !x.nop; }), sep=all.filter(function(x){ return x.nop; });
+    var mlAll=mlSum(all), wm=r.wm||(r.w>0?'own':'none'), w=0;
+    if(wm==='own') w=r.w>0?r.w:0; else if(wm==='out'&&s0.out>0) w=Math.max(0,s0.out-mlAll);
+    return {card:s0,per:per,sep:sep,w:Math.round(w*10)/10,unit:mlSum(per)+Math.round(w*10)/10,mlAll:mlAll,wm:wm};
+  };
   HIP.ttkRes=function(t,c){
     if(!c||c.type!=='premix') return c;
     var r={}, k; for(k in c) r[k]=c[k];
-    function mlSum(a){ var s=0; (a||[]).forEach(function(x){ if(x.q>0&&(x.p||x.u==='мл')) s+=x.q; }); return s; }
     function rd(v,m){ return Math.round(v*m)/m; }
     var rows=HIP.ttkSrcs(c);
     if(rows){
       var mk=c.make||{}, tot=0, base=[];
-      rows.forEach(function(r){ var s0=ttkCard(t,r.c); if(!s0||!(r.x>0)) return; var per=(s0.ings||[]).filter(function(x){ return x.q>0; }), w=r.w>0?r.w:0; base.push({per:per,w:w,x:r.x}); tot+=(mlSum(per)+w)*r.x; });
-      var kf=(mk.by==='v'&&mk.x>0&&tot>0)?mk.x/tot:1, map={}, out=[], water=0, np=0;
+      rows.forEach(function(q){ var pt=HIP.ttkPortion(t,q); if(!pt||!(q.x>0)) return; base.push({per:pt.per,w:pt.w,x:q.x,sep:pt.sep,name:pt.card.name}); tot+=pt.unit*q.x; });
+      var kf=(mk.by==='v'&&mk.x>0&&tot>0)?mk.x/tot:1, map={}, out=[], water=0, np=0, sepl=[];
       base.forEach(function(b){
         np+=b.x*kf; water+=b.w*b.x*kf;
+        if(b.sep.length) sepl.push({n:b.name,items:b.sep.map(function(x){ return {n:x.n,q:x.q,u:x.p?'мл':x.u}; })});
         b.per.forEach(function(x){ var key=x.k?'k:'+x.k:(x.p?'p:'+x.p:'n:'+x.n+'|'+x.u), q=x.q*b.x*kf;
           if(map[key]) map[key].q+=q; else { var o={}, kk; for(kk in x) o[kk]=x[kk]; o.q=q; map[key]=o; out.push(o); } });
       });
       out.forEach(function(o){ o.q=rd(o.q,1000); });
       if(water>0) out.push({n:'Вода',u:'мл',q:rd(water,1000)});
-      r.ings=out; r.vol=tot>0?rd(tot*kf,10):0; r.portions=tot>0?rd(np,100):0;
+      r.ings=out; r.vol=tot>0?rd(tot*kf,10):0; r.portions=tot>0?rd(np,100):0; r.sep=sepl;
       return r;
     }
     if(c.fill&&c.vol>0){ var sm=mlSum(c.ings); if(c.vol>sm+0.5) r.ings=(c.ings||[]).concat([{n:'Вода',u:'мл',q:rd(c.vol-sm,10)}]); }
