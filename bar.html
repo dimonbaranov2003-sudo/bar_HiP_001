@@ -634,7 +634,8 @@
   .tk-sub{display:none;}
   /* вкладки в один ряд, без «съехавшей» последней; кнопка редактора с отступом */
   .pills{flex-wrap:wrap; gap:5px;}
-  .pill, button.pill{flex:1 1 auto; justify-content:center; height:34px; padding:0 6px; font-size:.76rem;}
+  .pill, button.pill{flex:1 1 auto; justify-content:center; height:36px; padding:0 6px; font-size:.76rem;}
+  @media (max-width:340px){ .pill, button.pill{padding:0 4px; font-size:.7rem;} }
   .pills + .act-row{margin:12px 0 0;}
   header.topbar{padding-bottom:16px;}
   /* ТТК у персонала */
@@ -690,6 +691,11 @@
   .tk-src-r label{font-size:.7rem;}
   .tk-acts{margin-top:16px; gap:6px;}
   .tk-f + .sp-chips{margin-top:10px;}
+  .tk-f > .tk-stack{margin-top:14px;}
+  .tk-stack > * + *{margin-top:12px;}
+  .tk-stack > .sp-hint{margin-top:10px;}
+  .tk-stack > .tk-f + .tk-f{margin-top:14px;}
+  .tk-pv{margin:20px 0 6px;}
   .tk-src{margin-bottom:10px;}
   /* кнопка редактора на главной */
   .act-btn{height:36px; padding:0 12px; font:500 .86rem var(--nf); background:rgba(255,255,255,.04);}
@@ -1516,7 +1522,7 @@
     function setMode(der){ if(der){ if(!Array.isArray(draft.srcs)) draft.srcs=[{c:'',x:1,wm:'none'}]; if(!draft.make) draft.make={by:'v',x:draft.vol||1000}; } else delete draft.srcs; syncMode(); renderPrev(); }
     mb1.addEventListener('click',function(){ setMode(false); }); mb2.addEventListener('click',function(){ setMode(true); });
     // вручную
-    var manBox=el('div','tk-f');
+    var manBox=el('div','tk-f tk-stack');
     var vi=textIn(draft.vol?fmt(draft.vol):'','1000',function(v){ var x=HIP.parse(v); draft.vol=x>0?x:null; renderPrev(); }); vi.inputMode='decimal';
     var pi=textIn(draft.portions?String(draft.portions):'','например 5',function(v){ var x=parseInt(v,10); draft.portions=x>0?x:null; }); pi.inputMode='numeric';
     manBox.appendChild(field('Выход партии, мл',vi));
@@ -1524,7 +1530,7 @@
     manBox.appendChild(field('Порций в партии (необязательно)',pi));
     premBox.appendChild(manBox);
     // из коктейля (можно несколько версий: например 350 и 1000 мл)
-    var derBox=el('div','tk-f');
+    var derBox=el('div','tk-f tk-stack');
     var srcBox=el('div','tk-srcs'); derBox.appendChild(field('Из каких ТТК считаем (на 1 порцию)',srcBox));
     var addSrc=el('button','sp-add','+ Ещё версия (например 1000 мл)'); addSrc.type='button'; addSrc.addEventListener('click',function(){ keep(function(){ draft.srcs.push({c:'',x:1,wm:'none'}); renderSrcs(); }); renderPrev(); }); derBox.appendChild(addSrc);
     function fillSel(sel,val){ sel.innerHTML=''; var o0=el('option','','— выбери коктейль или сет —'); o0.value=''; sel.appendChild(o0);
